@@ -1,0 +1,30 @@
+# Dependencias
+node_modules
+
+# Artefactos de WXT
+.output
+.wxt
+web-ext.config.ts
+stats.html
+stats-*.json
+
+# Registros
+logs
+*.log
+npm-debug.log*
+
+# Editor y sistema
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Entorno local
+.env
+.env.*
+coverage
