@@ -1,0 +1,315 @@
+/*
+ * Estilos del panel de configuración de Veilix.
+ * El tema se controla con `data-tema` en <html>: `sistema` sigue la
+ * preferencia del sistema operativo; `claro` y `oscuro` la fuerzan.
+ */
+
+:root {
+  color-scheme: light;
+  --fondo: #f6f7f9;
+  --superficie: #ffffff;
+  --superficie-alterna: #eef0f4;
+  --borde: #e2e5eb;
+  --texto: #14161b;
+  --texto-secundario: #5b6170;
+  --texto-terciario: #80879a;
+  --acento: #5b4bdb;
+  --acento-texto: #ffffff;
+  --acento-suave: #ecebfd;
+  --pendiente-fondo: #f1f2f5;
+  --pendiente-texto: #5b6170;
+  --error-fondo: #fdecec;
+  --error-texto: #a1232b;
+  --foco: #7c6ff0;
+  --radio: 12px;
+  --sombra: 0 1px 2px rgb(16 18 27 / 6%);
+
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+
+:root[data-tema='oscuro'] {
+  color-scheme: dark;
+  --fondo: #0f1115;
+  --superficie: #171a20;
+  --superficie-alterna: #1f232b;
+  --borde: #2a2f39;
+  --texto: #eceef3;
+  --texto-secundario: #a3a9b7;
+  --texto-terciario: #7d8494;
+  --acento: #8c7ff5;
+  --acento-texto: #0f1115;
+  --acento-suave: #2a2650;
+  --pendiente-fondo: #242832;
+  --pendiente-texto: #a3a9b7;
+  --error-fondo: #3a1d20;
+  --error-texto: #f2a5aa;
+  --foco: #a99ff8;
+  --sombra: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema='claro'], [data-tema='oscuro']) {
+    color-scheme: dark;
+    --fondo: #0f1115;
+    --superficie: #171a20;
+    --superficie-alterna: #1f232b;
+    --borde: #2a2f39;
+    --texto: #eceef3;
+    --texto-secundario: #a3a9b7;
+    --texto-terciario: #7d8494;
+    --acento: #8c7ff5;
+    --acento-texto: #0f1115;
+    --acento-suave: #2a2650;
+    --pendiente-fondo: #242832;
+    --pendiente-texto: #a3a9b7;
+    --error-fondo: #3a1d20;
+    --error-texto: #f2a5aa;
+    --foco: #a99ff8;
+    --sombra: none;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--fondo);
+  color: var(--texto);
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--foco);
+  outline-offset: 2px;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+.panel[data-variante='emergente'] {
+  width: 380px;
+}
+
+.panel[data-variante='pagina'] {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 40px 24px;
+  gap: 24px;
+}
+
+.panel__cabecera {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logotipo {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  color: var(--acento);
+}
+
+.panel__titulo {
+  font-size: 17px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.panel__subtitulo,
+.panel__cargando {
+  color: var(--texto-secundario);
+  font-size: 13px;
+}
+
+.panel__contenido {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.seccion {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.seccion__titulo {
+  color: var(--texto-terciario);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.selector-tema {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--superficie-alterna);
+}
+
+.selector-tema__opcion {
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--texto-secundario);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.selector-tema__opcion[aria-checked='true'] {
+  background: var(--superficie);
+  color: var(--texto);
+  box-shadow: var(--sombra);
+}
+
+.lista-tarjetas {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--superficie);
+  box-shadow: var(--sombra);
+  list-style: none;
+}
+
+.tarjeta {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+}
+
+.tarjeta + .tarjeta {
+  border-top: 1px solid var(--borde);
+}
+
+.tarjeta__texto {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.tarjeta__titulo {
+  font-size: 14px;
+  font-weight: 550;
+}
+
+.tarjeta[data-estado='pendiente'] .tarjeta__titulo {
+  color: var(--texto-secundario);
+}
+
+.tarjeta__descripcion {
+  color: var(--texto-secundario);
+  font-size: 12.5px;
+}
+
+.tarjeta__nota {
+  color: var(--texto-terciario);
+  font-size: 12px;
+  font-style: italic;
+}
+
+.insignia {
+  flex: none;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--pendiente-fondo);
+  color: var(--pendiente-texto);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.interruptor {
+  position: relative;
+  flex: none;
+  width: 36px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--borde);
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.interruptor__guia {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 150ms ease;
+}
+
+.interruptor[aria-checked='true'] {
+  background: var(--acento);
+}
+
+.interruptor[aria-checked='true'] .interruptor__guia {
+  transform: translateX(16px);
+}
+
+.aviso {
+  padding: 10px 12px;
+  border-radius: var(--radio);
+  font-size: 13px;
+}
+
+.aviso--error {
+  background: var(--error-fondo);
+  color: var(--error-texto);
+}
+
+.panel__pie {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: var(--texto-terciario);
+  font-size: 11.5px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .interruptor,
+  .interruptor__guia {
+    transition: none;
+  }
+}

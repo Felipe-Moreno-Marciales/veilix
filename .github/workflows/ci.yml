@@ -1,0 +1,62 @@
+# Integración continua de Veilix: tipos, lint, pruebas y compilaciones.
+name: CI
+
+on:
+  push:
+    branches: [main, development]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verificar:
+    name: Tipos, lint y pruebas
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run compile
+      - run: npm run lint
+      - run: npm test
+
+  compilar:
+    name: Compilar (${{ matrix.navegador }})
+    needs: verificar
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        navegador: [chrome, edge, firefox]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run build:${{ matrix.navegador }}
+      - name: Validar paquete de Firefox
+        if: matrix.navegador == 'firefox'
+        run: npm run lint:firefox
+      - uses: actions/upload-artifact@v7
+        with:
+          name: veilix-${{ matrix.navegador }}-mv3
+          path: .output/${{ matrix.navegador }}-mv3
+          retention-days: 7
+          if-no-files-found: error
