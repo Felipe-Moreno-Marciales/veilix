@@ -1,10 +1,22 @@
 /**
- * Módulo: difuminar fotografías de contactos.
+ * Módulo: difuminar fotografías de contactos (RF-02).
  *
- * Estado: pendiente. Se implementará en una fase posterior respetando el
- * contrato `ModuloFuncionalidad` (activación reversible y sin transmitir
- * datos fuera del navegador).
+ * Difumina con CSS las fotografías (`<img>`) de la lista de chats y del
+ * encabezado de la conversación. Las imágenes originales no se modifican y
+ * los iconos funcionales (`[data-icon]`, SVG) quedan excluidos.
  */
-import { crearModuloPendiente } from '../modulo-pendiente';
+import { crearModuloDifuminado } from '@/nucleo/difuminado/modulo-difuminado';
+import {
+  ENCABEZADO_CONVERSACION,
+  FILA_CHAT,
+  FOTOGRAFIA,
+} from '@/nucleo/difuminado/selectores';
 
-export const moduloDifuminarFotos = crearModuloPendiente('difuminarFotos');
+export const moduloDifuminarFotos = crearModuloDifuminado({
+  id: 'difuminarFotos',
+  sufijo: 'fotos',
+  reglas: [
+    { contenedor: FILA_CHAT, objetivo: FOTOGRAFIA, revelarConFoco: true },
+    { contenedor: ENCABEZADO_CONVERSACION, objetivo: FOTOGRAFIA, revelarConFoco: true },
+  ],
+});
