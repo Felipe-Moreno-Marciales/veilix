@@ -31,6 +31,9 @@ jobs:
       - run: npm run compile
       - run: npm run lint
       - run: npm test
+      - name: Instalar Chromium para las pruebas de navegador
+        run: npm run navegador:instalar
+      - run: npm run test:navegador
 
   compilar:
     name: Compilar (${{ matrix.navegador }})
@@ -54,6 +57,19 @@ jobs:
       - name: Validar paquete de Firefox
         if: matrix.navegador == 'firefox'
         run: npm run lint:firefox
+      - name: Verificar la extensión compilada en Chromium
+        if: matrix.navegador == 'chrome'
+        run: |
+          npm run navegador:instalar
+          npm run test:extension
+      - name: Publicar capturas del panel
+        if: matrix.navegador == 'chrome'
+        uses: actions/upload-artifact@v7
+        with:
+          name: veilix-capturas
+          path: .output/capturas
+          retention-days: 7
+          if-no-files-found: ignore
       - uses: actions/upload-artifact@v7
         with:
           name: veilix-${{ matrix.navegador }}-mv3
