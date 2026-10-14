@@ -5,6 +5,10 @@
  * presentan en el panel y si ya están implementadas. Una funcionalidad solo
  * puede activarse cuando su estado es `disponible`.
  */
+import { ATAJO_REVELADO } from '@/nucleo/difuminado/revelado-teclado';
+
+const REVELADO_GENERAL = `Revelar: cursor encima, foco del teclado o ${ATAJO_REVELADO}.`;
+const REVELADO_EDITOR = `Revelar: cursor encima o ${ATAJO_REVELADO}. Se escribe con normalidad.`;
 
 export const IDS_FUNCIONALIDADES = [
   'difuminarNombres',
@@ -20,7 +24,10 @@ export const IDS_FUNCIONALIDADES = [
 
 export type IdFuncionalidad = (typeof IDS_FUNCIONALIDADES)[number];
 
-/** `pendiente`: aún sin implementar; no se ofrece ningún control. */
+/**
+ * `pendiente`: aún sin implementar; no se ofrece ningún control.
+ * `disponible`: implementada; el panel muestra su interruptor.
+ */
 export type EstadoImplementacion = 'pendiente' | 'disponible';
 
 export type CategoriaFuncionalidad = 'difuminado' | 'actividad' | 'mensajes';
@@ -50,35 +57,40 @@ export const CATALOGO_FUNCIONALIDADES: readonly DefinicionFuncionalidad[] = [
     titulo: 'Difuminar nombres de contactos',
     descripcion: 'Oculta los nombres de contactos y grupos hasta pasar el cursor sobre ellos.',
     categoria: 'difuminado',
-    estado: 'pendiente',
+    estado: 'disponible',
+    nota: REVELADO_GENERAL,
   },
   {
     id: 'difuminarFotos',
     titulo: 'Difuminar fotografías de contactos',
     descripcion: 'Difumina las fotografías de perfil de contactos y grupos.',
     categoria: 'difuminado',
-    estado: 'pendiente',
+    estado: 'disponible',
+    nota: REVELADO_GENERAL,
   },
   {
     id: 'difuminarMensajesRecientes',
     titulo: 'Difuminar mensajes recientes',
     descripcion: 'Difumina la vista previa del último mensaje en la lista de chats.',
     categoria: 'difuminado',
-    estado: 'pendiente',
+    estado: 'disponible',
+    nota: REVELADO_GENERAL,
   },
   {
     id: 'difuminarMensajesConversacion',
     titulo: 'Difuminar mensajes de conversaciones',
     descripcion: 'Difumina el contenido de los mensajes dentro de la conversación abierta.',
     categoria: 'difuminado',
-    estado: 'pendiente',
+    estado: 'disponible',
+    nota: REVELADO_GENERAL,
   },
   {
     id: 'difuminarCampoEntrada',
     titulo: 'Difuminar el campo de entrada',
     descripcion: 'Difumina el texto que se está escribiendo en el campo de mensaje.',
     categoria: 'difuminado',
-    estado: 'pendiente',
+    estado: 'disponible',
+    nota: REVELADO_EDITOR,
   },
   {
     id: 'ocultarEscritura',
