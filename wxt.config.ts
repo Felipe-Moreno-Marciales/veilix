@@ -4,7 +4,10 @@ import { defineConfig } from 'wxt';
  * Configuración de WXT para Veilix.
  *
  * Principios aplicados:
- * - Manifest V3 en todos los navegadores (Chrome, Edge y Firefox).
+ * - Manifest V3 en todos los navegadores. Una sola base de código genera:
+ *   `chrome` (también para Brave, Opera y Vivaldi), `edge`, `firefox` y `safari`.
+ * - Versiones mínimas según las APIs que usa el motor de difuminado:
+ *   `AbortSignal.any` (Chromium 116, Firefox 124, Safari 17.4) y `:has()`.
  * - Mínimo privilegio: solo se solicita el permiso `storage`. El acceso a
  *   WhatsApp Web se limita al script de contenido declarado para
  *   `https://web.whatsapp.com/*`.
@@ -12,6 +15,40 @@ import { defineConfig } from 'wxt';
  *
  * Documentación: https://wxt.dev/api/config.html
  */
+/** Ajustes específicos de cada familia de navegadores. */
+function ajustesPorNavegador(browser: string): Record<string, unknown> {
+  if (browser === 'firefox') {
+    return {
+      browser_specific_settings: {
+        gecko: {
+          // Identificador provisional; debe confirmarse antes de publicar en AMO.
+          id: 'veilix@veilix.app',
+          strict_min_version: '140.0',
+          // Declaración obligatoria para nuevas extensiones de Firefox:
+          // Veilix no recopila ni transmite datos.
+          data_collection_permissions: {
+            required: ['none'],
+          },
+        },
+        // `data_collection_permissions` requiere Firefox para Android 142.
+        gecko_android: {
+          strict_min_version: '142.0',
+        },
+      },
+    };
+  }
+  if (browser === 'safari') {
+    return {
+      browser_specific_settings: {
+        // https://developer.apple.com/documentation/safariservices/optimizing-your-web-extension-for-safari
+        safari: { strict_min_version: '17.4' },
+      },
+    };
+  }
+  // Chrome, Edge y demás navegadores basados en Chromium.
+  return { minimum_chrome_version: '116' };
+}
+
 export default defineConfig({
   srcDir: 'src',
   modules: ['@wxt-dev/module-react'],
@@ -27,25 +64,6 @@ export default defineConfig({
     action: {
       default_title: 'Veilix',
     },
-    ...(browser === 'firefox'
-      ? {
-          browser_specific_settings: {
-            gecko: {
-              // Identificador provisional; debe confirmarse antes de publicar en AMO.
-              id: 'veilix@veilix.app',
-              strict_min_version: '140.0',
-              // Declaración obligatoria para nuevas extensiones de Firefox:
-              // Veilix no recopila ni transmite datos.
-              data_collection_permissions: {
-                required: ['none'],
-              },
-            },
-            // `data_collection_permissions` requiere Firefox para Android 142.
-            gecko_android: {
-              strict_min_version: '142.0',
-            },
-          },
-        }
-      : {}),
+    ...ajustesPorNavegador(browser),
   }),
 });
