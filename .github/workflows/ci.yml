@@ -31,8 +31,9 @@ jobs:
       - run: npm run compile
       - run: npm run lint
       - run: npm test
-      - name: Instalar Chromium para las pruebas de navegador
+      - name: Instalar Chromium, Firefox y WebKit (Playwright)
         run: npm run navegador:instalar
+      # WebKit de Playwright comparte motor con Safari, pero no es Safari.
       - run: npm run test:navegador
 
   compilar:
@@ -43,7 +44,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        navegador: [chrome, edge, firefox]
+        # `chrome` sirve también para Brave, Opera y Vivaldi.
+        # `safari` solo se compila aquí; ver el trabajo `safari-macos`.
+        navegador: [chrome, edge, firefox, safari]
     steps:
       - uses: actions/checkout@v7
         with:
@@ -60,7 +63,7 @@ jobs:
       - name: Verificar la extensión compilada en Chromium
         if: matrix.navegador == 'chrome'
         run: |
-          npm run navegador:instalar
+          npx playwright install --with-deps chromium
           npm run test:extension
       - name: Publicar capturas del panel
         if: matrix.navegador == 'chrome'
@@ -76,3 +79,51 @@ jobs:
           path: .output/${{ matrix.navegador }}-mv3
           retention-days: 7
           if-no-files-found: error
+
+  # Experimental y manual: valida el paquete de Safari con la herramienta
+  # oficial de Apple y compila la app contenedora sin firmar. NO ejecuta la
+  # extensión en Safari ni prueba WhatsApp Web.
+  safari-macos:
+    name: Empaquetar para Safari (macOS, experimental)
+    if: github.event_name == 'workflow_dispatch'
+    needs: verificar
+    runs-on: macos-latest
+    timeout-minutes: 30
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run build:safari
+      - name: Generar el proyecto de Xcode
+        # `shell: bash` activa `pipefail`, para que `tee` no oculte los errores.
+        shell: bash
+        run: |
+          herramienta=safari-web-extension-packager
+          xcrun --find "$herramienta" >/dev/null 2>&1 || herramienta=safari-web-extension-converter
+          xcrun "$herramienta" .output/safari-mv3 \
+            --project-location "$RUNNER_TEMP/veilix-safari" \
+            --app-name Veilix \
+            --bundle-identifier app.veilix.Veilix \
+            --swift --macos-only --copy-resources \
+            --no-open --no-prompt --force 2>&1 | tee "$RUNNER_TEMP/empaquetador.log"
+      - name: Compilar la app sin firmar
+        shell: bash
+        run: |
+          proyecto="$(find "$RUNNER_TEMP/veilix-safari" -name '*.xcodeproj' -maxdepth 3 | head -n 1)"
+          xcodebuild -project "$proyecto" -alltargets -configuration Release \
+            CODE_SIGNING_ALLOWED=NO build 2>&1 | tee "$RUNNER_TEMP/xcodebuild.log"
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: veilix-safari-registros
+          path: |
+            ${{ runner.temp }}/empaquetador.log
+            ${{ runner.temp }}/xcodebuild.log
+          retention-days: 7
+          if-no-files-found: ignore
