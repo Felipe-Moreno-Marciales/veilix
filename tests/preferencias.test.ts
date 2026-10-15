@@ -26,10 +26,18 @@ describe('normalizarPreferencias', () => {
 
   it('fuerza a falso las funcionalidades pendientes', () => {
     const resultado = normalizarPreferencias({
-      funcionalidades: { difuminarNombres: true, ocultarEnLinea: true },
+      funcionalidades: { ocultarEscritura: true, ocultarEnLinea: true },
     });
-    expect(resultado.funcionalidades.difuminarNombres).toBe(false);
+    expect(resultado.funcionalidades.ocultarEscritura).toBe(false);
     expect(resultado.funcionalidades.ocultarEnLinea).toBe(false);
+  });
+
+  it('conserva las funcionalidades disponibles activadas', () => {
+    const resultado = normalizarPreferencias({
+      funcionalidades: { difuminarNombres: true, difuminarFotos: false },
+    });
+    expect(resultado.funcionalidades.difuminarNombres).toBe(true);
+    expect(resultado.funcionalidades.difuminarFotos).toBe(false);
   });
 
   it('descarta claves desconocidas y valores no booleanos', () => {
