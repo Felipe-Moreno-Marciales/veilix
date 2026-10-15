@@ -1,5 +1,6 @@
 /**
- * Pruebas del motor de difuminado en Chromium real (Playwright).
+ * Pruebas del motor de difuminado en navegadores reales (Playwright):
+ * Chromium, Firefox y WebKit. WebKit de Playwright no equivale a Safari.
  *
  * Comprueban el CSS efectivo (`getComputedStyle().filter`), el revelado con
  * cursor y teclado, la escritura en el editor y los clics en controles.
@@ -91,7 +92,7 @@ function enfocarAntesDe(elemento: Element): void {
   }, { once: true });
 }
 
-describe('motor de difuminado en Chromium', () => {
+describe('motor de difuminado en navegador', () => {
   let wa: WhatsAppSimulado;
   let contexto: AbortController;
   let gestor: GestorModulos;
