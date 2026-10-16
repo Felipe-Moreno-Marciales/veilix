@@ -7,7 +7,8 @@ Instrucciones para cualquier agente (Codex, Claude u otros) o persona que trabaj
 Veilix es una extensión de privacidad para WhatsApp Web, construida con WXT, React y TypeScript sobre Manifest V3. Está dirigida a Chrome, Edge, Firefox, Brave, Opera y Vivaldi (en Windows, Linux y macOS) y a Safari en macOS. El estado de cada combinación está en la matriz de compatibilidad del README.
 
 - **Fase 1 (infraestructura):** completada y aprobada.
-- **Fase 2 (motor de difuminado, RF-01 a RF-05):** implementada y **pendiente de validación en WhatsApp Web real** por el propietario.
+- **Fase 2 (motor de difuminado, RF-01 a RF-05):** implementada y **validada funcionalmente en Google Chrome** por el propietario con `0.2.0-beta.8`. La versión final es **`0.1.0`** (renumeración aprobada, sin publicar). El cierre formal depende de la aprobación y los commits del propietario.
+- **Fase 3:** no iniciada. No se empieza sin aprobación explícita.
 - **Ampliación multiplataforma:** paquetes y pruebas automatizadas preparados. Ninguna combinación de navegador y sistema operativo se ha probado aún con WhatsApp Web real, y Safari no se ha ejecutado nunca.
 - Las otras cuatro funcionalidades siguen pendientes.
 
@@ -55,6 +56,17 @@ Estas reglas se aplican a Codex y a cualquier otro agente que trabaje en el repo
 
 7. **Rama de trabajo.** La rama de desarrollo es `development`. La rama `main` permanece protegida frente a modificaciones no autorizadas.
 
+## Versionado
+
+1. **Fuente única.** La versión vive solo en `package.json` (SemVer, con `-beta.N` durante el desarrollo). No se escribe a mano en el manifiesto, el código ni la interfaz: se obtiene de `src/version.ts`.
+2. **Una versión por entrega.** Cada entrega con cambios en `src/`, `public/` o `wxt.config.ts` recibe una versión nueva. Normalmente es `npm run version:beta`; los scripts `version:*` no ejecutan operaciones de Git. Además, la entrega se registra en `CHANGELOG.md`, bajo una sección `## [versión] — fecha` en español. Si solo cambian documentación o pruebas, la versión puede mantenerse.
+3. **Sin incrementos automáticos.** Compilar, empaquetar o probar nunca cambia la versión. Volver a compilar el mismo código produce la misma versión.
+4. **Comprobación.** `npm run version:comprobar` debe pasar antes de entregar. El informe de cada entrega indica la versión.
+5. **Sin reutilizar versiones.** Un número de versión no se reasigna a un código distinto, ni la versión retrocede respecto a versiones ya entregadas, sin una decisión explícita del propietario que lo documente. Nunca se desactiva `version:comprobar` ni las pruebas de versionado para lograrlo.
+6. **Renumeraciones.** La única excepción vigente es la de `0.1.0`, registrada en `version-renumeraciones.json` y limitada a los commits base `a283fda` (`development`) y `9ba34bf` (`main`). Un agente nunca añade, amplía ni modifica entradas de ese archivo sin aprobación expresa del propietario. La prueba `tests/version.test.ts` falla si el registro cambia.
+7. **Manifiesto.** Una estable se compila como `X.Y.Z` exacto en todos los navegadores. Las versiones previas (`-alpha`, `-beta`, `-rc`) usan un cuarto componente y son solo compilaciones internas: nunca se suben a una tienda.
+8. **Después de `0.1.0`.** La siguiente entrega con cambios de código empieza con `npm run version:beta` (`0.1.0` → `0.1.1-beta.0`) o con `npm run version:menor-beta` (`0.2.0-beta.0`). Antes de elegir, hay que tener en cuenta que el historial ya contiene compilaciones internas `0.2.0-beta.1` a `0.2.0-beta.8`. La siguiente versión menor debe elegirse de modo que no repita esos números.
+
 ## Compatibilidad multiplataforma
 
 1. **Una sola base de código.** No se crean ramas ni copias del código por navegador. Las diferencias de manifiesto se concentran en `ajustesPorNavegador` (`wxt.config.ts`).
@@ -79,12 +91,16 @@ Estas reglas se aplican a Codex y a cualquier otro agente que trabaje en el repo
 | Ruta | Responsabilidad |
 | --- | --- |
 | `wxt.config.ts` | Manifiesto y diferencias entre navegadores (`ajustesPorNavegador`) |
+| `src/version.ts` | Versión (desde `package.json`) y su traducción a `manifest.version`, `version_name` y texto del panel |
+| `CHANGELOG.md` | Historial de versiones |
+| `version-renumeraciones.json` | Registro de renumeraciones aprobadas por el propietario (solo `0.1.0`) |
+| `scripts/comprobar-cambio-version.mjs` | Comprueba que una entrega con cambios de código tiene versión nueva |
 | `src/funcionalidades/catalogo.ts` | Identificadores, textos, categorías y estado de cada funcionalidad |
 | `src/funcionalidades/modulos/*.ts` | Un módulo por funcionalidad (contrato `ModuloFuncionalidad`) |
 | `src/funcionalidades/registro.ts` | Registro de módulos que usa el gestor |
 | `src/nucleo/gestor-modulos.ts` | Activación y desactivación según las preferencias, con aislamiento de errores |
 | `src/nucleo/difuminado/selectores.ts` | **Único** lugar con selectores de WhatsApp Web (hipótesis pendientes de validar) |
-| `src/nucleo/difuminado/` | Motor de difuminado: generación de CSS, fábrica de módulos, marcador de la lista de chats, observador compartido y atajo de revelado |
+| `src/nucleo/difuminado/` | Motor de difuminado: generación de CSS, fábrica de módulos, marcadores (lista de chats y su indicador de estado; hora, reacciones e indicador de estado de los mensajes), reconocimiento de iconos por `<title>` (`iconos-estado.ts`), observador compartido y atajo de revelado |
 | `src/almacenamiento/` | Modelo, normalización y persistencia de las preferencias (`storage.local`) |
 | `src/ui/` | Panel de configuración (emergente y página de opciones) |
 | `src/entrypoints/` | Puntos de entrada de WXT: `popup`, `options` y `whatsapp.content` |
@@ -92,6 +108,9 @@ Estas reglas se aplican a Codex y a cualquier otro agente que trabaje en el repo
 | `tests/navegador/` | Pruebas en Chromium, Firefox y WebKit (Vitest Browser + Playwright) |
 | `tests/apoyo/whatsapp-simulado.ts` | DOM simulado de WhatsApp Web (hipótesis, no la interfaz real) |
 | `scripts/verificar-extension.mjs` | Verificación de extremo a extremo de la extensión compilada, con la red bloqueada |
+| `scripts/diagnostico-lista-chats.js` | Fragmento de consola con un diagnóstico **anonimizado** de las filas de la lista de chats (RF-01 y RF-03): marcas de Veilix y textos que quedan sin proteger |
+| `scripts/diagnostico-mensajes.js` | Fragmento de consola con un diagnóstico **anonimizado** de la estructura de los mensajes (RF-04) y de la posición del nombre del remitente en grupos (RF-01) |
+| `scripts/diagnostico-avatares.js` | Fragmento de consola que extrae un diagnóstico **anonimizado** de los avatares del DOM real, para validar los selectores de RF-02 |
 
 ## Cómo implementar una funcionalidad
 
@@ -100,6 +119,11 @@ Estas reglas se aplican a Codex y a cualquier otro agente que trabaje en el repo
    - `desactivar()` revierte **todos** los cambios en la página.
    - Para el difuminado se usa `crearModuloDifuminado` (`src/nucleo/difuminado/modulo-difuminado.ts`), que se encarga de los estilos, el revelado, el observador y la limpieza.
    - Los selectores nuevos se añaden solo en `selectores.ts`. Se prefieren identificadores estables y atributos semánticos o de accesibilidad, y nunca clases generadas dinámicamente.
+   - Cuando haga falta conocer el DOM real, se piden al propietario ejemplos **anonimizados** (por ejemplo, con `scripts/diagnostico-avatares.js`, `scripts/diagnostico-lista-chats.js` o `scripts/diagnostico-mensajes.js`). Nunca se piden ni se registran nombres, mensajes, fotos ni direcciones completas.
+   - WhatsApp Web indica el nombre de muchos iconos en el `<title>` del SVG (por ejemplo, `wds-ic-read`), no con `data-icon`. Para difuminar un tipo de icono concreto se usa la lista de nombres confirmados (`TITULOS_ICONO_ESTADO` en `selectores.ts`) y las funciones de `iconos-estado.ts`, a través de un marcador limitado a la zona correspondiente. Solo se añaden nombres que aparezcan en un diagnóstico real. Nunca se difuminan en general `[data-icon]` ni `svg`.
+   - Un módulo que necesite varios marcadores los combina con `combinarMarcadores`.
+   - Los marcadores pueden leer el texto de la página solo para clasificar elementos, en el navegador. Nunca lo guardan, lo registran ni lo transmiten.
+   - Las búsquedas dentro de un subárbol añadido (`elemento.querySelectorAll`) usan selectores sin prefijos de antecesores, como `#main`, y después se filtran con `matches()`. jsdom no resuelve esos prefijos cuando el antecesor está fuera del subárbol.
    - Solo se usa `MutationObserver` cuando el CSS no basta, y siempre a través de `suscribirMutaciones` (un observador por documento). No se observan atributos.
 2. Cambiar `estado` a `'disponible'` en el catálogo.
 3. Añadir pruebas que cubran la activación, la desactivación completa y la ausencia de efectos secundarios.
@@ -119,6 +143,7 @@ npm run build:firefox
 npm run build:safari
 npm run lint:firefox
 npm run test:extension     # después de build:chrome
+npm run version:comprobar
 ```
 
 Todo debe terminar sin errores. Los avisos `UNSAFE_VAR_ASSIGNMENT` de `web-ext lint` vienen de `react-dom` y ya están documentados en el README.
