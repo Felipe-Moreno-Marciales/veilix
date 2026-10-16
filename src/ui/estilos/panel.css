@@ -13,14 +13,17 @@
   --texto: #14161b;
   --texto-secundario: #5b6170;
   --texto-terciario: #80879a;
-  --acento: #5b4bdb;
+  /* Verde de interfaz de WhatsApp Web (#00A884); contraste 3:1 sobre blanco. */
+  --acento: #00a884;
+  --acento-hover: #008069;
   --acento-texto: #ffffff;
-  --acento-suave: #ecebfd;
+  --acento-suave: #d9fdd3;
   --pendiente-fondo: #f1f2f5;
   --pendiente-texto: #5b6170;
   --error-fondo: #fdecec;
   --error-texto: #a1232b;
-  --foco: #7c6ff0;
+  /* Verde oscuro de la misma familia: 4,5:1 sobre el fondo claro. */
+  --foco: #008069;
   --radio: 12px;
   --sombra: 0 1px 2px rgb(16 18 27 / 6%);
 
@@ -46,14 +49,15 @@
   --texto: #eceef3;
   --texto-secundario: #a3a9b7;
   --texto-terciario: #7d8494;
-  --acento: #8c7ff5;
+  --acento: #00a884;
+  --acento-hover: #25d366;
   --acento-texto: #0f1115;
-  --acento-suave: #2a2650;
+  --acento-suave: #103529;
   --pendiente-fondo: #242832;
   --pendiente-texto: #a3a9b7;
   --error-fondo: #3a1d20;
   --error-texto: #f2a5aa;
-  --foco: #a99ff8;
+  --foco: #25d366;
   --sombra: none;
 }
 
@@ -67,14 +71,15 @@
     --texto: #eceef3;
     --texto-secundario: #a3a9b7;
     --texto-terciario: #7d8494;
-    --acento: #8c7ff5;
+    --acento: #00a884;
+    --acento-hover: #25d366;
     --acento-texto: #0f1115;
-    --acento-suave: #2a2650;
+    --acento-suave: #103529;
     --pendiente-fondo: #242832;
     --pendiente-texto: #a3a9b7;
     --error-fondo: #3a1d20;
     --error-texto: #f2a5aa;
-    --foco: #a99ff8;
+    --foco: #25d366;
     --sombra: none;
   }
 }
@@ -284,6 +289,10 @@ p {
   background: var(--acento);
 }
 
+.interruptor[aria-checked='true']:hover {
+  background: var(--acento-hover);
+}
+
 .interruptor[aria-checked='true'] .interruptor__guia {
   transform: translateX(16px);
 }
@@ -305,6 +314,11 @@ p {
   gap: 2px;
   color: var(--texto-terciario);
   font-size: 11.5px;
+}
+
+.panel__version {
+  margin-top: 4px;
+  font-variant-numeric: tabular-nums;
 }
 
 @media (prefers-reduced-motion: reduce) {
