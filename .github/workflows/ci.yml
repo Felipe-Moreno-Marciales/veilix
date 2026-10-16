@@ -36,6 +36,24 @@ jobs:
       # WebKit de Playwright comparte motor con Safari, pero no es Safari.
       - run: npm run test:navegador
 
+  version:
+    name: Versión nueva si cambia el código
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      - name: Comparar con la rama de destino
+        env:
+          RAMA_DESTINO: ${{ github.base_ref }}
+        run: node scripts/comprobar-cambio-version.mjs "origin/$RAMA_DESTINO"
+
   compilar:
     name: Compilar (${{ matrix.navegador }})
     needs: verificar
