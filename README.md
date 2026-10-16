@@ -6,19 +6,78 @@ Extensión de privacidad para WhatsApp Web, desarrollada de forma independiente.
 
 ## Estado
 
+Versión actual: **0.1.0**, primera versión definitiva, preparada para el cierre de la Fase 2 y **no publicada**. El historial está en [CHANGELOG.md](CHANGELOG.md).
+
 - **Fase 1: infraestructura y arquitectura.** Completada y aprobada.
-- **Fase 2: motor de difuminado.** Implementada y **pendiente de validación en WhatsApp Web real** por el propietario. Las cinco funcionalidades de difuminado están disponibles en el panel. Están probadas con un DOM que *simula* WhatsApp Web, pero los selectores no se han podido verificar contra la interfaz real (ver [Verificación pendiente](#verificación-pendiente-en-whatsapp-web-real)).
-- **Ampliación multiplataforma.** Una sola base de código genera los paquetes de Chromium (Chrome, Brave, Opera y Vivaldi), Edge, Firefox y Safari. El motor de difuminado se prueba de forma automatizada en Chromium, Firefox y WebKit. **Ningún navegador se ha probado todavía con WhatsApp Web real, y Safari no se ha ejecutado nunca** (requiere macOS).
+- **Fase 2: motor de difuminado.** Implementada y **validada funcionalmente en Google Chrome** por el propietario con `0.2.0-beta.8` (sistema operativo sin indicar). La versión final es `0.1.0` (renumeración aprobada), con el mismo comportamiento que `0.2.0-beta.8`. El cierre formal está pendiente de la aprobación y de los commits del propietario. Ver [Cierre de la Fase 2](#cierre-de-la-fase-2).
+- **Ampliación multiplataforma.** Una sola base de código genera los paquetes de Chromium (Chrome, Brave, Opera y Vivaldi), Edge, Firefox y Safari. El motor de difuminado se prueba de forma automatizada en Chromium, Firefox y WebKit. **Fuera de Google Chrome no se ha hecho ninguna prueba real, y Safari no se ha ejecutado nunca** (requiere macOS).
+- **Fase 3:** no iniciada.
+
+## Cierre de la Fase 2
+
+### Funcionalidades entregadas
+
+RF-01 a RF-05, con revelado temporal (cursor, foco de teclado y Ctrl + Mayús + Espacio), panel de configuración, preferencias persistentes y aplicación en caliente sin recargar WhatsApp Web.
+
+### Validación funcional en Google Chrome
+
+El propietario realizó las pruebas con `0.2.0-beta.8`, sin indicar el sistema operativo. Comunicó como superados:
+
+| Ámbito | Resultado comunicado |
+| --- | --- |
+| RF-01 | Nombres de contactos, encabezados y participantes de grupos |
+| RF-02 | Fotografías y avatares |
+| RF-03 | Mensajes recientes, indicadores y vistas previas especiales (reacciones, emojis e iconos multimedia) |
+| RF-04 | Mensajes, multimedia, horas, reacciones e indicadores |
+| RF-05 | Campo de escritura |
+| Comportamiento general | Revelado temporal y restauración; persistencia y protección tras recargar; cambio de conversación |
+
+Precisiones técnicas sobre ese resultado:
+
+- **Participantes de grupos (discrepancia en estudio):** el propietario observó difuminados los nombres de los remitentes sobre los mensajes de grupo **con RF-04 desactivada**. El código no tiene ninguna regla específica para ese nombre. Con RF-04 desactivada, la única regla que puede alcanzarlo es la del encabezado de RF-01, `#main header :is(span[dir="auto"], span[title])`, que se aplica a **cualquier** `<header>` dentro de `#main`, no solo a la barra superior de la conversación.
+  - En el DOM simulado se comprobó que, si el nombre del remitente está dentro de un `<header>` del mensaje, RF-01 lo difumina (incluso con RF-01 como única función activa). Si no lo está, nada lo difumina con RF-04 desactivada.
+  - **No está demostrado** que el DOM real use ese `<header>`, así que no se afirma que RF-01 proteja ese nombre de forma independiente.
+  - Para confirmarlo, ejecuta [`scripts/diagnostico-mensajes.js`](scripts/diagnostico-mensajes.js) en un grupo con solo RF-01 activa. En la línea marcada `COINCIDE-CON-REMITENTE` indica `REGLAS=RF-01-ENCABEZADO`, `DENTRO-DE-HEADER` y qué elemento lleva el filtro.
+- **Indicadores de estado:** el código solo reconoce el icono `wds-ic-read`. Si los indicadores de enviado y entregado también se ven difuminados, es probable que compartan ese icono, pero no está confirmado por diagnóstico. El **indicador de reloj (pendiente) está pendiente de validación**.
+
+### Resultados automatizados (`0.1.0`)
+
+| Verificación | Resultado |
+| --- | --- |
+| `compile`, `lint` | Sin errores |
+| `npm test` | 170 de 170 |
+| `test:navegador` | 255 de 255 (85 por motor en Chromium, Firefox y WebKit) |
+| `build:chrome`, `build:edge`, `build:firefox`, `build:safari` | Correctas |
+| `lint:firefox` | 0 errores, 2 avisos conocidos de `react-dom` |
+| `test:extension` | Todas las comprobaciones correctas, red bloqueada y sin peticiones externas |
+| `zip:*` | `veilix-0.1.0-{chrome,edge,firefox,safari}.zip` (y `veilix-0.1.0-sources.zip` para Firefox) |
+| `version:comprobar` | Correcta: renumeración aprobada frente a `HEAD` y `origin/main` |
+
+### Auditoría de permisos y privacidad
+
+- **Manifiestos:** solo piden el permiso `storage`, sin `host_permissions`, página de fondo, CSP personalizada ni recursos accesibles desde la web. El script de contenido se limita a `https://web.whatsapp.com/*`.
+- **Código:** `src/` no usa APIs de red ni ejecución dinámica de código. El almacenamiento se limita a las preferencias (`local:preferencias`). Los marcadores leen texto solo para clasificar elementos y no lo guardan ni lo transmiten.
+- **Paquetes compilados:** las únicas URL son espacios de nombres XML/SVG, enlaces de mensajes de error de React y WXT, y el patrón de `web.whatsapp.com`. Ninguna se usa para hacer peticiones.
+- **Dependencias:** en producción, solo `react` y `react-dom`. `npm audit` informa de 4 alertas altas de la cadena de desarrollo `web-ext → @devicefarmer/adbkit → node-forge`, que no se incluye en la extensión.
+
+### Pendiente
+
+- **Otros navegadores y sistemas:** pruebas manuales en Edge, Brave, Opera, Vivaldi, Firefox y Safari, y en Chrome con el sistema operativo indicado. Ver la [matriz de compatibilidad](#matriz-de-compatibilidad).
+- **Indicador de reloj (pendiente):** validación pendiente.
+- **Prueba de humo de `0.1.0` en Chrome:** su comportamiento es el de `0.2.0-beta.8`; solo cambian la versión, el texto del panel y el esquema del manifiesto. Conviene una comprobación rápida en Chrome antes de cerrar.
+- **Discrepancia de RF-01** en los nombres de remitentes de grupo: pendiente del diagnóstico.
+- **Alertas de `npm audit`** en dependencias de desarrollo (`web-ext → node-forge`).
+- **Commits:** todo el trabajo desde `0.2.0-beta.2` hasta `0.1.0` sigue sin confirmar en `development`.
 
 ## Funcionalidades aprobadas
 
 | Funcionalidad | Categoría | Estado | Observaciones |
 | --- | --- | --- | --- |
-| Difuminar nombres de contactos (RF-01) | Difuminado visual | Disponible · por validar | Lista de chats y encabezado de la conversación. |
-| Difuminar fotografías de contactos (RF-02) | Difuminado visual | Disponible · por validar | Lista de chats y encabezado. No afecta a los iconos. |
-| Difuminar mensajes recientes (RF-03) | Difuminado visual | Disponible · por validar | Vista previa en la lista de chats. |
-| Difuminar mensajes de conversaciones (RF-04) | Difuminado visual | Disponible · por validar | Texto, citas y multimedia de mensajes entrantes y salientes. |
-| Difuminar el campo de entrada de mensajes (RF-05) | Difuminado visual | Disponible · por validar | Se puede escribir, corregir, copiar y enviar con normalidad. |
+| Difuminar nombres de contactos (RF-01) | Difuminado visual | Disponible · validado en Chrome | Lista de chats y encabezado de la conversación. |
+| Difuminar fotografías de contactos (RF-02) | Difuminado visual | Disponible · validado en Chrome | Fotos y avatares predeterminados de la lista y del encabezado, y fotos de perfil en cualquier otra zona (panel de información, remitentes en grupos, foto propia). No afecta a iconos, contadores ni imágenes de mensajes. |
+| Difuminar mensajes recientes (RF-03) | Difuminado visual | Disponible · validado en Chrome (reloj pendiente) | Vista previa en la lista de chats, incluidas las especiales con iconos dentro (por ejemplo, «reaccionó con 👌 a:» con el icono de una foto), y su indicador de **leído** (`wds-ic-read`) cuando el último mensaje es propio. Enviado, entregado y pendiente, pendientes de diagnóstico. Silenciado, fijado, estados, mensajes temporales, stickers y contador de no leídos siguen visibles. |
+| Difuminar mensajes de conversaciones (RF-04) | Difuminado visual | Disponible · validado en Chrome (reloj pendiente) | Texto, descripciones, multimedia (fotos, vídeos y miniaturas), hora y reacciones de los mensajes entrantes y salientes, y el indicador de **leído** de los enviados (`wds-ic-read` en `msg-meta`; los demás estados, pendientes de diagnóstico). El revelado abarca el mensaje completo. Los botones de reaccionar, descargar, responder y reproducir, los demás iconos y los separadores siguen visibles. |
+| Difuminar el campo de entrada de mensajes (RF-05) | Difuminado visual | Disponible · validado en Chrome | Se puede escribir, corregir, copiar y enviar con normalidad. |
 | Ocultar el estado de escritura | Actividad y presencia | Pendiente | Antes de implementarla hay que confirmar que es técnicamente viable. |
 | Ver estados de forma privada | Actividad y presencia | Pendiente | Se priorizará la configuración oficial de privacidad de WhatsApp. |
 | Ocultar el estado en línea | Actividad y presencia | Pendiente | Se priorizará la configuración oficial de privacidad de WhatsApp. |
@@ -82,7 +141,11 @@ npm run dev:firefox  # desarrollo en Firefox
 | `npm run build` | Compila para Chrome, Edge, Firefox y Safari. |
 | `npm run build:chrome` / `build:edge` / `build:firefox` / `build:safari` | Compila para un solo navegador. `build:chrome` sirve también para Brave, Opera y Vivaldi. |
 | `npm run lint:firefox` | Valida `.output/firefox-mv3` con `web-ext lint`. |
-| `npm run zip:<navegador>` | Genera el paquete `.zip` (`chrome`, `edge`, `firefox` o `safari`). |
+| `npm run zip:<navegador>` | Genera el paquete `.zip` (`chrome`, `edge`, `firefox` o `safari`) con la versión en el nombre, por ejemplo `veilix-0.1.0-chrome.zip`. |
+| `npm run version:beta` | Siguiente versión previa: desde una estable inicia la beta del siguiente parche (`0.1.0` → `0.1.1-beta.0`), y desde una beta la incrementa (`0.1.1-beta.0` → `0.1.1-beta.1`). |
+| `npm run version:parche-beta` / `version:menor-beta` | Primera beta del siguiente parche (`0.2.1-beta.0`) o de la siguiente versión menor (`0.3.0-beta.0`). |
+| `npm run version:estable` | Convierte en estable la beta actual (`0.1.1-beta.3` → `0.1.1`). Ejecutar solo sobre una versión beta. |
+| `npm run version:comprobar` | Falla si el código cambió respecto a `HEAD` (o a la referencia indicada) y la versión no, salvo una renumeración aprobada en `version-renumeraciones.json` para ese commit base. |
 
 Los resultados se generan en `.output/<navegador>-mv3/`.
 
@@ -100,6 +163,50 @@ Los resultados se generan en `.output/<navegador>-mv3/`.
 
 En Opera y Vivaldi, la extensión actúa sobre WhatsApp Web abierto **en una pestaña**. Los paneles laterales que estos navegadores integran para WhatsApp no se han evaluado, y es posible que los scripts de contenido no se inyecten en ellos.
 
+## Versionado
+
+- **Fuente única de verdad:** el campo `version` de `package.json`, con [versionado semántico](https://semver.org/lang/es/). Durante el desarrollo se usan versiones `MAYOR.MENOR.PARCHE-beta.N`. Todo lo demás se calcula a partir de ella en [`src/version.ts`](src/version.ts).
+- **Cambio de versión:** solo se cambia a mano, con los scripts `version:*`, que ejecutan `npm version --no-git-tag-version` y actualizan `package.json` y `package-lock.json` sin crear commits ni etiquetas. Compilar o empaquetar nunca cambia la versión.
+- **Una versión por entrega:** cada entrega de prueba con cambios en el código (`src/`, `public/` o `wxt.config.ts`) recibe una versión nueva y una entrada en [CHANGELOG.md](CHANGELOG.md). `npm run version:comprobar` lo verifica en local, y la integración continua lo comprueba en cada *pull request*.
+
+### Correspondencia con `manifest.version`
+
+Las tiendas exigen una versión numérica, por eso SemVer se traduce así:
+
+| SemVer | Chrome, Edge, Brave, Opera, Vivaldi y Firefox | `version_name` (solo Chromium) | Safari |
+| --- | --- | --- | --- |
+| `X.Y.Z-alpha.N` | `X.Y.Z.(1000+N)` | `X.Y.Z-alpha.N` | `X.Y.Z` |
+| `X.Y.Z-beta.N` | `X.Y.Z.(2000+N)` | `X.Y.Z-beta.N` | `X.Y.Z` |
+| `X.Y.Z-rc.N` | `X.Y.Z.(3000+N)` | `X.Y.Z-rc.N` | `X.Y.Z` |
+| `X.Y.Z` (estable) | `X.Y.Z` | — | `X.Y.Z` |
+
+Por ejemplo, `0.1.0` se compila como `0.1.0` en todos los navegadores, y `0.1.1-beta.2` como `0.1.1.2002` (Chromium y Firefox) o `0.1.1` (Safari).
+
+- **Estables:** se compilan con el número exacto `X.Y.Z` en todos los navegadores, y son las únicas que se distribuyen en tiendas. Crecen estrictamente entre sí. Hasta `0.2.0-beta.8`, el esquema daba `X.Y.Z.4000` a las estables; cambió con la renumeración a `0.1.0`.
+- **Versiones previas:** el cuarto componente da a cada compilación de prueba una versión distinta. `N` admite de 0 a 999.
+  - Consecuencia aceptada: una versión previa queda numéricamente por encima de la estable con el mismo `X.Y.Z`. Por ejemplo, `0.1.1.2001` es mayor que `0.1.1`.
+  - Por eso las versiones previas son **solo compilaciones internas**: se cargan sin empaquetar y nunca se suben a una tienda.
+- **Firefox:** no admite `version_name`. Su panel muestra la versión SemVer completa, que se incluye al compilar.
+- **Safari:** la app contenedora toma la versión del manifiesto como `CFBundleShortVersionString`, que admite como máximo tres números. Por eso Safari recibe `X.Y.Z` y las betas se distinguen por el número de compilación (`CFBundleVersion`) que se asigne al empaquetar en Xcode o App Store Connect. Este comportamiento está pendiente de comprobar en macOS.
+- **Compilaciones anteriores:**
+  - La Fase 1 usó el número `0.1.0` como hito interno de desarrollo; sigue así en los commits de `main` y `development`, sin etiquetas ni publicaciones.
+  - Las compilaciones de la Fase 2 y de la ampliación multiplataforma también se generaron con `0.1.0` antes de existir el sistema de versionado. Esa entrega figura como `0.2.0-beta.1`, asignada retroactivamente.
+  - Después llegaron las betas internas `0.2.0-beta.2` a `0.2.0-beta.8`.
+  - Todo ello está en la sección «Historial de desarrollo anterior a 0.1.0» del CHANGELOG.
+
+### Renumeración a 0.1.0 (aprobada)
+
+El 16 de octubre de 2026 el propietario aprobó establecer `0.1.0` como primera versión definitiva, en sustitución de `0.2.0-beta.8` (opción B de la auditoría de cierre de la Fase 2). Así se resolvió cada conflicto, sin borrar ni reescribir el historial:
+
+| Conflicto | Solución |
+| --- | --- |
+| `0.1.0` ya identificaba la Fase 1 (`HEAD` `a283fda` y `main` `9ba34bf`), sin etiquetas ni publicaciones | La Fase 1 figura en el CHANGELOG como hito interno que usó ese número durante el desarrollo, y conserva su registro original. Los commits, ramas y artefactos históricos no se tocan. |
+| El manifiesto de una estable era `X.Y.Z.4000` | Las estables se compilan ahora como `X.Y.Z` exacto en todos los navegadores. |
+| `version:comprobar` y el trabajo `version` de la integración continua fallaban | Excepción registrada en `version-renumeraciones.json`, con motivo y aprobación. Solo se aplica a la versión `0.1.0` comparada con esos dos commits base. Al confirmar el trabajo cambia el commit base, y la regla vuelve a exigir una versión nueva para cualquier cambio de código. |
+| `0.1.0` es menor que `0.2.0-beta.8` | Las betas fueron compilaciones internas que no se publicaron. Las instalaciones de prueba («Cargar descomprimida» o complemento temporal) no comprueban la versión: basta con recargar la extensión. |
+
+Antes de distribuir nada, hay que descartar cualquier paquete local antiguo llamado `veilix-0.1.0-*.zip` que se hubiera generado en la Fase 1, porque tendría el mismo nombre que los de la versión definitiva.
+
 ## Prueba manual
 
 El procedimiento se describe con Chrome y se repite igual en el resto de navegadores. Las diferencias de cada uno están al final de esta sección.
@@ -111,9 +218,17 @@ El procedimiento se describe con Chrome y se repite igual en el resto de navegad
 4. Abrir el panel de Veilix. Las cinco funcionalidades de difuminado deben tener interruptor y las otras cuatro, la etiqueta «Pendiente».
 5. Para cada funcionalidad, activarla sola y comprobar:
    - **Nombres:** se difuminan los nombres de la lista de chats y el del encabezado de la conversación abierta.
-   - **Fotografías:** se difuminan las fotos de la lista y del encabezado; los iconos (silenciado, fijado, menú…) no.
-   - **Mensajes recientes:** se difuminan las vistas previas. Pedir a otra persona que envíe un mensaje y comprobar que la nueva vista previa aparece difuminada y que sigue así cuando el chat sube al principio.
-   - **Mensajes de conversaciones:** se difuminan los mensajes entrantes y salientes (texto, fotos, citas). Los menús, reacciones y botones siguen funcionando. Al cambiar de conversación, la nueva también aparece difuminada.
+   - **Fotografías:** comprobar contactos y grupos, con foto personalizada y sin foto (avatar predeterminado), en la lista de chats, el encabezado, el panel de información del contacto o grupo, los remitentes de un chat de grupo, los paneles de *Nuevo chat* y *Archivados*, y la foto propia. Los iconos (silenciado, fijado, menú…), los contadores de no leídos y las fotos enviadas en los mensajes no deben difuminarse. Desplazar la lista y recibir mensajes con RF-02 activa.
+   - **Mensajes recientes:**
+     - Se difuminan las vistas previas y, en los chats cuyo último mensaje es tuyo y está leído, el indicador de leído junto a ellas. Los iconos de silenciado, fijado, mensajes temporales y sticker y el contador de no leídos siguen visibles.
+     - Pedir a otra persona que envíe un mensaje y comprobar que la nueva vista previa aparece difuminada y que sigue así cuando el chat sube al principio.
+     - Enviar un mensaje y observar el indicador al pasar por pendiente, enviado, entregado y leído. Solo el de leído está confirmado; si los demás quedan visibles, ejecutar el diagnóstico de mensajes en cada estado.
+   - **Mensajes de conversaciones:**
+     - En un chat individual y en un grupo, comprobar que se difuminan el texto recibido y el enviado, las fotos, las fotos con descripción, los vídeos y las fotos aún no descargadas.
+     - Comprobar que también se difuminan la hora, las reacciones (emojis bajo el mensaje) y el indicador de leído de los mensajes enviados.
+     - Pasar el cursor por cualquier parte del mensaje, incluida la reacción, debe revelar el mensaje completo.
+     - Comprobar que siguen visibles y funcionan los botones de reaccionar, descargar, responder y reproducir y los separadores de fecha.
+     - Desplazarse hacia arriba para cargar mensajes antiguos, recibir mensajes nuevos y cambiar de conversación.
    - **Campo de entrada:** escribir, borrar, seleccionar con Ctrl + A, copiar, pegar y enviar. El texto debe verse difuminado y el mensaje enviado debe ser exactamente el escrito.
 6. Revelado: pasar el cursor por encima, navegar con Tab o las flechas y mantener **Ctrl + Mayús + Espacio**. Al terminar, el contenido debe volver a difuminarse.
 7. Desactivar cada interruptor y comprobar que el contenido se ve al instante, sin recargar, y que las demás protecciones siguen activas.
@@ -132,6 +247,46 @@ El procedimiento se describe con Chrome y se repite igual en el resto de navegad
 
 Si un elemento no se difumina o se difumina algo que no debería, anota qué elemento era. Después usa *Inspeccionar elemento* para revisar sus atributos (`role`, `title`, `dir`, `data-icon`, `contenteditable`) y sus contenedores (`#pane-side`, `#main`, `header`, `footer`). Los ajustes se hacen solo en [`selectores.ts`](src/nucleo/difuminado/selectores.ts).
 
+### Diagnóstico anonimizado de avatares
+
+Si alguna foto sigue visible con RF-02 activa:
+
+1. Abre la consola de las herramientas de desarrollo en WhatsApp Web.
+2. Pega el contenido de [`scripts/diagnostico-avatares.js`](scripts/diagnostico-avatares.js) y pulsa Intro.
+
+El fragmento solo lee el DOM. No hace peticiones ni muestra nombres, textos, `title`, `aria-label`, `alt` ni direcciones completas. Lista las imágenes, fondos e iconos de al menos 20 px, con su zona, sus atributos, su ascendencia, el patrón de su origen y si están difuminados. Revisa el resultado y comparte las filas marcadas con `difuminado: NO`.
+
+### Diagnóstico anonimizado de la lista de chats
+
+Si alguna vista previa (por ejemplo, una reacción) sigue visible con RF-03 activa:
+
+1. En la consola, pega [`scripts/diagnostico-lista-chats.js`](scripts/diagnostico-lista-chats.js) y pulsa Intro.
+2. Comparte el resultado.
+
+Para cada fila muestra:
+- Qué ha marcado Veilix: nombre, vista previa y estado.
+- Cuántos textos visibles quedan sin proteger, excluidos el nombre, la hora y los contadores.
+- El esqueleto de las filas con textos sin proteger: etiquetas, presencia de `title`, `dir` y `aria-label`, longitud del texto, emojis y nombres de icono `wds-ic-…`.
+
+No muestra textos, nombres ni emojis concretos.
+
+### Diagnóstico anonimizado de mensajes
+
+Si algún contenido de mensaje sigue visible con RF-04 activa, o algún control aparece difuminado:
+
+1. Abre un chat de grupo que tenga texto, fotos con descripción y mensajes enviados.
+2. En la consola, pega [`scripts/diagnostico-mensajes.js`](scripts/diagnostico-mensajes.js) y pulsa Intro.
+
+Muestra, para cada `[data-testid="msg-container"]`:
+- Un resumen: dirección (enviado o recibido), bloques de texto, tipos de imagen, iconos y botones.
+- Los iconos de la lista de chats y de la conversación agrupados por nombre, tanto `data-icon` como el `<title>` de los SVG (solo identificadores `wds-ic-…`), con cuántos están difuminados o marcados.
+- El contenido de cada `msg-meta`: nombres de sus iconos y etiquetas de estado conocidas («Leído», «Entregado»…).
+
+Para identificar los indicadores de enviado, entregado y pendiente, ejecútalo con mensajes en cada estado. Para el pendiente, por ejemplo, desactiva la red un momento y envía un mensaje.
+- El esqueleto de su estructura: etiquetas, `role`, `data-testid`, `data-icon`, clases semánticas y si cada elemento está difuminado.
+
+No muestra textos, nombres, identificadores ni direcciones. Del texto solo indica la longitud, si parece una hora y si coincide con el nombre del remitente de `data-pre-plain-text`; esto último sirve para localizar el nombre del remitente en los grupos (RF-01).
+
 ## Verificación pendiente en WhatsApp Web real
 
 WhatsApp Web solo muestra la interfaz de chats con una sesión iniciada, y desde el entorno de desarrollo no se puede inspeccionar. Por eso **ninguna funcionalidad se considera compatible hasta que el propietario la compruebe**. Las suposiciones que hay que confirmar son:
@@ -141,9 +296,23 @@ WhatsApp Web solo muestra la interfaz de chats con una sesión iniciada, y desde
 | La lista de chats está en `#pane-side` y cada fila tiene `role="listitem"` o `role="row"`. | RF-01, RF-02, RF-03 |
 | En cada fila, el nombre es el primer `span[title]` y la vista previa son los demás `span[title]` o `span[dir]`. | RF-01, RF-03 |
 | La conversación abierta está en `#main`, con `header` y `footer`. | RF-01, RF-02, RF-04, RF-05 |
-| Las burbujas usan las clases `message-in` y `message-out`, y el texto `copyable-text` o `selectable-text`. | RF-04 |
+| ~~Las burbujas usan las clases `message-in` y `message-out`~~. **Descartado** (Chrome, diagnóstico real): hay 0 elementos con esas clases. | RF-04 |
+| **Confirmado** (Chrome, diagnóstico real): cada mensaje es un `[data-testid="msg-container"]` dentro de `#main`, con un bloque de texto `[data-pre-plain-text]`. | RF-04 |
+| La hora es el elemento más interno cuyo texto completo tiene formato de hora (`10:40`, `10:40 p. m.`), dentro de la fila del mensaje. Los indicadores de lectura son iconos `data-icon` separados de ella. | RF-04 |
+| ~~Los indicadores de estado son iconos con `data-icon` (`msg-check`, `status-dblcheck`…)~~. **Descartado** (Chrome, diagnóstico real): el nombre de los iconos está en el `<title>` del SVG. | RF-03, RF-04 |
+| **Confirmado** (Chrome, diagnóstico real): el indicador de leído es `<svg><title>wds-ic-read</title>…</svg>`, en `#pane-side` y dentro de `[data-testid="msg-meta"]` (con `aria-label=" Leído "`). | RF-03, RF-04 |
+| **Sin evidencia:** los nombres de los indicadores de enviado, entregado y pendiente. | RF-03, RF-04 |
+| En la lista, el indicador de estado comparte bloque con la vista previa y no con el nombre del chat. | RF-03 |
+| Las vistas previas especiales (reacciones, fotos…) están dentro de un `span[title]` o `span[dir]`, con su texto y sus iconos en el mismo elemento. Si estuvieran en `span` sin esos atributos, no se detectarían. | RF-03 |
+| Las reacciones son elementos cuyo contenido son solo emojis (texto o `<img>` con `alt` de emoji) y un contador, sin iconos. Están dentro de `msg-container` o de su fila `[data-id]`. | RF-04 |
+| La fila `[data-id]` es el antecesor de `msg-container` y agrupa todo el mensaje. | RF-04 |
+| La descripción de una foto es un `.selectable-text` sin `[data-pre-plain-text]`. | RF-04 |
+| La multimedia de los mensajes se carga como `blob:`, y las miniaturas sin descargar como `data:image/jpeg`. Los emojis de reacciones usan otro origen. | RF-04 |
 | El editor es un elemento `contenteditable` o `role="textbox"` dentro de `#main footer`. | RF-05 |
-| Las fotografías son `<img>` y los iconos usan `data-icon` o SVG. | RF-02 |
+| **Confirmado (Chrome, diagnóstico real):** en `#pane-side`, los avatares son `<svg>` con `<mask>` y `<circle>` que contienen `<image>` o `<foreignObject>`. Queda por confirmar que el `<foreignObject>` corresponde a los avatares sin foto, y que el encabezado y otras zonas usan la misma estructura. | RF-02 |
+| Las fotos de perfil se sirven desde `pps.whatsapp.net` o con una ruta que contiene `/t61.24694-24/`, como `<img>`, como `<image>` dentro de un SVG o como imagen de fondo en línea. Las imágenes de los mensajes usan otros orígenes. | RF-02 |
+| Los avatares sin foto son iconos con `data-icon` que empieza por `default-user`, `default-group`, `default-contact` o `default-community`. | RF-02 |
+| Los iconos funcionales usan `data-icon` o SVG, y los emojis de nombres y vistas previas están dentro de `span[title]` o `span[dir]`. | RF-02 |
 | Las filas y los mensajes pueden recibir foco con el teclado. | Revelado con foco |
 | Ctrl + Mayús + Espacio no entra en conflicto con atajos de WhatsApp, del navegador o del sistema operativo. | Revelado con teclado |
 
@@ -167,11 +336,36 @@ Estado a 15 de octubre de 2026. Las columnas distinguen tres tipos de evidencia:
 
 Leyenda: ✅ comprobado · ◐ evidencia indirecta (mismo motor de renderizado, otro navegador) · ❌ no realizado · ⏳ pendiente de prueba real · — no aplica.
 
-- **Motor de difuminado (simulado):** las 21 pruebas de `tests/navegador` en cada motor. Comprueban el CSS calculado, el revelado con cursor, Tab y atajo, la escritura, los clics y los cambios dinámicos.
+- **Motor de difuminado (simulado):** las 36 pruebas de `tests/navegador` en cada motor (21 del motor general y 15 de avatares de RF-02). Comprueban el CSS calculado, el revelado con cursor, Tab y atajo, la escritura, los clics y los cambios dinámicos.
 - **Extensión cargada (simulado):** `npm run test:extension`. Carga el paquete compilado, lo usa desde su panel real, bloquea la red y sirve una página simulada en `web.whatsapp.com`. Playwright solo puede cargar extensiones en Chromium.
 - **WebKit de Playwright no es Safari:** comparte el motor de renderizado, pero no la integración de extensiones de Safari (permisos por sitio, almacenamiento, ventana emergente), ni el sistema macOS ni la versión exacta de Safari.
 
 Cuando se pruebe una combinación real, sustituye ⏳ por ✅ o ❌ e indica la versión del navegador, el sistema y la fecha.
+
+**Chrome, sistema operativo sin indicar:** ✅ validación funcional del propietario con `0.2.0-beta.8` (RF-01 a RF-05). La celda del sistema correspondiente se marcará cuando se indique cuál es. El indicador de reloj sigue pendiente.
+
+**Observaciones de pruebas reales comunicadas por el propietario** (pendientes de formalizar en la matriz):
+
+- **Brave, primera prueba real con WhatsApp Web** (sistema y versión sin indicar):
+  - RF-01 y RF-03 parecen funcionar. Esto apunta a que `#pane-side`, las filas con `role` y la heurística de nombre y vista previa son correctas.
+  - RF-02 dejaba fotografías visibles. Se ha corregido, pero la corrección está **pendiente de verificación real**.
+- **Chrome con 0.2.0-beta.2, diagnóstico anonimizado de avatares** (sistema sin indicar):
+  - En `#pane-side` hay 16 `<svg>` de unos 48 × 48 px, todos con `<mask>` y `<circle>`. De ellos, 12 contienen `<image>` y 4 `<foreignObject>`.
+  - Ninguno estaba difuminado. Era la causa de las fotos visibles, porque la regla solo cubría `<img>`.
+  - En 0.2.0-beta.3 se difuminan estos SVG. La corrección está **pendiente de prueba real en Chrome**.
+- **Chrome con 0.2.0-beta.3, diagnóstico de mensajes en `#main`** (sistema sin indicar):
+  - RF-04 no difuminaba el texto ni las fotos.
+  - El diagnóstico encontró 0 `.message-in` y 0 `.message-out`, frente a 3 `[data-testid="msg-container"]`, 3 `[data-pre-plain-text]`, 25 `.copyable-text`, 4 `[data-id]`, 2 `[data-testid*="message"]` y 21 `img`.
+  - En 0.2.0-beta.4, RF-04 usa `msg-container`. La corrección está **pendiente de prueba real**.
+  - Los nombres de remitentes en grupos siguen visibles con RF-01. Para cubrirlos hace falta el diagnóstico de mensajes.
+- **Chrome, vista previa de reacción** (versión anterior a 0.2.0-beta.8):
+  - Una vista previa «reaccionó con 👌 a:» con el icono de una foto quedaba visible con RF-03.
+  - En 0.2.0-beta.8 se protegen las vistas previas que contienen iconos. La corrección está **pendiente de prueba real**.
+- **Chrome con 0.2.0-beta.6, indicadores de lectura:**
+  - RF-03 difuminaba las vistas previas, pero no los indicadores de lectura.
+  - En `#pane-side` había 44 SVG con el nombre en `<title>`: `wds-ic-read` (4 visibles, ninguno difuminado), `wds-ic-status`, `wds-ic-disappearing-messages`, `wds-ic-whatsapp` y `wds-ic-sticker`.
+  - En la conversación se identificaron `[data-testid="msg-meta"]`, `<title>wds-ic-read</title>` y `aria-label=" Leído "`.
+  - En 0.2.0-beta.7 se difumina `wds-ic-read`. La corrección está **pendiente de prueba real**.
 
 ## Diferencias entre navegadores
 
@@ -290,7 +484,7 @@ Los cinco módulos se crean con `crearModuloDifuminado`, a partir de una lista d
 ## Pruebas
 
 - **Unitarias (`npm test`, jsdom):** catálogo, preferencias y su persistencia (incluidas escrituras simultáneas), gestor, observador compartido, atajo de teclado, clasificación de filas, ciclo de vida de los cinco módulos, limpieza y panel de configuración.
-- **Navegador (`npm run test:navegador`, Chromium, Firefox y WebKit):** las mismas 21 pruebas en cada motor. Comprueban el `filter` calculado sobre cada objetivo y cada control, el revelado con cursor, Tab y el atajo, la restauración, la escritura en el editor, los clics en controles difuminados, los cambios dinámicos y la desactivación. WebKit de Playwright no equivale a Safari.
+- **Navegador (`npm run test:navegador`, Chromium, Firefox y WebKit):** las mismas 36 pruebas en cada motor. Comprueban el `filter` calculado sobre cada objetivo y cada control (incluidos los tipos de avatar de RF-02: foto personalizada, imagen de fondo, avatar predeterminado de contacto y de grupo, panel de información, remitentes en grupos y foto propia), el revelado con cursor, Tab y el atajo, la restauración, la escritura en el editor, los clics en controles difuminados, los cambios dinámicos y la desactivación. WebKit de Playwright no equivale a Safari.
 - **Extensión (`npm run test:extension`, Chromium):** carga `.output/chrome-mv3` con la red bloqueada y sirve una página simulada en `https://web.whatsapp.com/`. Activa las funciones desde el panel real, comprueba el difuminado en caliente, la persistencia tras recargar y que no hay peticiones externas. Guarda capturas del panel en `.output/capturas/`.
 
 Todas usan un DOM **simulado**. Pasar estas pruebas no demuestra compatibilidad con WhatsApp Web real.
@@ -317,7 +511,26 @@ Todas usan un DOM **simulado**. Pasar estas pruebas no demuestra compatibilidad 
 
 - **Selectores sin verificar.** Ver [Verificación pendiente](#verificación-pendiente-en-whatsapp-web-real). Si WhatsApp cambia su estructura, hay que ajustar `selectores.ts`.
 - **Heurística de la lista de chats.** El nombre del remitente en vistas previas de grupos, o vistas previas sin `title` ni `dir`, podrían quedar sin difuminar.
-- **Fotografías.** Se difuminan todas las `<img>` de las filas y del encabezado. Si WhatsApp mostrara emojis como `<img>` en esas zonas, también se difuminarían.
+- **Vistas previas especiales (RF-03).**
+  - Se corrigió la causa más probable: las vistas previas que contenían un icono se descartaban enteras.
+  - Si en el DOM real el texto de la reacción está en un `span` sin `title` ni `dir`, seguirá visible y hará falta el [diagnóstico de la lista](#diagnóstico-anonimizado-de-la-lista-de-chats).
+  - Un icono de contenido situado fuera del elemento de la vista previa tampoco se protege, porque no puede distinguirse de los iconos ajenos sin conocer su nombre.
+- **Indicadores de estado (RF-03 y RF-04).**
+  - Solo se reconoce el indicador de **leído** (`wds-ic-read`), confirmado por el diagnóstico real. Los de enviado, entregado y pendiente **siguen visibles** hasta que un diagnóstico muestre sus nombres. No se han inventado.
+  - En la lista, el indicador debe compartir bloque con la vista previa y no con el nombre del chat (heurística). En la conversación, debe estar dentro de `msg-meta`.
+  - Fuera de esas zonas no se difumina ningún icono, aunque se llame `wds-ic-read`.
+- **Mensajes (RF-04).**
+  - El contenedor `[data-testid="msg-container"]` y el bloque `[data-pre-plain-text]` están confirmados por el diagnóstico real. El resto son hipótesis: descripciones como `.selectable-text`, multimedia por su origen `blob:` o `data:image/jpeg`, y la fila `[data-id]` como mensaje completo.
+  - La hora y las reacciones se marcan con una heurística sobre la forma del texto (formato de hora; solo emojis y contador), que se reevalúa con cada cambio del mensaje. Pueden escaparse formatos de hora no contemplados (por ejemplo, con segundos) y reacciones que incluyan texto o iconos. Un elemento del mensaje formado solo por emojis fuera del texto (por ejemplo, un nombre de remitente compuesto solo de emojis) también se difuminaría.
+  - No se cubren las encuestas, los contactos compartidos, la ubicación, los documentos (nombre de archivo) ni las notas de voz, salvo que incluyan alguno de los elementos anteriores.
+  - El revelado se delimita por mensaje.
+- **Nombres de remitentes en grupos (RF-01).** Todavía no se difuminan. Su estructura no aparece en el diagnóstico disponible y no se han inventado selectores. Hace falta el [diagnóstico de mensajes](#diagnóstico-anonimizado-de-mensajes).
+- **Fotografías (RF-02).**
+  - En la lista de chats, el selector de avatares SVG (`<svg>` con máscara y `<image>` o `<foreignObject>`) se basa en el DOM real observado.
+  - En el encabezado, el selector SVG se aplica por la misma estructura, pero no está observado en el DOM real.
+  - En otras zonas, los avatares se reconocen por el origen de la foto, que es una hipótesis. Un avatar SVG sin foto (con `<foreignObject>`) fuera de la lista y del encabezado no se difumina, porque fuera de esas zonas no hay evidencia que permita distinguirlo de otros SVG.
+  - Fuera de la lista y del encabezado, el revelado por foco de teclado no está disponible; sí el cursor y Ctrl + Mayús + Espacio.
+  - No se cubren los avatares en `<canvas>` ni las imágenes de fondo aplicadas desde hojas de estilo (solo las que van en el atributo `style`).
 - **Carga inicial.** Leer las preferencias es asíncrono. Si WhatsApp pintara antes de esa lectura, el contenido podría verse unos milisegundos.
 - **Atajo de teclado.** Si se suelta Ctrl o Mayús manteniendo pulsado el Espacio, la repetición automática del Espacio puede escribir espacios en el editor.
 - **Avisos de `web-ext lint`.** Muestra dos avisos `UNSAFE_VAR_ASSIGNMENT` que vienen del código interno de `react-dom`, no de Veilix, que no usa `dangerouslySetInnerHTML`.
