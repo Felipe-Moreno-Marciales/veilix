@@ -1,0 +1,16 @@
+{
+  "descripcion": "Renumeraciones de versión aprobadas por el propietario. Cada entrada exime de la regla «código nuevo, versión nueva» solo para la versión indicada y solo cuando se compara con uno de los commits base listados. No es una excepción general: con cualquier otro commit base, la comprobación se aplica con normalidad.",
+  "renumeraciones": [
+    {
+      "version": "0.1.0",
+      "sustituye": "0.2.0-beta.8",
+      "commitsBase": [
+        "a283fda5e4fea9b22e6f78dce014bbc9c478ece2",
+        "9ba34bf904239d3f1e2ab2fe97e3e7aa40f69a93"
+      ],
+      "fecha": "2026-10-16",
+      "aprobadaPor": "propietario (opción B de la auditoría de cierre de la Fase 2)",
+      "motivo": "Se establece 0.1.0 como primera versión definitiva (cierre de la Fase 2, RF-01 a RF-05). La Fase 1 usó el número 0.1.0 durante el desarrollo como hito interno, sin etiquetas ni publicaciones; esos commits base (HEAD de development y main en el momento de la aprobación) conservan ese número. La serie 0.2.0-beta.1 a 0.2.0-beta.8 fueron compilaciones internas de prueba."
+    }
+  ]
+}
