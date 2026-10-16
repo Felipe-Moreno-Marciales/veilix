@@ -1,4 +1,5 @@
 import { defineConfig } from 'wxt';
+import { VERSION, nombreVersionManifiesto, versionManifiesto } from './src/version';
 
 /**
  * Configuración de WXT para Veilix.
@@ -12,9 +13,17 @@ import { defineConfig } from 'wxt';
  *   WhatsApp Web se limita al script de contenido declarado para
  *   `https://web.whatsapp.com/*`.
  * - Sin código remoto, sin telemetría y sin conexiones a servidores externos.
+ * - Versión: `package.json` es la única fuente de verdad. `manifest.version`
+ *   y `version_name` se calculan en `src/version.ts` para cada navegador.
  *
  * Documentación: https://wxt.dev/api/config.html
  */
+/** `version_name` solo donde el navegador lo admite (Chromium). */
+function versionNombrada(browser: string): { version_name?: string } {
+  const nombre = nombreVersionManifiesto(VERSION, browser);
+  return nombre === undefined ? {} : { version_name: nombre };
+}
+
 /** Ajustes específicos de cada familia de navegadores. */
 function ajustesPorNavegador(browser: string): Record<string, unknown> {
   if (browser === 'firefox') {
@@ -56,8 +65,16 @@ export default defineConfig({
   // revisión de seguridad y el análisis estático.
   imports: false,
   manifestVersion: 3,
+  // Los ZIP llevan la versión SemVer completa, por ejemplo
+  // `veilix-0.2.0-beta.2-chrome.zip`.
+  zip: {
+    artifactTemplate: '{{name}}-{{packageVersion}}-{{browser}}{{modeSuffix}}.zip',
+    sourcesTemplate: '{{name}}-{{packageVersion}}-sources{{modeSuffix}}.zip',
+  },
   manifest: ({ browser }) => ({
     name: 'Veilix',
+    version: versionManifiesto(VERSION, browser),
+    ...versionNombrada(browser),
     description:
       'Privacidad para WhatsApp Web. Funciona de forma local y no envía datos a servidores externos.',
     permissions: ['storage'],
