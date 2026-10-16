@@ -14,7 +14,7 @@
  * WhatsApp Web real.
  */
 /* global document, getComputedStyle -- usados en funciones que Playwright evalúa dentro de la página */
-import { mkdirSync, mkdtempSync, rmSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { chromium } from 'playwright';
@@ -33,18 +33,25 @@ const PAGINA_SIMULADA = `<!doctype html>
   setTimeout(() => {
     const app = document.getElementById('app');
     const el = (t, a = {}, ...h) => { const e = document.createElement(t); for (const [k, v] of Object.entries(a)) e.setAttribute(k, v); e.append(...h); return e; };
+    // Icono con su nombre en <title>, como en WhatsApp Web real.
+    const icono = (nombre) => { const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.setAttribute('width', '16'); svg.setAttribute('height', '16'); const t = document.createElementNS('http://www.w3.org/2000/svg', 'title'); t.textContent = nombre; svg.append(t); return svg; };
     const fila = (n, p) => el('div', { role: 'listitem' }, el('div', { role: 'button', tabindex: '0' },
       el('img', { alt: '' }), el('div', {}, el('div', {}, el('span', { dir: 'auto', title: n }, n), el('div', {}, '10:45')),
-      el('div', {}, el('span', { title: p }, el('span', { dir: 'ltr' }, p)), el('span', { 'data-icon': 'muted' })))));
+      el('div', {}, el('span', { 'aria-label': ' Leído ' }, icono('wds-ic-read')), el('span', { title: p }, el('span', { dir: 'ltr' }, p)), icono('wds-ic-sticker'), el('span', { 'data-icon': 'muted' })))));
     app.append(
       el('div', { id: 'side' }, el('div', { id: 'pane-side' }, el('div', { role: 'grid' }, fila('Ana García', 'Secreto 1'), fila('Banco', 'Código 123456')))),
       el('div', { id: 'main' },
         el('header', {}, el('img', { alt: '' }), el('span', { dir: 'auto', title: 'Ana García' }, 'Ana García')),
-        el('div', { role: 'application' }, el('div', { role: 'row' }, el('div', { class: 'message-in' },
-          el('div', { class: 'copyable-text' }, el('span', { class: 'selectable-text copyable-text', dir: 'ltr' }, el('span', {}, 'Mensaje privado')))))),
+        el('div', { role: 'application' }, el('div', { role: 'row' }, el('div', { 'data-id': 'false_prueba' }, el('div', { 'data-testid': 'msg-container' },
+          el('div', { class: 'copyable-text', 'data-pre-plain-text': '[10:40, 15/10/2026] Ana: ' }, el('span', { class: 'selectable-text copyable-text', dir: 'ltr' }, el('span', {}, 'Mensaje privado'))),
+          el('div', { 'data-testid': 'msg-meta' }, el('span', { 'data-prueba': 'hora' }, '10:40'), el('span', { 'aria-label': ' Leído ' }, icono('wds-ic-read'))),
+          el('button', { 'data-prueba': 'reaccion', type: 'button' }, '👍 1'))))),
         el('footer', {}, el('div', { contenteditable: 'true', role: 'textbox', 'aria-label': 'Escribe un mensaje' }, el('p', {}, el('br'))))));
   }, 300);
 </script></body></html>`;
+
+const VERSION = JSON.parse(readFileSync('package.json', 'utf8')).version;
+const MANIFIESTO = JSON.parse(readFileSync(join(EXTENSION, 'manifest.json'), 'utf8'));
 
 let fallos = 0;
 function comprobar(condicion, descripcion) {
@@ -110,6 +117,17 @@ try {
     );
   }
   comprobar((await panel.getByRole('switch').count()) === 5, 'el panel muestra exactamente 5 interruptores');
+  const esEstable = !VERSION.includes('-');
+  comprobar(
+    esEstable
+      ? MANIFIESTO.version === VERSION && MANIFIESTO.version_name === undefined
+      : MANIFIESTO.version_name === VERSION && /^\d+\.\d+\.\d+\.\d+$/.test(MANIFIESTO.version),
+    `manifiesto: version ${MANIFIESTO.version}, version_name ${MANIFIESTO.version_name ?? '—'} (package.json: ${VERSION})`,
+  );
+  comprobar(
+    (await panel.getByText(new RegExp(`^Veilix ${VERSION.replaceAll('.', '\\.')}( \\(|$)`)).count()) === 1,
+    `el panel muestra «Veilix ${VERSION}»`,
+  );
   comprobar((await panel.getByText('Pendiente', { exact: true }).count()) === 4, 'el panel muestra 4 funcionalidades pendientes');
 
   mkdirSync(CAPTURAS, { recursive: true });
@@ -134,6 +152,11 @@ try {
     comprobar((await filtro(selector)) === 'blur', `difuminado en caliente: ${descripcion}`);
   }
   comprobar((await filtro('#pane-side [data-icon="muted"]')) === 'none', 'los iconos no se difuminan');
+  comprobar((await filtro('[data-prueba="hora"]')) === 'blur', 'difuminado en caliente: hora del mensaje');
+  comprobar((await filtro('[data-prueba="reaccion"]')) === 'blur', 'difuminado en caliente: reacción del mensaje');
+  comprobar((await filtro('#pane-side [aria-label=" Leído "] svg')) === 'blur', 'difuminado en caliente: indicador de leído en la lista');
+  comprobar((await filtro('#main [data-testid="msg-meta"] svg')) === 'blur', 'difuminado en caliente: indicador de leído en el mensaje');
+  comprobar((await filtro('#pane-side span[title="Secreto 1"] ~ svg')) === 'none', 'el icono de sticker no se difumina');
 
   await whatsapp.screenshot({ path: join(CAPTURAS, 'whatsapp-simulado-difuminado.png') });
 
