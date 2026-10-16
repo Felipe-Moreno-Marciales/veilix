@@ -32,7 +32,12 @@
     "test:navegador": "vitest run --project navegador",
     "test:todo": "vitest run",
     "navegador:instalar": "playwright install --with-deps chromium firefox webkit",
-    "test:extension": "node scripts/verificar-extension.mjs"
+    "test:extension": "node scripts/verificar-extension.mjs",
+    "version:beta": "npm version prerelease --preid beta --no-git-tag-version",
+    "version:parche-beta": "npm version prepatch --preid beta --no-git-tag-version",
+    "version:menor-beta": "npm version preminor --preid beta --no-git-tag-version",
+    "version:estable": "npm version patch --no-git-tag-version",
+    "version:comprobar": "node scripts/comprobar-cambio-version.mjs"
   },
   "dependencies": {
     "react": "19.3.0",
