@@ -10,7 +10,8 @@ import { fileURLToPath } from 'node:url';
 import { deflateSync } from 'node:zlib';
 
 const TAMANOS = [16, 32, 48, 96, 128];
-const ACENTO = [91, 75, 219];
+// Verde de interfaz de WhatsApp Web (#00A884), el mismo acento que el panel.
+const ACENTO = [0, 168, 132];
 const BLANCO = [255, 255, 255];
 const SUBMUESTRAS = 4;
 const DESTINO = join(dirname(fileURLToPath(import.meta.url)), '..', 'public', 'icon');
