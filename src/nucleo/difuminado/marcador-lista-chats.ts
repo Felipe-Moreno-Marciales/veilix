@@ -9,8 +9,11 @@
  * Heurística (pendiente de validar en WhatsApp Web real):
  * - Nombre: el primer `span[title]` de la fila que no sea un icono.
  * - Vista previa: el resto de `span[title]` y `span[dir]` de la fila que
- *   no formen parte del nombre ni sean iconos.
+ *   no formen parte del nombre ni sean solo iconos. Una vista previa puede
+ *   contener iconos junto a su texto (por ejemplo, «reaccionó con 👌 a:» con
+ *   el icono de una foto): entonces se protege entera, iconos incluidos.
  */
+import { iconosEstadoEn } from './iconos-estado';
 import type { Marcador } from './modulo-difuminado';
 import { FILA_CHAT, ICONO } from './selectores';
 
@@ -21,17 +24,47 @@ export interface ClasificacionFila {
   readonly vistasPrevias: readonly Element[];
 }
 
-function esIcono(elemento: Element): boolean {
+/**
+ * Regla usada para el nombre (RF-01): descarta cualquier elemento que sea un
+ * icono o que contenga uno.
+ */
+function contieneIcono(elemento: Element): boolean {
   return elemento.matches(`${ICONO}, ${ICONO} *`) || elemento.querySelector(`${ICONO}, svg`) !== null;
+}
+
+/** Texto visible del elemento, sin el de los `<title>` de los SVG (nombres de icono). */
+export function textoVisible(elemento: Element): string {
+  let texto = '';
+  for (const nodo of elemento.querySelectorAll('*')) {
+    if (nodo.closest('svg')) continue;
+    for (const hijo of nodo.childNodes) {
+      if (hijo.nodeType === Node.TEXT_NODE) texto += hijo.textContent ?? '';
+    }
+  }
+  for (const hijo of elemento.childNodes) {
+    if (hijo.nodeType === Node.TEXT_NODE) texto += hijo.textContent ?? '';
+  }
+  return texto.trim();
+}
+
+/**
+ * Regla usada para la vista previa (RF-03): solo es icono un elemento que lo
+ * sea (o esté dentro de uno) o que no tenga más contenido visible que iconos.
+ * Una vista previa con texto o emojis y un icono no se descarta.
+ */
+export function esSoloIcono(elemento: Element): boolean {
+  if (elemento.matches(`${ICONO}, ${ICONO} *`)) return true;
+  if (elemento.querySelector(`${ICONO}, svg`) === null) return false;
+  return textoVisible(elemento) === '' && elemento.querySelector('img') === null;
 }
 
 export function clasificarFila(fila: Element): ClasificacionFila {
   const nombre =
-    [...fila.querySelectorAll('span[title]')].find((elemento) => !esIcono(elemento)) ?? null;
+    [...fila.querySelectorAll('span[title]')].find((elemento) => !contieneIcono(elemento)) ?? null;
 
   const vistasPrevias = [...fila.querySelectorAll('span[title], span[dir]')].filter(
     (elemento) =>
-      !esIcono(elemento) &&
+      !esSoloIcono(elemento) &&
       (nombre === null || (!nombre.contains(elemento) && !elemento.contains(nombre))),
   );
 
@@ -94,6 +127,62 @@ export function crearMarcadorListaChats(tipo: TipoTexto, atributo: string): Marc
     marcarCambios(registros) {
       const filas = filasAfectadas(registros);
       if (filas.size > 0) marcarFilas(filas, tipo, atributo);
+    },
+    desmarcarTodo(documento) {
+      desmarcarTodo(documento, atributo);
+    },
+  };
+}
+
+/** Antecesor común más cercano de dos elementos (o `null`). */
+function antecesorComun(a: Element, b: Element): Element | null {
+  for (let actual: Element | null = a; actual; actual = actual.parentElement) {
+    if (actual.contains(b)) return actual;
+  }
+  return null;
+}
+
+/**
+ * Indicadores de estado (✓✓…) asociados a la vista previa de la fila.
+ *
+ * Un icono de estado se asocia a la vista previa si comparte con ella un
+ * bloque que no contiene el nombre del chat (normalmente, la segunda línea
+ * de la fila). Así no se difuminan iconos de estado situados en otras partes
+ * de la fila. Heurística pendiente de validar en WhatsApp Web real.
+ */
+export function estadosDeVistaPrevia(fila: Element): Element[] {
+  const { nombre, vistasPrevias } = clasificarFila(fila);
+  if (vistasPrevias.length === 0) return [];
+  return iconosEstadoEn(fila).filter((icono) =>
+    vistasPrevias.some((vista) => {
+      const comun = antecesorComun(icono, vista);
+      return comun !== null && comun !== fila && (nombre === null || !comun.contains(nombre));
+    }),
+  );
+}
+
+function sincronizarFila(fila: Element, atributo: string, deseados: readonly Element[]): void {
+  const conjunto = new Set(deseados);
+  for (const marcado of fila.querySelectorAll(`[${atributo}]`)) {
+    if (!conjunto.has(marcado)) marcado.removeAttribute(atributo);
+  }
+  for (const elemento of conjunto) {
+    if (!elemento.hasAttribute(atributo)) elemento.setAttribute(atributo, '');
+  }
+}
+
+/** Marcador de los indicadores de estado de la vista previa (RF-03). */
+export function crearMarcadorEstadoVistaPrevia(atributo: string): Marcador {
+  const marcar = (filas: Iterable<Element>) => {
+    for (const fila of filas) sincronizarFila(fila, atributo, estadosDeVistaPrevia(fila));
+  };
+  return {
+    marcarTodo(documento) {
+      marcar(documento.querySelectorAll(FILA_CHAT));
+    },
+    marcarCambios(registros) {
+      const filas = filasAfectadas(registros);
+      if (filas.size > 0) marcar(filas);
     },
     desmarcarTodo(documento) {
       desmarcarTodo(documento, atributo);
