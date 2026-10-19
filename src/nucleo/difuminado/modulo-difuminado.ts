@@ -25,6 +25,21 @@ export interface Marcador {
   desmarcarTodo(documento: Document): void;
 }
 
+/** Combina varios marcadores en uno, para módulos que marcan más de un tipo de elemento. */
+export function combinarMarcadores(...marcadores: readonly Marcador[]): Marcador {
+  return {
+    marcarTodo(documento) {
+      for (const marcador of marcadores) marcador.marcarTodo(documento);
+    },
+    marcarCambios(registros) {
+      for (const marcador of marcadores) marcador.marcarCambios(registros);
+    },
+    desmarcarTodo(documento) {
+      for (const marcador of marcadores) marcador.desmarcarTodo(documento);
+    },
+  };
+}
+
 export interface ConfiguracionDifuminado {
   readonly id: IdFuncionalidad;
   /** Sufijo en minúsculas y con guiones para atributos y estilos. */
