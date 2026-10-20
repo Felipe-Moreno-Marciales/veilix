@@ -6,10 +6,10 @@ Extensión de privacidad para WhatsApp Web, desarrollada de forma independiente.
 
 ## Estado
 
-Versión actual: **0.1.0**, primera versión definitiva, preparada para el cierre de la Fase 2 y **no publicada**. El historial está en [CHANGELOG.md](CHANGELOG.md).
+Versión actual: **0.1.1-beta.5**, compilación interna de prueba con correcciones de RF-01 y RF-02 sobre `0.1.0`, la primera versión definitiva, y la identidad visual del candado (logotipo e iconos) con el crédito del desarrollador en el pie del panel (la bandera de Colombia es un SVG local, porque Windows no muestra el emoji 🇨🇴). Ninguna está publicada. El historial está en [CHANGELOG.md](CHANGELOG.md).
 
 - **Fase 1: infraestructura y arquitectura.** Completada y aprobada.
-- **Fase 2: motor de difuminado.** Implementada y **validada funcionalmente en Google Chrome** por el propietario con `0.2.0-beta.8` (sistema operativo sin indicar). La versión final es `0.1.0` (renumeración aprobada), con el mismo comportamiento que `0.2.0-beta.8`. El cierre formal está pendiente de la aprobación y de los commits del propietario. Ver [Cierre de la Fase 2](#cierre-de-la-fase-2).
+- **Fase 2: motor de difuminado.** Implementada y **validada funcionalmente en Google Chrome** por el propietario con `0.2.0-beta.8` (sistema operativo sin indicar). La versión final es `0.1.0` (renumeración aprobada), con el mismo comportamiento que `0.2.0-beta.8`. Después, en pruebas reales se detectaron nombres de remitentes de grupo y elementos de «Nuevo chat» sin proteger; `0.1.1-beta.0` los corrige. **La Fase 2 sigue abierta** hasta que el propietario valide esa corrección. Ver [Cierre de la Fase 2](#cierre-de-la-fase-2).
 - **Ampliación multiplataforma.** Una sola base de código genera los paquetes de Chromium (Chrome, Brave, Opera y Vivaldi), Edge, Firefox y Safari. El motor de difuminado se prueba de forma automatizada en Chromium, Firefox y WebKit. **Fuera de Google Chrome no se ha hecho ninguna prueba real, y Safari no se ha ejecutado nunca** (requiere macOS).
 - **Fase 3:** no iniciada.
 
@@ -34,10 +34,7 @@ El propietario realizó las pruebas con `0.2.0-beta.8`, sin indicar el sistema o
 
 Precisiones técnicas sobre ese resultado:
 
-- **Participantes de grupos (discrepancia en estudio):** el propietario observó difuminados los nombres de los remitentes sobre los mensajes de grupo **con RF-04 desactivada**. El código no tiene ninguna regla específica para ese nombre. Con RF-04 desactivada, la única regla que puede alcanzarlo es la del encabezado de RF-01, `#main header :is(span[dir="auto"], span[title])`, que se aplica a **cualquier** `<header>` dentro de `#main`, no solo a la barra superior de la conversación.
-  - En el DOM simulado se comprobó que, si el nombre del remitente está dentro de un `<header>` del mensaje, RF-01 lo difumina (incluso con RF-01 como única función activa). Si no lo está, nada lo difumina con RF-04 desactivada.
-  - **No está demostrado** que el DOM real use ese `<header>`, así que no se afirma que RF-01 proteja ese nombre de forma independiente.
-  - Para confirmarlo, ejecuta [`scripts/diagnostico-mensajes.js`](scripts/diagnostico-mensajes.js) en un grupo con solo RF-01 activa. En la línea marcada `COINCIDE-CON-REMITENTE` indica `REGLAS=RF-01-ENCABEZADO`, `DENTRO-DE-HEADER` y qué elemento lleva el filtro.
+- **Participantes de grupos:** en `0.1.0`, RF-01 no tenía ninguna regla para los nombres de remitentes dentro de la conversación. Una prueba real lo mostró: con RF-01 activa, esos nombres seguían visibles. La observación anterior (nombres difuminados con RF-04 desactivada) queda sin explicación con el código de `0.1.0`. `0.1.1-beta.0` lo corrige (ver [Nombres fuera de la lista de chats](#nombres-y-avatares-fuera-de-la-lista-de-chats-011-beta0)).
 - **Indicadores de estado:** el código solo reconoce el icono `wds-ic-read`. Si los indicadores de enviado y entregado también se ven difuminados, es probable que compartan ese icono, pero no está confirmado por diagnóstico. El **indicador de reloj (pendiente) está pendiente de validación**.
 
 ### Resultados automatizados (`0.1.0`)
@@ -65,7 +62,7 @@ Precisiones técnicas sobre ese resultado:
 - **Otros navegadores y sistemas:** pruebas manuales en Edge, Brave, Opera, Vivaldi, Firefox y Safari, y en Chrome con el sistema operativo indicado. Ver la [matriz de compatibilidad](#matriz-de-compatibilidad).
 - **Indicador de reloj (pendiente):** validación pendiente.
 - **Prueba de humo de `0.1.0` en Chrome:** su comportamiento es el de `0.2.0-beta.8`; solo cambian la versión, el texto del panel y el esquema del manifiesto. Conviene una comprobación rápida en Chrome antes de cerrar.
-- **Discrepancia de RF-01** en los nombres de remitentes de grupo: pendiente del diagnóstico.
+- **Corrección de RF-01 y RF-02 de `0.1.1-beta.0`** (remitentes de grupo y «Nuevo chat»): pendiente de validación en WhatsApp Web real.
 - **Alertas de `npm audit`** en dependencias de desarrollo (`web-ext → node-forge`).
 - **Commits:** todo el trabajo desde `0.2.0-beta.2` hasta `0.1.0` sigue sin confirmar en `development`.
 
@@ -73,8 +70,8 @@ Precisiones técnicas sobre ese resultado:
 
 | Funcionalidad | Categoría | Estado | Observaciones |
 | --- | --- | --- | --- |
-| Difuminar nombres de contactos (RF-01) | Difuminado visual | Disponible · validado en Chrome | Lista de chats y encabezado de la conversación. |
-| Difuminar fotografías de contactos (RF-02) | Difuminado visual | Disponible · validado en Chrome | Fotos y avatares predeterminados de la lista y del encabezado, y fotos de perfil en cualquier otra zona (panel de información, remitentes en grupos, foto propia). No afecta a iconos, contadores ni imágenes de mensajes. |
+| Difuminar nombres de contactos (RF-01) | Difuminado visual | Disponible · validado en Chrome (ampliación de `0.1.1-beta.0` por validar) | Lista de chats y encabezado de la conversación. Desde `0.1.1-beta.0`, también los remitentes dentro de la conversación (sobre los mensajes de grupo, en citas y respuestas, en el aviso fijado) y los nombres de filas de contacto fuera de la lista («Nuevo chat», participantes…). |
+| Difuminar fotografías de contactos (RF-02) | Difuminado visual | Disponible · validado en Chrome (ampliación de `0.1.1-beta.0` por validar) | Fotos y avatares predeterminados de la lista y del encabezado, y fotos de perfil en cualquier otra zona (panel de información, remitentes en grupos, foto propia). Desde `0.1.1-beta.0`, también los avatares SVG predeterminados en cualquier zona, como «Nuevo chat», que se revelan con su fila. No afecta a iconos, contadores ni imágenes de mensajes. |
 | Difuminar mensajes recientes (RF-03) | Difuminado visual | Disponible · validado en Chrome (reloj pendiente) | Vista previa en la lista de chats, incluidas las especiales con iconos dentro (por ejemplo, «reaccionó con 👌 a:» con el icono de una foto), y su indicador de **leído** (`wds-ic-read`) cuando el último mensaje es propio. Enviado, entregado y pendiente, pendientes de diagnóstico. Silenciado, fijado, estados, mensajes temporales, stickers y contador de no leídos siguen visibles. |
 | Difuminar mensajes de conversaciones (RF-04) | Difuminado visual | Disponible · validado en Chrome (reloj pendiente) | Texto, descripciones, multimedia (fotos, vídeos y miniaturas), hora y reacciones de los mensajes entrantes y salientes, y el indicador de **leído** de los enviados (`wds-ic-read` en `msg-meta`; los demás estados, pendientes de diagnóstico). El revelado abarca el mensaje completo. Los botones de reaccionar, descargar, responder y reproducir, los demás iconos y los separadores siguen visibles. |
 | Difuminar el campo de entrada de mensajes (RF-05) | Difuminado visual | Disponible · validado en Chrome | Se puede escribir, corregir, copiar y enviar con normalidad. |
@@ -141,7 +138,7 @@ npm run dev:firefox  # desarrollo en Firefox
 | `npm run build` | Compila para Chrome, Edge, Firefox y Safari. |
 | `npm run build:chrome` / `build:edge` / `build:firefox` / `build:safari` | Compila para un solo navegador. `build:chrome` sirve también para Brave, Opera y Vivaldi. |
 | `npm run lint:firefox` | Valida `.output/firefox-mv3` con `web-ext lint`. |
-| `npm run zip:<navegador>` | Genera el paquete `.zip` (`chrome`, `edge`, `firefox` o `safari`) con la versión en el nombre, por ejemplo `veilix-0.1.0-chrome.zip`. |
+| `npm run zip:<navegador>` | Genera el paquete `.zip` (`chrome`, `edge`, `firefox` o `safari`) con la versión en el nombre, por ejemplo `veilix-0.1.1-beta.5-chrome.zip`. |
 | `npm run version:beta` | Siguiente versión previa: desde una estable inicia la beta del siguiente parche (`0.1.0` → `0.1.1-beta.0`), y desde una beta la incrementa (`0.1.1-beta.0` → `0.1.1-beta.1`). |
 | `npm run version:parche-beta` / `version:menor-beta` | Primera beta del siguiente parche (`0.2.1-beta.0`) o de la siguiente versión menor (`0.3.0-beta.0`). |
 | `npm run version:estable` | Convierte en estable la beta actual (`0.1.1-beta.3` → `0.1.1`). Ejecutar solo sobre una versión beta. |
@@ -194,6 +191,47 @@ Por ejemplo, `0.1.0` se compila como `0.1.0` en todos los navegadores, y `0.1.1-
   - Después llegaron las betas internas `0.2.0-beta.2` a `0.2.0-beta.8`.
   - Todo ello está en la sección «Historial de desarrollo anterior a 0.1.0» del CHANGELOG.
 
+### Nombres y avatares fuera de la lista de chats (0.1.1-beta.0)
+
+| Problema observado en Chrome real | Causa identificada en el código de `0.1.0` | Corrección |
+| --- | --- | --- |
+| Nombres de remitentes visibles sobre los mensajes de grupo con RF-01 activa | RF-01 solo tenía reglas para `#pane-side` y para `#main header`; nada alcanzaba el interior de los mensajes | Marcador de remitentes (`marcador-nombres.ts`): aprende los nombres de `data-pre-plain-text` y marca con `data-veilix-remitente` los elementos que los muestran (sobre los mensajes, en citas y respuestas, en el aviso fijado). Se revelan con el mensaje. No depende de RF-04. |
+| Nombres visibles en «Nuevo chat» | Las filas de RF-01 solo se buscaban dentro de `#pane-side` | Marcador de filas de contacto fuera de la lista y de la conversación: fila con un avatar SVG y un `span[title]`. Marca `data-veilix-fila-contacto` y `data-veilix-nombre-contacto`. |
+| Avatares predeterminados visibles en «Nuevo chat» | La estructura SVG de avatar (`<mask>` con `<image>` o `<foreignObject>`) solo se aplicaba en la lista y en el encabezado. Fuera de ellos, solo se reconocían fotos por su origen. | `AVATAR_SVG` se aplica en cualquier zona. Las filas de contacto se marcan con `data-veilix-fila-contacto-fotos`, un atributo propio de RF-02, para revelarlas con la fila. |
+
+**Validación real de `0.1.1-beta.0` en Chrome (propietario):**
+
+| Comprobación | Resultado |
+| --- | --- |
+| Remitentes en grupos | Correcto |
+| Fotos y avatares en «Nuevo chat» | Correcto |
+| Mensajes nuevos | Correcto |
+| Revelado temporal | Correcto |
+| Desactivación y restauración | Correcto |
+| Nombres en «Nuevo chat» | **Falló** |
+
+`0.1.1-beta.1` corrigió un defecto del marcador: no evaluaba como fila el propio nodo añadido al DOM. Aun así, en Chrome real los nombres de «Nuevo chat» seguían visibles.
+
+**Diagnóstico real sobre `0.1.1-beta.1`:** 18 contactos, 0 nombres marcados, todos con `span[dir][title]` y ninguno con un avatar SVG de la estructura `AVATAR_SVG`. La estructura confirmada es:
+
+`[data-testid="new-chat-drawer"]` › `[data-testid="contact-list-key"]` › `[role="listitem"][data-testid^="list-item-"]` › `[role="button"]` › `[data-testid="cell-frame-container"]` › `[role="gridcell"]`
+
+Las acciones son `new-chat-drawer-new-group-cell`, `-new-contact-cell` y `-new-community-cell`.
+
+**Causa confirmada:** las filas de contacto exigían exactamente un avatar SVG. `0.1.1-beta.2` añade un marcador propio para «Nuevo chat», basado en esa estructura y sin depender de avatares:
+- Se limita al panel `new-chat-drawer`.
+- Excluye las acciones.
+- El nombre es el primer `span[dir][title]` sin iconos de la fila.
+
+**Validación real de `0.1.1-beta.2`:** los nombres de «Nuevo chat» quedaron correctos visualmente. El propietario comunicó **una regresión en los remitentes de grupo** y que la información secundaria de los contactos de «Nuevo chat» sigue visible.
+
+- **Regresión de remitentes (en investigación):** el marcador de remitentes no cambió desde `0.1.1-beta.0`, y en el DOM simulado beta.0 y beta.2 se comportan igual. Hace falta el diagnóstico de mensajes en el grupo afectado: tabla «reglas cargadas» y tabla «remitentes por mensaje».
+- **Información secundaria (desde `0.1.1-beta.3`, aprobado por el propietario):** RF-01 difumina también los textos de cada contacto en «Nuevo chat» distintos del nombre: cualquier texto visible dentro de `[data-testid="cell-frame-container"]`, sin suponer sus atributos. Se excluyen iconos, botones, campos, acciones y encabezados de sección, y se revela con la fila.
+
+Para confirmarlo sin exponer datos están:
+- [`scripts/diagnostico-paneles.js`](scripts/diagnostico-paneles.js): la tabla de «Nuevo chat» muestra, para cada fila, cuántos `span[dir][title]` tiene, cuál se marcó como nombre (`posicionMarcada`), si está difuminado y qué textos quedan sin proteger (`textosSinProteger`; con beta.3 debería ser «—» en las filas de contacto).
+- [`scripts/diagnostico-mensajes.js`](scripts/diagnostico-mensajes.js) (marca `MARCADO-REMITENTE`).
+
 ### Renumeración a 0.1.0 (aprobada)
 
 El 16 de octubre de 2026 el propietario aprobó establecer `0.1.0` como primera versión definitiva, en sustitución de `0.2.0-beta.8` (opción B de la auditoría de cierre de la Fase 2). Así se resolvió cada conflicto, sin borrar ni reescribir el historial:
@@ -217,7 +255,10 @@ El procedimiento se describe con Chrome y se repite igual en el resto de navegad
 3. Fijar Veilix en la barra de herramientas y abrir [web.whatsapp.com](https://web.whatsapp.com) con la sesión iniciada.
 4. Abrir el panel de Veilix. Las cinco funcionalidades de difuminado deben tener interruptor y las otras cuatro, la etiqueta «Pendiente».
 5. Para cada funcionalidad, activarla sola y comprobar:
-   - **Nombres:** se difuminan los nombres de la lista de chats y el del encabezado de la conversación abierta.
+   - **Nombres:**
+     - Se difuminan los nombres de la lista de chats y el del encabezado de la conversación abierta.
+     - En un **grupo**, con RF-04 desactivada, comprobar los nombres de color sobre los mensajes, el de un contacto no guardado («~ Nombre»), un nombre con emoji, el autor de una respuesta o cita y el aviso de mensaje fijado.
+     - Abrir **«Nuevo chat»**, buscar, desplazarse, cerrar y volver a abrir: los nombres de los contactos y su información (descripción o frase de estado) deben verse difuminados, y «Nuevo grupo», «Nuevo contacto», «Nueva comunidad», los encabezados de sección y el buscador, visibles.
    - **Fotografías:** comprobar contactos y grupos, con foto personalizada y sin foto (avatar predeterminado), en la lista de chats, el encabezado, el panel de información del contacto o grupo, los remitentes de un chat de grupo, los paneles de *Nuevo chat* y *Archivados*, y la foto propia. Los iconos (silenciado, fijado, menú…), los contadores de no leídos y las fotos enviadas en los mensajes no deben difuminarse. Desplazar la lista y recibir mensajes con RF-02 activa.
    - **Mensajes recientes:**
      - Se difuminan las vistas previas y, en los chats cuyo último mensaje es tuyo y está leído, el indicador de leído junto a ellas. Los iconos de silenciado, fijado, mensajes temporales y sticker y el contador de no leídos siguen visibles.
@@ -255,6 +296,22 @@ Si alguna foto sigue visible con RF-02 activa:
 2. Pega el contenido de [`scripts/diagnostico-avatares.js`](scripts/diagnostico-avatares.js) y pulsa Intro.
 
 El fragmento solo lee el DOM. No hace peticiones ni muestra nombres, textos, `title`, `aria-label`, `alt` ni direcciones completas. Lista las imágenes, fondos e iconos de al menos 20 px, con su zona, sus atributos, su ascendencia, el patrón de su origen y si están difuminados. Revisa el resultado y comparte las filas marcadas con `difuminado: NO`.
+
+### Diagnóstico anonimizado de paneles («Nuevo chat»)
+
+Si algún nombre o avatar de «Nuevo chat» u otro panel con contactos sigue visible:
+
+1. Abre el panel con RF-01 y RF-02 activas.
+2. En la consola, pega [`scripts/diagnostico-paneles.js`](scripts/diagnostico-paneles.js) y pulsa Intro.
+
+Para cada fila candidata fuera de la lista de chats y de la conversación muestra:
+- Su elemento y su ascendencia: etiquetas, `role`, `data-testid`, `data-animate-drawer` e identificadores conocidos.
+- Cuántos avatares SVG contiene y su estructura.
+- Los iconos `wds-ic-…`.
+- Los `span[title]`, solo con su longitud.
+- Las marcas de Veilix y si el nombre y el avatar están difuminados.
+
+No muestra nombres ni textos.
 
 ### Diagnóstico anonimizado de la lista de chats
 
@@ -447,10 +504,10 @@ src/
 │   └── almacen-preferencias.ts Persistencia en `storage.local` con escrituras serializadas
 └── ui/
     ├── PanelConfiguracion.tsx Panel común al emergente y a la página de opciones
-    ├── componentes/           Selector de tema, tarjeta de funcionalidad y logotipo
+    ├── componentes/           Selector de tema, tarjeta de funcionalidad, logotipo, crédito y bandera
     ├── use-preferencias.ts    Hook de carga, observación y guardado
     └── estilos/panel.css      Tokens de color, tema claro y oscuro
-public/icon/                   Iconos generados con scripts/generar-iconos.mjs
+public/icon/                   Iconos (candado) generados con scripts/generar-iconos.mjs
 scripts/verificar-extension.mjs Verificación de extremo a extremo de la extensión compilada
 tests/                         Pruebas unitarias (jsdom)
 tests/navegador/               Pruebas en Chromium real
@@ -485,7 +542,7 @@ Los cinco módulos se crean con `crearModuloDifuminado`, a partir de una lista d
 
 - **Unitarias (`npm test`, jsdom):** catálogo, preferencias y su persistencia (incluidas escrituras simultáneas), gestor, observador compartido, atajo de teclado, clasificación de filas, ciclo de vida de los cinco módulos, limpieza y panel de configuración.
 - **Navegador (`npm run test:navegador`, Chromium, Firefox y WebKit):** las mismas 36 pruebas en cada motor. Comprueban el `filter` calculado sobre cada objetivo y cada control (incluidos los tipos de avatar de RF-02: foto personalizada, imagen de fondo, avatar predeterminado de contacto y de grupo, panel de información, remitentes en grupos y foto propia), el revelado con cursor, Tab y el atajo, la restauración, la escritura en el editor, los clics en controles difuminados, los cambios dinámicos y la desactivación. WebKit de Playwright no equivale a Safari.
-- **Extensión (`npm run test:extension`, Chromium):** carga `.output/chrome-mv3` con la red bloqueada y sirve una página simulada en `https://web.whatsapp.com/`. Activa las funciones desde el panel real, comprueba el difuminado en caliente, la persistencia tras recargar y que no hay peticiones externas. Guarda capturas del panel en `.output/capturas/`.
+- **Extensión (`npm run test:extension`, Chromium):** carga `.output/chrome-mv3` con la red bloqueada y sirve una página simulada en `https://web.whatsapp.com/`. Activa las funciones desde el panel real, comprueba el difuminado en caliente, la persistencia tras recargar y que no hay peticiones externas. Comprueba también que el paquete incluye los iconos de `public/icon` y que el crédito del pie aparece tras la versión, con la bandera SVG de 12 × 8 px y sin desplazamiento horizontal, en el emergente y en la página de opciones (temas claro y oscuro). Guarda capturas del panel y de las opciones en `.output/capturas/`.
 
 Todas usan un DOM **simulado**. Pasar estas pruebas no demuestra compatibilidad con WhatsApp Web real.
 
@@ -524,11 +581,20 @@ Todas usan un DOM **simulado**. Pasar estas pruebas no demuestra compatibilidad 
   - La hora y las reacciones se marcan con una heurística sobre la forma del texto (formato de hora; solo emojis y contador), que se reevalúa con cada cambio del mensaje. Pueden escaparse formatos de hora no contemplados (por ejemplo, con segundos) y reacciones que incluyan texto o iconos. Un elemento del mensaje formado solo por emojis fuera del texto (por ejemplo, un nombre de remitente compuesto solo de emojis) también se difuminaría.
   - No se cubren las encuestas, los contactos compartidos, la ubicación, los documentos (nombre de archivo) ni las notas de voz, salvo que incluyan alguno de los elementos anteriores.
   - El revelado se delimita por mensaje.
-- **Nombres de remitentes en grupos (RF-01).** Todavía no se difuminan. Su estructura no aparece en el diagnóstico disponible y no se han inventado selectores. Hace falta el [diagnóstico de mensajes](#diagnóstico-anonimizado-de-mensajes).
+- **Nombres de remitentes en la conversación (RF-01, desde `0.1.1-beta.0`).**
+  - Se reconocen comparando el texto visible con los nombres de `data-pre-plain-text` de la conversación abierta. El atributo está confirmado, pero el formato «[hora, fecha] Nombre: » es una hipótesis. Si no coincide, no se difumina nada.
+  - El remitente de un mensaje **sin texto** (por ejemplo, una foto sin descripción) solo se reconoce si esa persona tiene otro mensaje con texto visible en la conversación.
+  - Un nombre que forma parte de un texto más largo (por ejemplo, «Ana: hola» en un único elemento) no se reconoce.
+  - En contactos no guardados se reconoce el nombre que figura en `data-pre-plain-text` (con o sin «~»). Si WhatsApp muestra además otro dato, como el nombre público junto al número, ese dato puede quedar visible.
+- **Filas de contacto fuera de la lista de chats (RF-01 y RF-02, desde `0.1.1-beta.0`).**
+  - **«Nuevo chat» (desde `0.1.1-beta.2`, estructura confirmada):** filas `[role="listitem"][data-testid^="list-item-"]` dentro de `[data-testid="new-chat-drawer"]`, sin las acciones `new-chat-drawer-new-*`. El nombre es el primer `span[dir][title]` sin iconos. Desde `0.1.1-beta.3`, el resto de textos de `cell-frame-container` también se difumina, así que aunque el nombre no fuera el primero, todo el texto del contacto queda protegido. Un texto funcional dentro de la celda que no sea un botón, un icono o un campo (por ejemplo, una etiqueta de estado de la app) también se difuminaría.
+  - **Otros paneles (hipótesis sin confirmar):** filas con rol `listitem`, `row` o `button` que contienen exactamente un avatar SVG y un `span[title]`. En «Nuevo chat» esta regla no se cumplía, porque sus filas no contienen avatares SVG.
+  - Una fila de acción dibujada con un avatar de esa estructura (por ejemplo, «Nuevo grupo» con un círculo de máscara) vería su texto difuminado.
+  - La línea de información del contacto (estado o «Disponible») no se protege.
 - **Fotografías (RF-02).**
   - En la lista de chats, el selector de avatares SVG (`<svg>` con máscara y `<image>` o `<foreignObject>`) se basa en el DOM real observado.
   - En el encabezado, el selector SVG se aplica por la misma estructura, pero no está observado en el DOM real.
-  - En otras zonas, los avatares se reconocen por el origen de la foto, que es una hipótesis. Un avatar SVG sin foto (con `<foreignObject>`) fuera de la lista y del encabezado no se difumina, porque fuera de esas zonas no hay evidencia que permita distinguirlo de otros SVG.
+  - En otras zonas, los avatares se reconocen por el origen de la foto (una hipótesis) y, desde `0.1.1-beta.0`, también por la estructura SVG confirmada en la lista, aplicada a cualquier zona. Se supone que «Nuevo chat» y otros paneles usan el mismo componente de avatar. Un SVG con esa misma estructura que no fuera un avatar también se difuminaría.
   - Fuera de la lista y del encabezado, el revelado por foco de teclado no está disponible; sí el cursor y Ctrl + Mayús + Espacio.
   - No se cubren los avatares en `<canvas>` ni las imágenes de fondo aplicadas desde hojas de estilo (solo las que van en el atributo `style`).
 - **Carga inicial.** Leer las preferencias es asíncrono. Si WhatsApp pintara antes de esa lectura, el contenido podría verse unos milisegundos.
