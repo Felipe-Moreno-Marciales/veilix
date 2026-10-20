@@ -29,6 +29,8 @@ export default defineConfig({
       },
       {
         resolve: { alias: { '@': src } },
+        // React se preoptimiza para que Vite no recargue la prueba del crédito la primera vez.
+        optimizeDeps: { include: ['react', 'react-dom', 'react-dom/client', 'react/jsx-dev-runtime'] },
         test: {
           name: 'navegador',
           include: ['tests/navegador/**/*.test.ts'],
