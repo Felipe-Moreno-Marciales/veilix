@@ -107,6 +107,7 @@ Estas reglas se aplican a Codex y a cualquier otro agente que trabaje en el repo
 | `tests/` | Pruebas unitarias con Vitest, que usa `fakeBrowser` mediante `WxtVitest` |
 | `tests/navegador/` | Pruebas en Chromium, Firefox y WebKit (Vitest Browser + Playwright) |
 | `tests/apoyo/whatsapp-simulado.ts` | DOM simulado de WhatsApp Web (hipótesis, no la interfaz real) |
+| `scripts/generar-iconos.mjs` | Fuente original de los iconos (candado): genera `public/icon/*.png` sin dependencias. Su geometría coincide con `src/ui/componentes/Logotipo.tsx`; si cambia una, se cambia la otra y se regeneran los iconos (lo vigila `tests/iconos.test.ts`) |
 | `scripts/verificar-extension.mjs` | Verificación de extremo a extremo de la extensión compilada, con la red bloqueada |
 | `src/nucleo/difuminado/marcador-nombres.ts` | Marcadores de RF-01 fuera de la lista: remitentes en la conversación (por `data-pre-plain-text`), filas de «Nuevo chat» (estructura confirmada `new-chat-drawer`: nombre e información secundaria de `cell-frame-container`) y otras filas de contacto con avatar SVG (hipótesis), este último también usado por RF-02 con su propio atributo |
 | `scripts/diagnostico-paneles.js` | Fragmento de consola con un diagnóstico **anonimizado** de las filas de contacto fuera de la lista de chats («Nuevo chat», participantes…) |
