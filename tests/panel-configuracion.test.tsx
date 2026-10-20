@@ -5,6 +5,7 @@ import { fakeBrowser } from 'wxt/testing/fake-browser';
 import { cambiarTema, leerPreferencias } from '@/almacenamiento/almacen-preferencias';
 import { CATALOGO_FUNCIONALIDADES } from '@/funcionalidades/catalogo';
 import { PanelConfiguracion } from '@/ui/PanelConfiguracion';
+import { VERSION, versionDescriptiva } from '@/version';
 
 const DISPONIBLES = CATALOGO_FUNCIONALIDADES.filter((f) => f.estado === 'disponible');
 const PENDIENTES = CATALOGO_FUNCIONALIDADES.filter((f) => f.estado === 'pendiente');
@@ -101,6 +102,11 @@ describe('PanelConfiguracion', () => {
     }
   });
 
+  it('muestra «Veilix <versión>» con la versión de package.json', async () => {
+    render(<PanelConfiguracion variante="emergente" />);
+    expect(await screen.findByText(`Veilix ${versionDescriptiva(VERSION)}`)).toBeDefined();
+  });
+
   it('guarda y aplica el tema seleccionado', async () => {
     render(<PanelConfiguracion variante="pagina" />);
     fireEvent.click(await screen.findByRole('radio', { name: 'Oscuro' }));
@@ -108,7 +114,10 @@ describe('PanelConfiguracion', () => {
     await waitFor(() => {
       expect(screen.getByRole('radio', { name: 'Oscuro' }).getAttribute('aria-checked')).toBe('true');
     });
-    expect(document.documentElement.dataset['tema']).toBe('oscuro');
+    // El tema se aplica a <html> en un efecto, después del renderizado.
+    await waitFor(() => {
+      expect(document.documentElement.dataset['tema']).toBe('oscuro');
+    });
     await expect(leerPreferencias()).resolves.toMatchObject({ tema: 'oscuro' });
   });
 });
