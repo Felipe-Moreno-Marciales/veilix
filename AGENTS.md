@@ -7,7 +7,7 @@ Instrucciones para cualquier agente (Codex, Claude u otros) o persona que trabaj
 Veilix es una extensión de privacidad para WhatsApp Web, construida con WXT, React y TypeScript sobre Manifest V3. Está dirigida a Chrome, Edge, Firefox, Brave, Opera y Vivaldi (en Windows, Linux y macOS) y a Safari en macOS. El estado de cada combinación está en la matriz de compatibilidad del README.
 
 - **Fase 1 (infraestructura):** completada y aprobada.
-- **Fase 2 (motor de difuminado, RF-01 a RF-05):** implementada y **validada funcionalmente en Google Chrome** por el propietario con `0.2.0-beta.8`. La versión final es **`0.1.0`** (renumeración aprobada, sin publicar). El cierre formal depende de la aprobación y los commits del propietario.
+- **Fase 2 (motor de difuminado, RF-01 a RF-05):** implementada y **validada funcionalmente en Google Chrome** por el propietario con `0.2.0-beta.8`, y publicada internamente como **`0.1.0`** (renumeración aprobada, sin publicar en tiendas). Las pruebas reales posteriores detectaron nombres y avatares sin proteger fuera de la lista de chats; `0.1.1-beta.0` lo corrige. **La Fase 2 sigue abierta** hasta que el propietario valide esa corrección.
 - **Fase 3:** no iniciada. No se empieza sin aprobación explícita.
 - **Ampliación multiplataforma:** paquetes y pruebas automatizadas preparados. Ninguna combinación de navegador y sistema operativo se ha probado aún con WhatsApp Web real, y Safari no se ha ejecutado nunca.
 - Las otras cuatro funcionalidades siguen pendientes.
@@ -108,6 +108,8 @@ Estas reglas se aplican a Codex y a cualquier otro agente que trabaje en el repo
 | `tests/navegador/` | Pruebas en Chromium, Firefox y WebKit (Vitest Browser + Playwright) |
 | `tests/apoyo/whatsapp-simulado.ts` | DOM simulado de WhatsApp Web (hipótesis, no la interfaz real) |
 | `scripts/verificar-extension.mjs` | Verificación de extremo a extremo de la extensión compilada, con la red bloqueada |
+| `src/nucleo/difuminado/marcador-nombres.ts` | Marcadores de RF-01 fuera de la lista: remitentes en la conversación (por `data-pre-plain-text`), filas de «Nuevo chat» (estructura confirmada `new-chat-drawer`: nombre e información secundaria de `cell-frame-container`) y otras filas de contacto con avatar SVG (hipótesis), este último también usado por RF-02 con su propio atributo |
+| `scripts/diagnostico-paneles.js` | Fragmento de consola con un diagnóstico **anonimizado** de las filas de contacto fuera de la lista de chats («Nuevo chat», participantes…) |
 | `scripts/diagnostico-lista-chats.js` | Fragmento de consola con un diagnóstico **anonimizado** de las filas de la lista de chats (RF-01 y RF-03): marcas de Veilix y textos que quedan sin proteger |
 | `scripts/diagnostico-mensajes.js` | Fragmento de consola con un diagnóstico **anonimizado** de la estructura de los mensajes (RF-04) y de la posición del nombre del remitente en grupos (RF-01) |
 | `scripts/diagnostico-avatares.js` | Fragmento de consola que extrae un diagnóstico **anonimizado** de los avatares del DOM real, para validar los selectores de RF-02 |
@@ -119,9 +121,10 @@ Estas reglas se aplican a Codex y a cualquier otro agente que trabaje en el repo
    - `desactivar()` revierte **todos** los cambios en la página.
    - Para el difuminado se usa `crearModuloDifuminado` (`src/nucleo/difuminado/modulo-difuminado.ts`), que se encarga de los estilos, el revelado, el observador y la limpieza.
    - Los selectores nuevos se añaden solo en `selectores.ts`. Se prefieren identificadores estables y atributos semánticos o de accesibilidad, y nunca clases generadas dinámicamente.
-   - Cuando haga falta conocer el DOM real, se piden al propietario ejemplos **anonimizados** (por ejemplo, con `scripts/diagnostico-avatares.js`, `scripts/diagnostico-lista-chats.js` o `scripts/diagnostico-mensajes.js`). Nunca se piden ni se registran nombres, mensajes, fotos ni direcciones completas.
+   - Cuando haga falta conocer el DOM real, se piden al propietario ejemplos **anonimizados** (por ejemplo, con `scripts/diagnostico-avatares.js`, `scripts/diagnostico-lista-chats.js`, `scripts/diagnostico-mensajes.js` o `scripts/diagnostico-paneles.js`). Nunca se piden ni se registran nombres, mensajes, fotos ni direcciones completas.
    - WhatsApp Web indica el nombre de muchos iconos en el `<title>` del SVG (por ejemplo, `wds-ic-read`), no con `data-icon`. Para difuminar un tipo de icono concreto se usa la lista de nombres confirmados (`TITULOS_ICONO_ESTADO` en `selectores.ts`) y las funciones de `iconos-estado.ts`, a través de un marcador limitado a la zona correspondiente. Solo se añaden nombres que aparezcan en un diagnóstico real. Nunca se difuminan en general `[data-icon]` ni `svg`.
    - Un módulo que necesite varios marcadores los combina con `combinarMarcadores`.
+   - Los diagnósticos anonimizan los valores de `data-testid` (números como «#», nada tras «@»), porque algunos sufijos pueden contener identificadores.
    - Los marcadores pueden leer el texto de la página solo para clasificar elementos, en el navegador. Nunca lo guardan, lo registran ni lo transmiten.
    - Las búsquedas dentro de un subárbol añadido (`elemento.querySelectorAll`) usan selectores sin prefijos de antecesores, como `#main`, y después se filtran con `matches()`. jsdom no resuelve esos prefijos cuando el antecesor está fuera del subárbol.
    - Solo se usa `MutationObserver` cuando el CSS no basta, y siempre a través de `suscribirMutaciones` (un observador por documento). No se observan atributos.
