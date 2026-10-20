@@ -10,6 +10,120 @@ Cada entrega de prueba con cambios en el código recibe una versión nueva. Volv
 
 ## [Sin publicar]
 
+## [0.1.1-beta.3] — 2026-10-20
+
+Compilación interna de prueba. Manifiesto: `0.1.1.2003` en Chromium y Firefox (`version_name` `0.1.1-beta.3` en Chromium), y `0.1.1` en Safari.
+
+### Cambiado
+
+- **RF-01, información secundaria en «Nuevo chat»** (ampliación aprobada por el propietario):
+  - Además del nombre, se difuminan los textos de cada contacto debajo del nombre, como la descripción o la frase de estado. Se marcan con `data-veilix-info-nuevo-chat`.
+  - **Criterio, sin suponer atributos:** cualquier elemento con texto visible propio (o emojis en `<img alt>`) dentro de `[data-testid="cell-frame-container"]` (estructura confirmada) que no sea el nombre.
+  - **Exclusiones:**
+    - SVG, iconos, campos de entrada y botones de la celda.
+    - Las acciones `new-chat-drawer-new-*`.
+    - Las filas sin nombre `span[dir][title]`, como los encabezados de sección.
+  - El nombre y la información se revelan juntos con la fila (cursor, foco y atajo) y se restauran al desactivar RF-01.
+
+### En investigación
+
+- **Regresión comunicada en RF-01 (remitentes en grupos) con `0.1.1-beta.2`.** No hay corrección en esta entrega, porque la causa no se ha podido identificar con evidencia.
+  - **Revisión del código:**
+    - El marcador de remitentes no ha cambiado desde `0.1.1-beta.0`, la versión validada como correcta.
+    - Los marcadores añadidos después (filas de contacto y «Nuevo chat») usan atributos propios, excluyen `#main` y no tocan `data-veilix-remitente`.
+    - Las reglas CSS nuevas son válidas y van dentro de `:is()`, así que no pueden invalidar las anteriores.
+  - **Pruebas en el DOM simulado:** la lógica de beta.0 reconstruida y la de beta.2 dan el mismo resultado, y los escenarios de interacción entre marcadores pasan. **No se reproduce.**
+  - Hace falta el diagnóstico de mensajes en el grupo afectado (ver el README).
+
+### Añadido (diagnóstico y pruebas)
+
+- `scripts/diagnostico-mensajes.js`:
+  - Muestra qué reglas tiene cargadas la extensión en la pestaña (módulos activos, regla de remitentes y regla de «Nuevo chat»).
+  - Añade una tabla de remitentes por mensaje: formato de `data-pre-plain-text` reconocido, elementos que coinciden con el nombre, marcados y difuminados, y si el texto visible empieza por «~» o parece un teléfono. Sin mostrar nombres.
+- `scripts/diagnostico-paneles.js`: en la tabla de «Nuevo chat», los textos de cada fila que quedan sin proteger, con su tipo de elemento, su longitud y si están dentro de `[role="gridcell"]`.
+- Pruebas:
+  - Información secundaria en varias formas (con `title`, sin atributos, en otra celda, con emoji).
+  - Iconos y botones de la celda que no se difuminan.
+  - Encabezado de sección como fila `list-item-*`.
+  - Revelado y desactivación.
+  - Interacción entre los marcadores de «Nuevo chat» y de remitentes: abrir y cerrar el panel antes de abrir un grupo, activar RF-01 con el panel abierto, y distinto orden de activación de RF-01 y RF-04.
+
+## [0.1.1-beta.2] — 2026-10-20
+
+Compilación interna de prueba. Manifiesto: `0.1.1.2002` en Chromium y Firefox (`version_name` `0.1.1-beta.2` en Chromium), y `0.1.1` en Safari.
+
+### Corregido
+
+- **RF-01, nombres en «Nuevo chat» (causa confirmada por el diagnóstico real):**
+  - En Chrome con `0.1.1-beta.1`, el diagnóstico de paneles inspeccionó 18 contactos: 0 nombres marcados, todos con `span[dir][title]` y **ninguno con un avatar SVG** de la estructura `AVATAR_SVG`.
+  - **Causa:** las filas de contacto exigían exactamente un avatar SVG, así que ninguna fila de «Nuevo chat» se reconocía. Los avatares se difuminaban igualmente porque RF-02 usa reglas CSS que no dependen de las filas.
+  - **Corrección:** un marcador propio para «Nuevo chat», basado en la estructura confirmada (`[data-testid="new-chat-drawer"]`, filas `[role="listitem"][data-testid^="list-item-"]`) y sin depender de avatares.
+    - Marca el primer `span[dir][title]` sin iconos de cada fila con `data-veilix-nombre-nuevo-chat`, y la fila con `data-veilix-fila-nuevo-chat`.
+    - Excluye las acciones `new-chat-drawer-new-*` (nuevo grupo, contacto y comunidad).
+    - Cubre la carga dinámica, la búsqueda y el desplazamiento.
+    - Se revela con la fila (cursor, foco y atajo).
+  - RF-02 no cambia.
+
+  Pendiente de validación real. Que el nombre sea el **primer** `span[dir][title]` de la fila se apoya en la regla validada en la lista de chats; el diagnóstico lo comprueba.
+
+### Seguridad de los diagnósticos
+
+- Los diagnósticos de paneles, mensajes y lista de chats **anonimizan los valores de `data-testid`**: los números pasan a «#» y no se muestra nada tras «@». Un sufijo como `list-item-…` podría contener un identificador.
+
+### Añadido
+
+- El diagnóstico de paneles añade una tabla de «Nuevo chat»: número de `span[dir][title]` por fila (solo longitudes), cuál marcó Veilix, si está difuminado y si la fila es una acción.
+- Pruebas de regresión con la estructura observada (18 contactos sin avatar SVG, acciones como filas `list-item-*`, carga dinámica, búsqueda, desplazamiento, volver a abrir, revelado, desactivación e independencia de RF-02), en jsdom y en Chromium, Firefox y WebKit.
+
+## [0.1.1-beta.1] — 2026-10-20
+
+Compilación interna de prueba. Manifiesto: `0.1.1.2001` en Chromium y Firefox (`version_name` `0.1.1-beta.1` en Chromium), y `0.1.1` en Safari.
+
+### Corregido
+
+- **RF-01, nombres en «Nuevo chat»:** en Chrome real con `0.1.1-beta.0`, los nombres de contactos seguían visibles. El resto de lo validado (remitentes de grupo, fotos y avatares de «Nuevo chat», mensajes nuevos, revelado y desactivación) era correcto.
+  - **Defecto confirmado en el código:** el marcador de filas de contacto (`marcador-nombres.ts`) examinaba los descendientes de cada nodo añadido al DOM, pero **no el propio nodo**. Si WhatsApp añade cada fila como un nodo independiente después de abrir el panel (lista virtualizada o contactos cargados más tarde), la fila nunca se procesaba y su nombre quedaba visible. El DOM simulado lo ocultaba porque cada fila contenía otro `[role="button"]`.
+  - **Corrección:** el propio nodo añadido también se evalúa como fila candidata.
+  - Los avatares de RF-02 se difuminaban igualmente porque su regla CSS no depende de las filas. Lo único que mejora en RF-02 es el revelado del avatar junto con la fila, en esas filas.
+  - **Pendiente de confirmar** en WhatsApp Web real que esta era la causa. El diagnóstico de paneles amplía su información para descartar otras.
+
+### Añadido
+
+- `scripts/diagnostico-paneles.js` analiza cada avatar fuera de la lista de chats y de la conversación. Indica el motivo por el que su fila se reconoce o no como fila de contacto (rol, número de avatares, `span[title]`, iconos), si está marcada y si el nombre está difuminado.
+- Pruebas de regresión en jsdom y en Chromium, Firefox y WebKit: filas sin botón interior añadidas como nodos independientes, búsqueda, desplazamiento y revelado.
+
+## [0.1.1-beta.0] — 2026-10-20
+
+Compilación interna de prueba: no se sube a ninguna tienda. Manifiesto: `0.1.1.2000` en Chromium y Firefox (`version_name` `0.1.1-beta.0` en Chromium), y `0.1.1` en Safari.
+
+### Corregido
+
+- **RF-01, nombres de remitentes en conversaciones de grupo:** en Chrome real, con RF-01 activa, los nombres de color sobre los mensajes seguían visibles.
+  - **Causa:** RF-01 solo tenía reglas para `#pane-side` y para `#main header`, así que nada alcanzaba el interior de los mensajes.
+  - **Corrección:** un marcador nuevo (`marcador-nombres.ts`) aprende los nombres de `data-pre-plain-text` de la conversación abierta. Después marca con `data-veilix-remitente` los elementos cuyo texto visible es exactamente uno de esos nombres:
+    - Sobre los mensajes, también los de contactos no guardados («~ Nombre») y con emojis.
+    - En citas y respuestas.
+    - En el aviso fijado.
+  - Excluye el texto de los mensajes y el editor. Se revela con el mensaje y no depende de RF-04.
+- **RF-01, nombres en «Nuevo chat»:**
+  - **Causa:** las filas de RF-01 solo se buscaban dentro de `#pane-side`.
+  - **Corrección:** las filas de contacto fuera de la lista y de la conversación (rol `listitem`, `row` o `button` con exactamente un avatar SVG y un `span[title]`) se marcan con `data-veilix-fila-contacto`, y su nombre con `data-veilix-nombre-contacto`.
+- **RF-02, avatares predeterminados en «Nuevo chat»:**
+  - **Causa:** la estructura SVG de avatar (`<mask>` con `<image>` o `<foreignObject>`) solo se aplicaba en la lista y en el encabezado.
+  - **Corrección:** `AVATAR_SVG` se aplica en cualquier zona. RF-02 marca las filas de contacto con su propio atributo (`data-veilix-fila-contacto-fotos`) para revelar el avatar con la fila, sin depender de RF-01.
+
+Estructuras basadas en hipótesis (ver el README); pendiente de validación en WhatsApp Web real.
+
+### Añadido
+
+- Diagnóstico anonimizado de paneles con contactos (`scripts/diagnostico-paneles.js`).
+- El diagnóstico de mensajes marca `MARCADO-REMITENTE` y la regla `RF-01-REMITENTE`.
+- Pruebas de remitentes (con RF-04 desactivada, citas, contactos no guardados, emojis, aviso fijado, mensajes nuevos, cambio de conversación, revelado y desactivación) y de «Nuevo chat» (nombres, fotos y avatares predeterminados, acciones y buscador visibles, abrir y cerrar, búsqueda, desplazamiento, carga de fotos, revelado e independencia de RF-01 y RF-02), en jsdom y en Chromium, Firefox y WebKit.
+
+### Notas
+
+- Esta entrega aclara la discrepancia anotada en `0.1.0`: con el código de `0.1.0`, RF-01 no podía difuminar los nombres de remitentes dentro de los mensajes.
+
 ## [0.1.0] — 2026-10-16
 
 **Primera versión definitiva** y cierre de la Fase 2. No está publicada en ninguna tienda.
@@ -259,6 +373,10 @@ Manifiesto: `0.2.0.2002` en Chromium y Firefox, y `0.2.0` en Safari.
 - ESLint, Vitest e integración continua.
 
 [Sin publicar]: #sin-publicar
+[0.1.1-beta.3]: #011-beta3--2026-10-20
+[0.1.1-beta.2]: #011-beta2--2026-10-20
+[0.1.1-beta.1]: #011-beta1--2026-10-20
+[0.1.1-beta.0]: #011-beta0--2026-10-20
 [0.2.0-beta.8]: #020-beta8--2026-10-16
 [0.2.0-beta.7]: #020-beta7--2026-10-16
 [0.2.0-beta.6]: #020-beta6--2026-10-15
