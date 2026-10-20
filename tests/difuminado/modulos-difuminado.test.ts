@@ -12,13 +12,17 @@ import { MODULOS_FUNCIONALIDADES } from '@/funcionalidades/registro';
 import { ATRIBUTO_ESTILO } from '@/nucleo/difuminado/modulo-difuminado';
 import { contarObservadores } from '@/nucleo/difuminado/observador-dom';
 import { GestorModulos } from '@/nucleo/gestor-modulos';
-import { montarWhatsAppSimulado, type WhatsAppSimulado } from '../apoyo/whatsapp-simulado';
+import {
+  montarWhatsAppConMensajesObservados,
+  montarWhatsAppSimulado,
+  type WhatsAppSimulado,
+} from '../apoyo/whatsapp-simulado';
 
 const DIFUMINADO: readonly { id: IdFuncionalidad; sufijo: string; marca: string | null }[] = [
   { id: 'difuminarNombres', sufijo: 'nombres', marca: 'data-veilix-nombre' },
   { id: 'difuminarFotos', sufijo: 'fotos', marca: null },
   { id: 'difuminarMensajesRecientes', sufijo: 'mensajes-recientes', marca: 'data-veilix-vista-previa' },
-  { id: 'difuminarMensajesConversacion', sufijo: 'mensajes-conversacion', marca: null },
+  { id: 'difuminarMensajesConversacion', sufijo: 'mensajes-conversacion', marca: 'data-veilix-hora-mensaje' },
   { id: 'difuminarCampoEntrada', sufijo: 'campo-entrada', marca: null },
 ];
 
@@ -51,7 +55,7 @@ describe('módulos de difuminado con el gestor', () => {
   let htmlOriginal: string;
 
   beforeEach(() => {
-    wa = montarWhatsAppSimulado();
+    wa = montarWhatsAppConMensajesObservados();
     htmlOriginal = wa.app.outerHTML;
     contexto = new AbortController();
     gestor = new GestorModulos({
