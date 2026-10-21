@@ -28,6 +28,8 @@
  * - Revisa el resultado antes de compartirlo.
  */
 (() => {
+  /** `data-testid` anonimizado: números como «#» y nada tras «@» (podrían ser identificadores). */
+  const limpiarTestId = (valor) => valor.replace(/@.*$/, '@…').replace(/\d+/g, '#');
   const MAXIMO_MENSAJES = 8;
   const MAXIMO_NODOS = 60;
   const contenedores = [...document.querySelectorAll('#main [data-testid="msg-container"]')];
@@ -51,6 +53,7 @@
   const REGLAS = [
     ['RF-01-ENCABEZADO', '#main header :is(span[dir="auto"], span[title])'],
     ['RF-01-LISTA', '[data-veilix-nombre]'],
+    ['RF-01-REMITENTE', '[data-veilix-remitente]'],
     ['RF-04-TEXTO', '#main :is([data-testid="msg-container"], .message-in, .message-out) :is([data-pre-plain-text], .selectable-text)'],
   ];
   const reglasQueAlcanzan = (elemento) =>
@@ -115,7 +118,7 @@
     const partes = [elemento.tagName.toLowerCase() + clasesSemanticas(elemento)];
     for (const atributo of ['role', 'data-testid', 'data-icon', 'dir']) {
       const valor = elemento.getAttribute(atributo);
-      if (valor !== null) partes.push(`[${atributo}=${valor}]`);
+      if (valor !== null) partes.push(`[${atributo}=${atributo === 'data-testid' ? limpiarTestId(valor) : valor}]`);
     }
     for (const atributo of ['data-pre-plain-text', 'aria-label', 'title', 'tabindex', 'contenteditable']) {
       if (elemento.hasAttribute(atributo)) partes.push(`[${atributo}]`);
@@ -126,6 +129,7 @@
       partes.push(`estado=${etiquetaEstado(elemento)}`);
     }
     if (elemento.hasAttribute('data-veilix-estado-mensaje')) partes.push('MARCADO-ESTADO');
+    if (elemento.hasAttribute('data-veilix-remitente')) partes.push('MARCADO-REMITENTE');
     if (elemento.tagName === 'IMG' && /\p{Extended_Pictographic}/u.test(elemento.getAttribute('alt') ?? '')) partes.push('ALT-EMOJI');
     if (elemento.hasAttribute('data-veilix-hora-mensaje')) partes.push('MARCADO-HORA');
     if (elemento.hasAttribute('data-veilix-reaccion')) partes.push('MARCADO-REACCION');
@@ -143,7 +147,7 @@
     if (elemento.closest('header')) partes.push('DENTRO-DE-HEADER');
     const filtro = origenFiltro(elemento);
     if (filtro && filtro !== elemento) {
-      partes.push(`· difuminado (filtro en ${filtro.tagName.toLowerCase()}${filtro.getAttribute('data-testid') ? `[data-testid=${filtro.getAttribute('data-testid')}]` : ''})`);
+      partes.push(`· difuminado (filtro en ${filtro.tagName.toLowerCase()}${filtro.getAttribute('data-testid') ? `[data-testid=${limpiarTestId(filtro.getAttribute('data-testid'))}]` : ''})`);
     } else {
       partes.push(filtro ? '· difuminado' : '· visible');
     }
@@ -226,6 +230,62 @@
     return recuento;
   };
 
+  // Reglas que la extensión tiene cargadas en esta pestaña (para descartar una compilación antigua o
+  // una activación fallida). Solo nombres de módulo e indicadores.
+  const estiloNombres = document.querySelector('style[data-veilix-estilo="nombres"]')?.textContent ?? '';
+  const compilacionCargada = {
+    estilosActivos: [...document.querySelectorAll('style[data-veilix-estilo]')].map((e) => e.getAttribute('data-veilix-estilo')).join(', ') || 'ninguno',
+    rf01Activa: estiloNombres !== '',
+    reglaRemitentes: estiloNombres.includes('data-veilix-remitente'),
+    reglaNuevoChat: estiloNombres.includes('data-veilix-nombre-nuevo-chat'),
+    remitentesMarcadosEnMain: document.querySelectorAll('#main [data-veilix-remitente]').length,
+  };
+
+  // Remitentes (RF-01): misma normalización que `marcador-nombres.ts`, sin mostrar ningún nombre.
+  const normalizar = (texto) =>
+    texto.replace(/[\u200e\u200f\u202a-\u202e\u2066-\u2069]/g, '').replace(/\s+/g, ' ').trim().replace(/^~\s*/, '');
+  const textoVisible = (elemento) => {
+    let texto = '';
+    for (const nodo of elemento.childNodes) {
+      if (nodo.nodeType === Node.TEXT_NODE) texto += nodo.textContent;
+      else if (nodo.nodeType === Node.ELEMENT_NODE && nodo.localName !== 'svg') {
+        texto += nodo.localName === 'img' ? (nodo.getAttribute('alt') ?? '') : textoVisible(nodo);
+      }
+    }
+    return texto;
+  };
+  const remitentes = contenedores.slice(0, MAXIMO_MENSAJES * 3).map((contenedor, indice) => {
+    const fila = contenedor.closest('[data-id]') ?? contenedor;
+    const prefijo = fila.getAttribute('data-id') ?? '';
+    const bloque = contenedor.querySelector('[data-pre-plain-text]');
+    const valor = bloque?.getAttribute('data-pre-plain-text') ?? '';
+    const coincidencia = /^\s*\[[^\]]*\]\s*(.+?):\s*$/su.exec(valor);
+    const nombre = coincidencia ? normalizar(coincidencia[1] ?? '') : '';
+    const fuera = [...fila.querySelectorAll('*')].filter(
+      (e) => !e.closest('[data-pre-plain-text], svg, [contenteditable]') && textoPropio(e) !== '',
+    );
+    const coinciden = nombre ? fuera.filter((e) => normalizar(textoVisible(e)) === nombre) : [];
+    const primero = fuera[0];
+    const textoPrimero = primero ? textoVisible(primero).trim() : '';
+    return {
+      mensaje: indice + 1,
+      direccion: prefijo.startsWith('true_') ? 'enviado' : prefijo.startsWith('false_') ? 'recibido' : '?',
+      bloqueTexto: bloque ? 'sí' : 'no',
+      formatoReconocido: bloque ? (coincidencia ? 'sí' : 'NO') : '—',
+      longitudNombre: nombre ? nombre.length : '—',
+      elementosQueCoinciden: coinciden.length,
+      marcados: fila.querySelectorAll('[data-veilix-remitente]').length,
+      marcadosDifuminados: [...fila.querySelectorAll('[data-veilix-remitente]')].filter(difuminado).length,
+      primerTextoFueraDelBloque: primero ? `${primero.tagName.toLowerCase()}(${textoPrimero.length})` : '—',
+      empiezaConVirgulilla: textoPrimero.replace(/[\u200e\u200f]/g, '').startsWith('~') ? 'sí' : 'no',
+      pareceTelefono: /^\+?[\d\s().-]{7,}$/.test(textoPrimero) ? 'sí' : 'no',
+    };
+  });
+
+  console.log('Veilix · reglas cargadas en esta pestaña:');
+  console.table([compilacionCargada]);
+  console.log('Veilix · remitentes por mensaje (RF-01), sin nombres:');
+  console.table(remitentes);
   console.log(`Veilix · diagnóstico anonimizado de mensajes: ${contenedores.length} contenedor(es) en #main.`);
   console.log('Veilix · iconos de la lista de chats (#pane-side), por nombre:');
   console.table(resumenIconos('#pane-side'));
@@ -252,6 +312,8 @@
           svgLista: resumenTitulos('#pane-side'),
           svgConversacion: resumenTitulos('#main'),
           metas: resumenMeta(),
+          compilacionCargada,
+          remitentes,
         },
         null,
         2,
