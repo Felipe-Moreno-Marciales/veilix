@@ -10,6 +10,55 @@ Cada entrega de prueba con cambios en el código recibe una versión nueva. Volv
 
 ## [Sin publicar]
 
+## [0.1.1-beta.5] — 2026-10-20
+
+Compilación interna de prueba. Manifiesto: `0.1.1.2005` en Chromium y Firefox (`version_name` `0.1.1-beta.5` en Chromium), y `0.1.1` en Safari. Solo cambia el crédito del pie del panel: no hay cambios en el candado, RF-01 a RF-05, las preferencias, los permisos ni el almacenamiento.
+
+### Cambiado
+
+- **Bandera del crédito:** el emoji 🇨🇴, que Windows muestra como las letras «CO», se sustituye por una bandera de Colombia en SVG local.
+  - El componente es `BanderaColombia`.
+  - Proporción 3:2: amarillo `#FCD116` en el 50 % superior, azul `#003893` en el 25 % central y rojo `#CE1126` en el 25 % inferior.
+  - Sin sombras, degradados ni animaciones.
+  - Se dibuja a 12 × 8 px, con las franjas en píxeles enteros (`crispEdges`), alineada con la altura de las mayúsculas y separada del nombre por 0,35 em.
+  - Es una imagen accesible con la etiqueta «Bandera de Colombia».
+  - El emoji ya no está en la página, así que nunca se ven los dos a la vez.
+- El crédito pasa a un componente propio, `CreditoDesarrollador`. El texto «Hecho con ❤️ por Felipe Moreno Marciales» no cambia.
+
+### Añadido (pruebas)
+
+- `tests/bandera-colombia.test.tsx`: etiqueta accesible, proporción 3:2, colores y altura de cada franja, y ausencia de elementos decorativos.
+- `tests/navegador/credito.test.ts`, con el CSS real en Chromium, Firefox y WebKit:
+  - Tamaño de 12 × 8 px y separación del nombre.
+  - Alineación vertical con el texto, en una sola línea.
+  - Sin desbordamiento a la anchura del emergente.
+  - Mismos colores en los temas claro y oscuro.
+- `tests/panel-configuracion.test.tsx` comprueba el texto exacto, la bandera como último elemento del crédito y que el emoji 🇨🇴 no está en la página.
+- `npm run test:extension` comprueba la bandera (etiqueta, tamaño y colores) en el emergente y en las opciones, en los dos temas.
+- `vitest.config.ts`: React se preoptimiza en las pruebas de navegador, para que Vite no recargue la prueba del crédito la primera vez que se ejecuta.
+
+## [0.1.1-beta.4] — 2026-10-20
+
+Compilación interna de prueba. Manifiesto: `0.1.1.2004` en Chromium y Firefox (`version_name` `0.1.1-beta.4` en Chromium), y `0.1.1` en Safari. Solo cambia la identidad visual: no hay cambios en RF-01 a RF-05, el motor de difuminado, los observadores, el revelado, los permisos ni las preferencias.
+
+### Cambiado
+
+- **Logotipo e iconos:** el ojo se sustituye por un **candado cerrado** blanco sobre el mismo cuadrado redondeado verde (`#00A884`).
+  - Lo cambian juntos el logotipo del panel (`Logotipo.tsx`) y el dibujo original del generador (`scripts/generar-iconos.mjs`), con la misma geometría en una cuadrícula de 32 × 32.
+  - Los bordes rectos caen en píxeles enteros a 16 × 16, para que se vea nítido en la barra de herramientas.
+  - `public/icon/{16,32,48,96,128}.png` se regeneran con el generador, que ahora acepta una carpeta de salida opcional y no escribe nada al importarse.
+  - El cambio llega a los cuatro paquetes (Chrome, Edge, Firefox y Safari), al administrador de extensiones, al emergente y a la página de opciones.
+
+### Añadido
+
+- **Crédito del desarrollador** en el pie del panel, justo después de la versión: «Hecho con ❤️ por Felipe Moreno Marciales 🇨🇴».
+  - Es fijo, no depende de ninguna funcionalidad y no lleva enlaces.
+  - Usa el color secundario del tema y las fuentes de emoji de cada sistema.
+- Pruebas:
+  - `tests/iconos.test.ts` comprueba que `public/icon` coincide byte a byte con lo que genera el script, que cada tamaño dibuja el candado y que el logotipo del panel tiene la misma geometría.
+  - `tests/panel-configuracion.test.tsx` comprueba el texto exacto del crédito y su posición en el emergente y en la página de opciones, que se conservan los textos del pie y que no depende de las funcionalidades.
+  - `npm run test:extension` comprueba los iconos del paquete compilado y, en temas claro y oscuro, el crédito sin enlaces ni desplazamiento horizontal. También guarda capturas de la página de opciones.
+
 ## [0.1.1-beta.3] — 2026-10-20
 
 Compilación interna de prueba. Manifiesto: `0.1.1.2003` en Chromium y Firefox (`version_name` `0.1.1-beta.3` en Chromium), y `0.1.1` en Safari.
@@ -373,6 +422,8 @@ Manifiesto: `0.2.0.2002` en Chromium y Firefox, y `0.2.0` en Safari.
 - ESLint, Vitest e integración continua.
 
 [Sin publicar]: #sin-publicar
+[0.1.1-beta.5]: #011-beta5--2026-10-20
+[0.1.1-beta.4]: #011-beta4--2026-10-20
 [0.1.1-beta.3]: #011-beta3--2026-10-20
 [0.1.1-beta.2]: #011-beta2--2026-10-20
 [0.1.1-beta.1]: #011-beta1--2026-10-20
