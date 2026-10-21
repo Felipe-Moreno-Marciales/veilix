@@ -7,6 +7,9 @@
  * - Bloquea TODA la red. `https://web.whatsapp.com/` se sirve con una página
  *   simulada local: no se realiza ninguna petición a WhatsApp ni a terceros.
  * - Activa funcionalidades desde el panel real y comprueba el difuminado.
+ * - Comprueba los iconos del paquete y el pie del panel (crédito con la
+ *   bandera SVG, sin desbordamiento horizontal) en el emergente y en la
+ *   página de opciones.
  * - Guarda capturas del panel en `.output/capturas/` para revisión visual.
  *
  * La página simulada reproduce la estructura supuesta en
@@ -130,11 +133,56 @@ try {
   );
   comprobar((await panel.getByText('Pendiente', { exact: true }).count()) === 4, 'el panel muestra 4 funcionalidades pendientes');
 
+  const iconos = Object.entries(MANIFIESTO.icons ?? {});
+  comprobar(
+    iconos.length === 5 &&
+      iconos.every(([tamano, ruta]) => readFileSync(join(EXTENSION, ruta)).equals(readFileSync(resolve('public/icon', `${tamano}.png`)))),
+    `el paquete incluye los ${iconos.length} iconos de public/icon (candado)`,
+  );
+
+  // Pie del panel: crédito justo después de la versión, con la bandera SVG en lugar del emoji 🇨🇴,
+  // sin enlaces ni desbordamiento horizontal.
+  const CREDITO = 'Hecho con ❤️ por Felipe Moreno Marciales';
+  const revisarPie = (pagina) =>
+    pagina.evaluate((credito) => {
+      const version = document.querySelector('.panel__version');
+      const elemento = version?.nextElementSibling;
+      const caja = elemento?.getBoundingClientRect();
+      const bandera = elemento?.lastChild;
+      const cajaBandera = bandera?.localName === 'svg' ? bandera.getBoundingClientRect() : null;
+      return {
+        exacto: elemento?.textContent === credito,
+        bandera:
+          cajaBandera !== null &&
+          bandera.getAttribute('aria-label') === 'Bandera de Colombia' &&
+          cajaBandera.width === 12 &&
+          cajaBandera.height === 8 &&
+          [...bandera.querySelectorAll('rect')].map((r) => getComputedStyle(r).fill).join(' ') ===
+            'rgb(252, 209, 22) rgb(0, 56, 147) rgb(206, 17, 38)',
+        visible: Boolean(caja && caja.width > 0 && caja.height > 0 && caja.right <= document.documentElement.clientWidth),
+        sinEnlaces: document.querySelector('.panel__pie a') === null,
+        sinDesbordamiento: document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+      };
+    }, CREDITO);
+  const opciones = await contexto.newPage();
+  await opciones.setViewportSize({ width: 1280, height: 800 });
+  await opciones.goto(`chrome-extension://${idExtension}/options.html`);
+  await opciones.getByText(CREDITO).waitFor();
   mkdirSync(CAPTURAS, { recursive: true });
-  await panel.emulateMedia({ colorScheme: 'light' });
-  await panel.screenshot({ path: join(CAPTURAS, 'panel-claro.png'), fullPage: true, animations: 'disabled' });
-  await panel.emulateMedia({ colorScheme: 'dark' });
-  await panel.screenshot({ path: join(CAPTURAS, 'panel-oscuro.png'), fullPage: true, animations: 'disabled' });
+  for (const esquema of ['light', 'dark']) {
+    for (const [nombre, pagina] of [['emergente', panel], ['opciones', opciones]]) {
+      await pagina.emulateMedia({ colorScheme: esquema });
+      const pie = await revisarPie(pagina);
+      comprobar(
+        pie.exacto && pie.bandera && pie.visible && pie.sinEnlaces && pie.sinDesbordamiento,
+        `${nombre} (${esquema === 'light' ? 'claro' : 'oscuro'}): crédito exacto tras la versión, con la bandera SVG (12 × 8 px), sin enlaces ni desplazamiento horizontal`,
+      );
+    }
+    const sufijo = esquema === 'light' ? 'claro' : 'oscuro';
+    await panel.screenshot({ path: join(CAPTURAS, `panel-${sufijo}.png`), fullPage: true, animations: 'disabled' });
+    await opciones.screenshot({ path: join(CAPTURAS, `opciones-${sufijo}.png`), fullPage: true, animations: 'disabled' });
+  }
+  await opciones.close();
 
   // Cambios aplicados en caliente, sin recargar WhatsApp.
   await whatsapp.bringToFront();
