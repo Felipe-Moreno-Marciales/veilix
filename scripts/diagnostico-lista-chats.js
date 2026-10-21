@@ -19,6 +19,8 @@
  * previa, estado), y resume los textos visibles que quedan sin proteger.
  */
 (() => {
+  /** `data-testid` anonimizado: números como «#» y nada tras «@» (podrían ser identificadores). */
+  const limpiarTestId = (valor) => valor.replace(/@.*$/, '@…').replace(/\d+/g, '#');
   const MAXIMO_FILAS = 15;
   const MAXIMO_NODOS = 70;
   const filas = [...document.querySelectorAll('#pane-side :is([role="listitem"], [role="row"])')];
@@ -63,7 +65,7 @@
     const partes = [elemento.tagName.toLowerCase() + clasesSemanticas(elemento)];
     for (const atributo of ['role', 'data-testid', 'data-icon', 'dir']) {
       const valor = elemento.getAttribute(atributo);
-      if (valor !== null) partes.push(`[${atributo}=${valor}]`);
+      if (valor !== null) partes.push(`[${atributo}=${atributo === 'data-testid' ? limpiarTestId(valor) : valor}]`);
     }
     for (const atributo of ['title', 'aria-label', 'tabindex']) {
       if (elemento.hasAttribute(atributo)) partes.push(`[${atributo}]`);
