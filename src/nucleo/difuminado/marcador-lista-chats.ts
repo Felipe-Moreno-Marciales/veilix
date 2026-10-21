@@ -28,7 +28,7 @@ export interface ClasificacionFila {
  * Regla usada para el nombre (RF-01): descarta cualquier elemento que sea un
  * icono o que contenga uno.
  */
-function contieneIcono(elemento: Element): boolean {
+export function contieneIcono(elemento: Element): boolean {
   return elemento.matches(`${ICONO}, ${ICONO} *`) || elemento.querySelector(`${ICONO}, svg`) !== null;
 }
 
