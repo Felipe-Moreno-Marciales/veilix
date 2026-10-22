@@ -18,12 +18,17 @@ import {
   type WhatsAppSimulado,
 } from '../apoyo/whatsapp-simulado';
 
-const DIFUMINADO: readonly { id: IdFuncionalidad; sufijo: string; marca: string | null }[] = [
-  { id: 'difuminarNombres', sufijo: 'nombres', marca: 'data-veilix-nombre' },
-  { id: 'difuminarFotos', sufijo: 'fotos', marca: null },
-  { id: 'difuminarMensajesRecientes', sufijo: 'mensajes-recientes', marca: 'data-veilix-vista-previa' },
-  { id: 'difuminarMensajesConversacion', sufijo: 'mensajes-conversacion', marca: 'data-veilix-hora-mensaje' },
-  { id: 'difuminarCampoEntrada', sufijo: 'campo-entrada', marca: null },
+/**
+ * `marca`: atributo que el módulo pone en este DOM simulado (o `null`).
+ * `observa`: si el módulo usa el observador compartido (RF-02 lo usa desde
+ * 0.1.1-beta.0 para las filas de contacto, aunque aquí no haya ninguna).
+ */
+const DIFUMINADO: readonly { id: IdFuncionalidad; sufijo: string; marca: string | null; observa: boolean }[] = [
+  { id: 'difuminarNombres', sufijo: 'nombres', marca: 'data-veilix-nombre', observa: true },
+  { id: 'difuminarFotos', sufijo: 'fotos', marca: null, observa: true },
+  { id: 'difuminarMensajesRecientes', sufijo: 'mensajes-recientes', marca: 'data-veilix-vista-previa', observa: true },
+  { id: 'difuminarMensajesConversacion', sufijo: 'mensajes-conversacion', marca: 'data-veilix-hora-mensaje', observa: true },
+  { id: 'difuminarCampoEntrada', sufijo: 'campo-entrada', marca: null, observa: false },
 ];
 
 function preferenciasCon(...ids: IdFuncionalidad[]): Preferencias {
@@ -71,16 +76,12 @@ describe('módulos de difuminado con el gestor', () => {
     wa.desmontar();
   });
 
-  it.each(DIFUMINADO)('activa y desactiva $id de forma individual', ({ id, sufijo, marca }) => {
+  it.each(DIFUMINADO)('activa y desactiva $id de forma individual', ({ id, sufijo, marca, observa }) => {
     gestor.aplicar(preferenciasCon(id));
     expect([...gestor.activos]).toEqual([id]);
     expect(estilos()).toEqual([sufijo]);
-    if (marca) {
-      expect(document.querySelectorAll(`[${marca}]`).length).toBeGreaterThan(0);
-      expect(contarObservadores(document)).toBe(1);
-    } else {
-      expect(contarObservadores(document)).toBe(0);
-    }
+    if (marca) expect(document.querySelectorAll(`[${marca}]`).length).toBeGreaterThan(0);
+    expect(contarObservadores(document)).toBe(observa ? 1 : 0);
 
     gestor.aplicar(PREFERENCIAS_PREDETERMINADAS);
     expect(gestor.activos.size).toBe(0);
