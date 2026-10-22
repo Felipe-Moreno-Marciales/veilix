@@ -161,11 +161,81 @@ export const FOTO_PERFIL_SVG = `svg:not([data-icon] svg):has(${ORIGENES_FOTO_PER
  *
  * Se exige la máscara y una `<image>` o un `<foreignObject>`, de modo que los
  * iconos SVG (que no tienen esa estructura) no se difuminan. Se excluyen los
- * SVG dentro de `[data-icon]`. Solo se aplica por ubicación (filas de la
- * lista y encabezado), donde se ha observado. Las etiquetas SVG distinguen
- * mayúsculas: `foreignObject` debe escribirse así.
+ * SVG dentro de `[data-icon]`. Las etiquetas SVG distinguen mayúsculas:
+ * `foreignObject` debe escribirse así.
+ *
+ * Se aplica en cualquier zona (desde 0.1.1-beta.0), no solo en la lista y en
+ * el encabezado. En «Nuevo chat», las fotos (reconocidas por su origen) se
+ * difuminaban, pero los avatares predeterminados no: ninguna regla global
+ * cubría esta estructura. HIPÓTESIS pendiente de validar: que «Nuevo chat» y
+ * otros paneles usen el mismo componente de avatar que la lista.
  */
 export const AVATAR_SVG = 'svg:not([data-icon] svg):has(mask):has(image, foreignObject)';
+
+/**
+ * Bloque de texto de un mensaje con el remitente en `data-pre-plain-text`.
+ * El atributo está CONFIRMADO en WhatsApp Web real. Su formato
+ * («[hora, fecha] Nombre: ») es una HIPÓTESIS: el diagnóstico de mensajes la
+ * comprueba con la marca `COINCIDE-CON-REMITENTE`.
+ */
+export const BLOQUE_CON_REMITENTE = '[data-pre-plain-text]';
+
+/** Zona de la conversación abierta donde se buscan nombres de remitentes. */
+export const PANEL_CONVERSACION = '#main';
+
+/** Editor de texto, que nunca se trata como nombre (lo protege RF-05). */
+export const EDITABLE = '[contenteditable]:not([contenteditable="false"])';
+
+/**
+ * Panel «Nuevo chat». CONFIRMADO con WhatsApp Web real en Chrome
+ * (diagnóstico anonimizado del propietario sobre 0.1.1-beta.1):
+ * `[data-testid="new-chat-drawer"]` > … `[data-testid="contact-list-key"]` >
+ * `[role="listitem"][data-testid^="list-item-"]` > `[role="button"]` >
+ * `[data-testid="cell-frame-container"]` > `[role="gridcell"]`. Las 18 filas
+ * inspeccionadas contenían `span[dir][title]` y ninguna un avatar con la
+ * estructura `AVATAR_SVG`.
+ */
+export const PANEL_NUEVO_CHAT = '[data-testid="new-chat-drawer"]';
+
+/** Fila de un contacto en «Nuevo chat» (estructura confirmada). */
+export const FILA_NUEVO_CHAT = `${PANEL_NUEVO_CHAT} [role="listitem"][data-testid^="list-item-"]`;
+
+/**
+ * Acciones de «Nuevo chat» que no son contactos. CONFIRMADO:
+ * `new-chat-drawer-new-group-cell`, `new-chat-drawer-new-contact-cell` y
+ * `new-chat-drawer-new-community-cell`.
+ */
+export const ACCION_NUEVO_CHAT = '[data-testid^="new-chat-drawer-new-"]';
+
+/**
+ * Celda de contenido de una fila de «Nuevo chat» (CONFIRMADO:
+ * `[data-testid="cell-frame-container"]`). Dentro de ella está el texto del
+ * contacto: el nombre y la información secundaria (descripción, frase de
+ * estado…). La información secundaria se reconoce como cualquier texto
+ * visible de la celda distinto del nombre, sin suponer sus atributos.
+ */
+export const CELDA_NUEVO_CHAT = '[data-testid="cell-frame-container"]';
+
+/** Elementos que nunca se tratan como información secundaria (funcionales). */
+export const NO_TEXTO_DE_CONTACTO = 'svg, [data-icon], input, textarea, select, [contenteditable]';
+
+/**
+ * Nombre dentro de una fila de «Nuevo chat»: el primer `span[dir][title]` sin
+ * iconos, la misma regla validada en la lista de chats (que usa el mismo
+ * componente de celda). Que sea el primero es la parte pendiente de
+ * confirmar; el diagnóstico de paneles indica cuántos hay en cada fila.
+ */
+export const NOMBRE_NUEVO_CHAT = 'span[dir][title]';
+
+/**
+ * Fila candidata de una lista de contactos fuera de la lista de chats (por
+ * ejemplo, «Nuevo chat», participantes de un grupo o reenvío). HIPÓTESIS
+ * pendiente de validar: que esas filas usen los mismos roles que la lista de
+ * chats. Solo se trata como fila de contacto si contiene exactamente un
+ * avatar (`AVATAR_SVG`) y un `span[title]`; así no se alcanzan filas de
+ * acciones ni de ajustes, que no tienen avatar.
+ */
+export const FILA_CONTACTO_CANDIDATA = ':is([role="listitem"], [role="row"], [role="button"])';
 
 /**
  * Avatar predeterminado (contacto o grupo sin foto), dibujado con un icono
