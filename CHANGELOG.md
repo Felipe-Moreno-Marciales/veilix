@@ -4,17 +4,72 @@ Todos los cambios relevantes de Veilix se registran en este archivo.
 
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el proyecto usa [versionado semántico](https://semver.org/lang/es/). Las versiones de prueba llevan el sufijo `-beta.N`. La correspondencia con `manifest.version` de cada navegador está en la sección [Versionado](README.md#versionado) del README.
 
-Las versiones publicables aparecen como `## [versión]`. El historial de desarrollo anterior a la primera versión definitiva (`0.1.0`) se conserva íntegro, sin cambios de contenido, en la sección [Historial de desarrollo anterior a 0.1.0](#historial-de-desarrollo-anterior-a-010).
+Las versiones publicables aparecen como `## [versión]`. El historial de desarrollo anterior a la primera versión definitiva (`0.1.0`) se conserva íntegro, sin cambios de contenido, en la sección [Historial de desarrollo anterior a 0.1.0](#historial-de-desarrollo-anterior-a-010). Del mismo modo, las compilaciones internas de cada estable posterior se conservan en su propia sección, como [Compilaciones internas de 0.1.1](#compilaciones-internas-de-011).
 
 Cada entrega de prueba con cambios en el código recibe una versión nueva. Volver a compilar el mismo código no cambia la versión.
 
 ## [Sin publicar]
 
-## [0.1.1-beta.5] — 2026-10-20
+## [0.1.1] — 2026-10-21
+
+**Versión estable preparada para la aprobación final del propietario.** No está publicada en ninguna tienda, no tiene etiqueta de Git y la Fase 2 sigue abierta.
+
+Manifiesto: `0.1.1` en Chrome, Edge, Firefox y Safari (sin `version_name`). Panel: «Veilix 0.1.1». Paquetes: `veilix-0.1.1-{chrome,edge,firefox,safari}.zip`.
+
+### Incluye
+
+Todo lo entregado de `0.1.1-beta.0` a `0.1.1-beta.5`, sin cambios de comportamiento respecto a `0.1.1-beta.5`:
+
+- **RF-01, nombres:**
+  - Remitentes dentro de las conversaciones de grupo: sobre los mensajes, en citas y respuestas, y en el aviso fijado (beta.0).
+  - Filas de contacto con avatar SVG fuera de la lista (beta.0 y beta.1).
+  - Nombres de «Nuevo chat» con la estructura confirmada (beta.2) y su información secundaria (beta.3).
+- **RF-02, avatares:** los avatares SVG predeterminados se difuminan en cualquier zona y se revelan con su fila (beta.0).
+- **RF-03, RF-04 y RF-05:** sin cambios desde `0.1.0`.
+- **Diagnósticos anonimizados:**
+  - `diagnostico-paneles.js`, nuevo.
+  - `diagnostico-mensajes.js` muestra las reglas cargadas y la tabla de remitentes.
+  - Todos anonimizan `data-testid`.
+- **Identidad visual:**
+  - Logotipo e iconos con un candado cerrado sobre el verde `#00A884` (beta.4).
+  - Crédito «Hecho con ❤️ por Felipe Moreno Marciales» con la bandera de Colombia en SVG local (beta.4 y beta.5).
+- **Sin cambios en:**
+  - Las cuatro funcionalidades pendientes, que siguen sin interruptor.
+  - Los permisos (solo `storage`) y el almacenamiento, que solo guarda las preferencias en `local:preferencias`, con el mismo esquema.
+  - `version-renumeraciones.json`.
+
+### Cambiado (versionado)
+
+- Se pasa de `0.1.1-beta.5` a `0.1.1` con `npm run version:estable`.
+- Las compilaciones internas `0.1.1.2000` a `0.1.1.2005` quedan numéricamente por encima de `0.1.1`. Es la consecuencia aceptada en la renumeración de `0.1.0`: no afecta a las tiendas, porque las betas nunca se suben.
+- Cualquier corrección posterior empieza en `0.1.2-beta.0` (`npm run version:beta`) y no reutiliza `0.1.1`.
+
+### Validación
+
+- **Automatizada:** todas las verificaciones de `AGENTS.md` son correctas; los resultados están en el README.
+- **Real en Google Chrome**, comunicada por el propietario (sistema operativo sin indicar):
+  - `0.1.1-beta.0`: correcta, salvo los nombres de «Nuevo chat».
+  - `0.1.1-beta.2`: nombres de «Nuevo chat» correctos, pero con una regresión comunicada en los remitentes de grupo.
+  - **`0.1.1-beta.3`: información secundaria de «Nuevo chat» correcta, remitentes en grupos correctos y sin regresiones detectadas.** La regresión de beta.2 no volvió a manifestarse.
+- **Sin resultado real comunicado** de `0.1.1-beta.4`, `0.1.1-beta.5` ni `0.1.1`. Solo cambian la identidad visual (candado, crédito y bandera) y el número de versión; el código de RF-01 a RF-05 es el mismo que el de beta.3.
+
+### Pendiente
+
+- **Causa de la regresión de beta.2 sin identificar:** no se reprodujo en el DOM simulado y no se repitió en la validación real de beta.3. No se cambió ningún código para corregirla. Si vuelve a aparecer, el diagnóstico es `scripts/diagnostico-mensajes.js`.
+- Prueba de humo de `0.1.1` en Chrome: candado, crédito, bandera y «Veilix 0.1.1» en el panel.
+- Pruebas reales en Edge, Firefox, Brave, Opera, Vivaldi y Safari.
+- Indicador de reloj (pendiente) sin validar.
+- Alertas de `npm audit` en dependencias de desarrollo (`web-ext → node-forge`).
+
+## Compilaciones internas de 0.1.1
+
+Compilaciones internas de prueba de `0.1.1-beta.0` a `0.1.1-beta.5`, conservadas tal como se registraron. Ninguna se publicó. Su contenido está consolidado en [0.1.1]. Van con un nivel de encabezado menos porque su manifiesto (`0.1.1.2000` a `0.1.1.2005`) es mayor que el de la estable `0.1.1`: la lista de versiones `## [...]` solo recoge las estables, en orden creciente de manifiesto.
+
+### [0.1.1-beta.5] — 2026-10-20
 
 Compilación interna de prueba. Manifiesto: `0.1.1.2005` en Chromium y Firefox (`version_name` `0.1.1-beta.5` en Chromium), y `0.1.1` en Safari. Solo cambia el crédito del pie del panel: no hay cambios en el candado, RF-01 a RF-05, las preferencias, los permisos ni el almacenamiento.
 
-### Cambiado
+#### Cambiado
 
 - **Bandera del crédito:** el emoji 🇨🇴, que Windows muestra como las letras «CO», se sustituye por una bandera de Colombia en SVG local.
   - El componente es `BanderaColombia`.
@@ -25,7 +80,7 @@ Compilación interna de prueba. Manifiesto: `0.1.1.2005` en Chromium y Firefox (
   - El emoji ya no está en la página, así que nunca se ven los dos a la vez.
 - El crédito pasa a un componente propio, `CreditoDesarrollador`. El texto «Hecho con ❤️ por Felipe Moreno Marciales» no cambia.
 
-### Añadido (pruebas)
+#### Añadido (pruebas)
 
 - `tests/bandera-colombia.test.tsx`: etiqueta accesible, proporción 3:2, colores y altura de cada franja, y ausencia de elementos decorativos.
 - `tests/navegador/credito.test.ts`, con el CSS real en Chromium, Firefox y WebKit:
@@ -37,11 +92,11 @@ Compilación interna de prueba. Manifiesto: `0.1.1.2005` en Chromium y Firefox (
 - `npm run test:extension` comprueba la bandera (etiqueta, tamaño y colores) en el emergente y en las opciones, en los dos temas.
 - `vitest.config.ts`: React se preoptimiza en las pruebas de navegador, para que Vite no recargue la prueba del crédito la primera vez que se ejecuta.
 
-## [0.1.1-beta.4] — 2026-10-20
+### [0.1.1-beta.4] — 2026-10-20
 
 Compilación interna de prueba. Manifiesto: `0.1.1.2004` en Chromium y Firefox (`version_name` `0.1.1-beta.4` en Chromium), y `0.1.1` en Safari. Solo cambia la identidad visual: no hay cambios en RF-01 a RF-05, el motor de difuminado, los observadores, el revelado, los permisos ni las preferencias.
 
-### Cambiado
+#### Cambiado
 
 - **Logotipo e iconos:** el ojo se sustituye por un **candado cerrado** blanco sobre el mismo cuadrado redondeado verde (`#00A884`).
   - Lo cambian juntos el logotipo del panel (`Logotipo.tsx`) y el dibujo original del generador (`scripts/generar-iconos.mjs`), con la misma geometría en una cuadrícula de 32 × 32.
@@ -49,7 +104,7 @@ Compilación interna de prueba. Manifiesto: `0.1.1.2004` en Chromium y Firefox (
   - `public/icon/{16,32,48,96,128}.png` se regeneran con el generador, que ahora acepta una carpeta de salida opcional y no escribe nada al importarse.
   - El cambio llega a los cuatro paquetes (Chrome, Edge, Firefox y Safari), al administrador de extensiones, al emergente y a la página de opciones.
 
-### Añadido
+#### Añadido
 
 - **Crédito del desarrollador** en el pie del panel, justo después de la versión: «Hecho con ❤️ por Felipe Moreno Marciales 🇨🇴».
   - Es fijo, no depende de ninguna funcionalidad y no lleva enlaces.
@@ -59,11 +114,11 @@ Compilación interna de prueba. Manifiesto: `0.1.1.2004` en Chromium y Firefox (
   - `tests/panel-configuracion.test.tsx` comprueba el texto exacto del crédito y su posición en el emergente y en la página de opciones, que se conservan los textos del pie y que no depende de las funcionalidades.
   - `npm run test:extension` comprueba los iconos del paquete compilado y, en temas claro y oscuro, el crédito sin enlaces ni desplazamiento horizontal. También guarda capturas de la página de opciones.
 
-## [0.1.1-beta.3] — 2026-10-20
+### [0.1.1-beta.3] — 2026-10-20
 
 Compilación interna de prueba. Manifiesto: `0.1.1.2003` en Chromium y Firefox (`version_name` `0.1.1-beta.3` en Chromium), y `0.1.1` en Safari.
 
-### Cambiado
+#### Cambiado
 
 - **RF-01, información secundaria en «Nuevo chat»** (ampliación aprobada por el propietario):
   - Además del nombre, se difuminan los textos de cada contacto debajo del nombre, como la descripción o la frase de estado. Se marcan con `data-veilix-info-nuevo-chat`.
@@ -74,7 +129,7 @@ Compilación interna de prueba. Manifiesto: `0.1.1.2003` en Chromium y Firefox (
     - Las filas sin nombre `span[dir][title]`, como los encabezados de sección.
   - El nombre y la información se revelan juntos con la fila (cursor, foco y atajo) y se restauran al desactivar RF-01.
 
-### En investigación
+#### En investigación
 
 - **Regresión comunicada en RF-01 (remitentes en grupos) con `0.1.1-beta.2`.** No hay corrección en esta entrega, porque la causa no se ha podido identificar con evidencia.
   - **Revisión del código:**
@@ -84,7 +139,7 @@ Compilación interna de prueba. Manifiesto: `0.1.1.2003` en Chromium y Firefox (
   - **Pruebas en el DOM simulado:** la lógica de beta.0 reconstruida y la de beta.2 dan el mismo resultado, y los escenarios de interacción entre marcadores pasan. **No se reproduce.**
   - Hace falta el diagnóstico de mensajes en el grupo afectado (ver el README).
 
-### Añadido (diagnóstico y pruebas)
+#### Añadido (diagnóstico y pruebas)
 
 - `scripts/diagnostico-mensajes.js`:
   - Muestra qué reglas tiene cargadas la extensión en la pestaña (módulos activos, regla de remitentes y regla de «Nuevo chat»).
@@ -97,11 +152,11 @@ Compilación interna de prueba. Manifiesto: `0.1.1.2003` en Chromium y Firefox (
   - Revelado y desactivación.
   - Interacción entre los marcadores de «Nuevo chat» y de remitentes: abrir y cerrar el panel antes de abrir un grupo, activar RF-01 con el panel abierto, y distinto orden de activación de RF-01 y RF-04.
 
-## [0.1.1-beta.2] — 2026-10-20
+### [0.1.1-beta.2] — 2026-10-20
 
 Compilación interna de prueba. Manifiesto: `0.1.1.2002` en Chromium y Firefox (`version_name` `0.1.1-beta.2` en Chromium), y `0.1.1` en Safari.
 
-### Corregido
+#### Corregido
 
 - **RF-01, nombres en «Nuevo chat» (causa confirmada por el diagnóstico real):**
   - En Chrome con `0.1.1-beta.1`, el diagnóstico de paneles inspeccionó 18 contactos: 0 nombres marcados, todos con `span[dir][title]` y **ninguno con un avatar SVG** de la estructura `AVATAR_SVG`.
@@ -115,20 +170,20 @@ Compilación interna de prueba. Manifiesto: `0.1.1.2002` en Chromium y Firefox (
 
   Pendiente de validación real. Que el nombre sea el **primer** `span[dir][title]` de la fila se apoya en la regla validada en la lista de chats; el diagnóstico lo comprueba.
 
-### Seguridad de los diagnósticos
+#### Seguridad de los diagnósticos
 
 - Los diagnósticos de paneles, mensajes y lista de chats **anonimizan los valores de `data-testid`**: los números pasan a «#» y no se muestra nada tras «@». Un sufijo como `list-item-…` podría contener un identificador.
 
-### Añadido
+#### Añadido
 
 - El diagnóstico de paneles añade una tabla de «Nuevo chat»: número de `span[dir][title]` por fila (solo longitudes), cuál marcó Veilix, si está difuminado y si la fila es una acción.
 - Pruebas de regresión con la estructura observada (18 contactos sin avatar SVG, acciones como filas `list-item-*`, carga dinámica, búsqueda, desplazamiento, volver a abrir, revelado, desactivación e independencia de RF-02), en jsdom y en Chromium, Firefox y WebKit.
 
-## [0.1.1-beta.1] — 2026-10-20
+### [0.1.1-beta.1] — 2026-10-20
 
 Compilación interna de prueba. Manifiesto: `0.1.1.2001` en Chromium y Firefox (`version_name` `0.1.1-beta.1` en Chromium), y `0.1.1` en Safari.
 
-### Corregido
+#### Corregido
 
 - **RF-01, nombres en «Nuevo chat»:** en Chrome real con `0.1.1-beta.0`, los nombres de contactos seguían visibles. El resto de lo validado (remitentes de grupo, fotos y avatares de «Nuevo chat», mensajes nuevos, revelado y desactivación) era correcto.
   - **Defecto confirmado en el código:** el marcador de filas de contacto (`marcador-nombres.ts`) examinaba los descendientes de cada nodo añadido al DOM, pero **no el propio nodo**. Si WhatsApp añade cada fila como un nodo independiente después de abrir el panel (lista virtualizada o contactos cargados más tarde), la fila nunca se procesaba y su nombre quedaba visible. El DOM simulado lo ocultaba porque cada fila contenía otro `[role="button"]`.
@@ -136,16 +191,16 @@ Compilación interna de prueba. Manifiesto: `0.1.1.2001` en Chromium y Firefox (
   - Los avatares de RF-02 se difuminaban igualmente porque su regla CSS no depende de las filas. Lo único que mejora en RF-02 es el revelado del avatar junto con la fila, en esas filas.
   - **Pendiente de confirmar** en WhatsApp Web real que esta era la causa. El diagnóstico de paneles amplía su información para descartar otras.
 
-### Añadido
+#### Añadido
 
 - `scripts/diagnostico-paneles.js` analiza cada avatar fuera de la lista de chats y de la conversación. Indica el motivo por el que su fila se reconoce o no como fila de contacto (rol, número de avatares, `span[title]`, iconos), si está marcada y si el nombre está difuminado.
 - Pruebas de regresión en jsdom y en Chromium, Firefox y WebKit: filas sin botón interior añadidas como nodos independientes, búsqueda, desplazamiento y revelado.
 
-## [0.1.1-beta.0] — 2026-10-20
+### [0.1.1-beta.0] — 2026-10-20
 
 Compilación interna de prueba: no se sube a ninguna tienda. Manifiesto: `0.1.1.2000` en Chromium y Firefox (`version_name` `0.1.1-beta.0` en Chromium), y `0.1.1` en Safari.
 
-### Corregido
+#### Corregido
 
 - **RF-01, nombres de remitentes en conversaciones de grupo:** en Chrome real, con RF-01 activa, los nombres de color sobre los mensajes seguían visibles.
   - **Causa:** RF-01 solo tenía reglas para `#pane-side` y para `#main header`, así que nada alcanzaba el interior de los mensajes.
@@ -163,13 +218,13 @@ Compilación interna de prueba: no se sube a ninguna tienda. Manifiesto: `0.1.1.
 
 Estructuras basadas en hipótesis (ver el README); pendiente de validación en WhatsApp Web real.
 
-### Añadido
+#### Añadido
 
 - Diagnóstico anonimizado de paneles con contactos (`scripts/diagnostico-paneles.js`).
 - El diagnóstico de mensajes marca `MARCADO-REMITENTE` y la regla `RF-01-REMITENTE`.
 - Pruebas de remitentes (con RF-04 desactivada, citas, contactos no guardados, emojis, aviso fijado, mensajes nuevos, cambio de conversación, revelado y desactivación) y de «Nuevo chat» (nombres, fotos y avatares predeterminados, acciones y buscador visibles, abrir y cerrar, búsqueda, desplazamiento, carga de fotos, revelado e independencia de RF-01 y RF-02), en jsdom y en Chromium, Firefox y WebKit.
 
-### Notas
+#### Notas
 
 - Esta entrega aclara la discrepancia anotada en `0.1.0`: con el código de `0.1.0`, RF-01 no podía difuminar los nombres de remitentes dentro de los mensajes.
 
@@ -422,6 +477,7 @@ Manifiesto: `0.2.0.2002` en Chromium y Firefox, y `0.2.0` en Safari.
 - ESLint, Vitest e integración continua.
 
 [Sin publicar]: #sin-publicar
+[0.1.1]: #011--2026-10-21
 [0.1.1-beta.5]: #011-beta5--2026-10-20
 [0.1.1-beta.4]: #011-beta4--2026-10-20
 [0.1.1-beta.3]: #011-beta3--2026-10-20
