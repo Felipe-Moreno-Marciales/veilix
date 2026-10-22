@@ -107,6 +107,38 @@ describe('PanelConfiguracion', () => {
     expect(await screen.findByText(`Veilix ${versionDescriptiva(VERSION)}`)).toBeDefined();
   });
 
+  it.each(['emergente', 'pagina'] as const)(
+    'muestra el crédito exacto justo después de la versión, sin enlaces (%s)',
+    async (variante) => {
+      render(<PanelConfiguracion variante={variante} />);
+      const version = await screen.findByText(`Veilix ${versionDescriptiva(VERSION)}`);
+      const credito = screen.getByText('Hecho con ❤️ por Felipe Moreno Marciales');
+      // El texto y el corazón se conservan; la bandera es el SVG, sin el emoji 🇨🇴.
+      expect(credito.textContent).toBe('Hecho con \u2764\uFE0F por Felipe Moreno Marciales');
+      expect(version.nextElementSibling).toBe(credito);
+      const bandera = within(credito).getByRole('img', { name: 'Bandera de Colombia' });
+      expect(credito.lastElementChild).toBe(bandera);
+      expect(credito.lastChild).toBe(bandera);
+      expect(document.body.textContent).not.toMatch(/\u{1F1E8}|\u{1F1F4}/u);
+      const pie = credito.closest('footer');
+      if (!pie) throw new Error('El crédito no está en el pie del panel');
+      expect(within(pie).getByText('Todo se procesa en este equipo. Sin telemetría ni servidores externos.')).toBeDefined();
+      expect(within(pie).getByText('Veilix no está afiliado a WhatsApp ni a Meta.')).toBeDefined();
+      expect(pie.querySelector('a')).toBeNull();
+    },
+  );
+
+  it('el crédito no depende de las funcionalidades activas', async () => {
+    render(<PanelConfiguracion variante="emergente" />);
+    const interruptores = await screen.findAllByRole('switch');
+    for (const interruptor of interruptores) fireEvent.click(interruptor);
+    await waitFor(async () => {
+      expect(Object.values((await leerPreferencias()).funcionalidades).filter(Boolean)).toHaveLength(5);
+    });
+    expect(screen.getByText('Hecho con ❤️ por Felipe Moreno Marciales')).toBeDefined();
+    expect(screen.getByRole('img', { name: 'Bandera de Colombia' })).toBeDefined();
+  });
+
   it('guarda y aplica el tema seleccionado', async () => {
     render(<PanelConfiguracion variante="pagina" />);
     fireEvent.click(await screen.findByRole('radio', { name: 'Oscuro' }));
