@@ -321,6 +321,35 @@ p {
   font-variant-numeric: tabular-nums;
 }
 
+/* Crédito del desarrollador: discreto, con fuentes de emoji de cada sistema para el corazón. */
+.panel__credito {
+  color: var(--texto-secundario);
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif,
+    'Apple Color Emoji',
+    'Segoe UI Emoji',
+    'Noto Color Emoji';
+  overflow-wrap: anywhere;
+}
+
+/*
+ * Bandera SVG del crédito: 12 × 8 px (3:2, franjas en píxeles enteros). Con la
+ * línea base del texto como borde inferior, ocupa la altura de las mayúsculas.
+ */
+.bandera {
+  display: inline-block;
+  width: 12px;
+  height: 8px;
+  margin-inline-start: 0.35em;
+  vertical-align: baseline;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .interruptor,
   .interruptor__guia {
