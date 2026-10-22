@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { CATALOGO_FUNCIONALIDADES, CATEGORIAS } from '@/funcionalidades/catalogo';
 import type { Tema } from '@/almacenamiento/preferencias';
 import { VERSION, versionDescriptiva } from '@/version';
+import { CreditoDesarrollador } from './componentes/CreditoDesarrollador';
 import { Logotipo } from './componentes/Logotipo';
 import { SelectorTema } from './componentes/SelectorTema';
 import { TarjetaFuncionalidad } from './componentes/TarjetaFuncionalidad';
@@ -86,6 +87,7 @@ export function PanelConfiguracion({ variante }: Propiedades) {
         <p className="panel__version">
           Veilix {versionDescriptiva(VERSION)}
         </p>
+        <CreditoDesarrollador />
       </footer>
     </div>
   );
