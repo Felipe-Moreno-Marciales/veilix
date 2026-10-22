@@ -178,8 +178,14 @@ export interface MensajeObservado {
   readonly tipo: 'texto' | 'foto' | 'fotoConDescripcion' | 'fotoSinDescargar' | 'video';
   readonly direccion: 'entrante' | 'saliente';
   readonly texto?: string;
-  /** Nombre del remitente (mensajes entrantes en grupos). */
+  /** Nombre del remitente (mensajes entrantes en grupos), tal como figura en `data-pre-plain-text`. */
   readonly remitente?: string;
+  /** Texto visible del remitente si difiere (por ejemplo, «~ Luis» en un contacto no guardado). */
+  readonly remitenteVisible?: string;
+  /** Emoji del nombre, mostrado como `<img alt>` junto al remitente visible. */
+  readonly emojiRemitente?: string;
+  /** Cita o respuesta a otro mensaje (estructura SUPUESTA): autor y texto citado. */
+  readonly cita?: { readonly autor: string; readonly texto: string };
   /**
    * Reacción bajo el mensaje (estructura SUPUESTA):
    * - `imagen`: botón con el emoji como `<img alt>` y un contador, dentro de
@@ -549,18 +555,33 @@ export class WhatsAppSimulado {
   /** Mensaje con la estructura observada (ver `MensajeObservado`). */
   crearMensajeObservado(mensaje: MensajeObservado): HTMLElement {
     const d = this.documento;
-    const { tipo, direccion, texto = '', remitente, reaccion, hora = '10:40' } = mensaje;
+    const { tipo, direccion, texto = '', remitente, remitenteVisible, emojiRemitente, cita, reaccion, hora = '10:40' } = mensaje;
     const numero = String(++this.#contadorMensajes);
     const saliente = direccion === 'saliente';
     const partes: Node[] = [];
 
-    if (remitente) partes.push(el(d, 'span', { dir: 'auto', 'data-prueba': 'remitente' }, remitente));
+    const nombreCompleto = remitente && emojiRemitente ? `${remitente} ${emojiRemitente}` : remitente;
+    if (remitente) {
+      // Nombre de color sobre el mensaje (estructura SUPUESTA: `span[dir=auto]` con estilo de color).
+      partes.push(
+        el(d, 'span', { dir: 'auto', 'data-prueba': 'remitente', style: 'color: #d62976' },
+          `\u200e${remitenteVisible ?? remitente}${emojiRemitente ? ' ' : ''}`,
+          ...(emojiRemitente ? [el(d, 'img', { class: 'emoji', alt: emojiRemitente, src: FOTO, width: '16', height: '16' })] : [])),
+      );
+    }
+    if (cita) {
+      partes.push(
+        el(d, 'div', { role: 'button', tabindex: '0', 'data-prueba': 'cita' },
+          el(d, 'span', { dir: 'auto', 'data-prueba': 'autor-cita' }, cita.autor),
+          el(d, 'span', { dir: 'ltr' }, cita.texto)),
+      );
+    }
 
     const bloqueTexto = () =>
       el(
         d,
         'div',
-        { class: 'copyable-text', 'data-pre-plain-text': `[10:40, 15/10/2026] ${remitente ?? 'Yo'}: ` },
+        { class: 'copyable-text', 'data-pre-plain-text': `[10:40, 15/10/2026] ${nombreCompleto ?? 'Yo'}: ` },
         el(d, 'div', {}, el(d, 'span', { class: 'selectable-text copyable-text', dir: 'ltr' }, el(d, 'span', {}, texto))),
       );
 
@@ -627,9 +648,21 @@ export class WhatsAppSimulado {
    * de fecha. El editor lleva las clases `copyable-text selectable-text`
    * (suposición), para comprobar que RF-04 no lo difumina.
    */
-  abrirConversacionObservada(nombre: string, mensajes: readonly MensajeObservado[]): void {
+  abrirConversacionObservada(
+    nombre: string,
+    mensajes: readonly MensajeObservado[],
+    fijado?: { readonly autor: string; readonly texto: string },
+  ): void {
     const conversacion = this.crearConversacion(nombre, []);
     const lista = requerir(conversacion.querySelector('[role="application"]'), 'lista de mensajes');
+    if (fijado) {
+      // Aviso de mensaje fijado bajo el encabezado (estructura SUPUESTA).
+      lista.before(
+        el(this.documento, 'div', { 'data-prueba': 'fijado', role: 'button', tabindex: '0' },
+          el(this.documento, 'span', { dir: 'auto', 'data-prueba': 'autor-fijado' }, fijado.autor),
+          el(this.documento, 'span', { dir: 'ltr' }, fijado.texto)),
+      );
+    }
     lista.append(
       el(this.documento, 'div', { role: 'row', 'data-prueba': 'separador' }, el(this.documento, 'span', {}, 'HOY')),
       ...mensajes.map((m) => this.crearMensajeObservado(m)),
@@ -649,6 +682,183 @@ export class WhatsAppSimulado {
     const filas = mensajes.map((m) => this.crearMensajeObservado(m));
     requerir(this.principal.querySelector('[role="application"]'), 'lista de mensajes').prepend(...filas);
     return filas;
+  }
+
+  /**
+   * Panel «Nuevo chat» (estructura SUPUESTA, no observada): fuera de
+   * `#pane-side`, con filas `[role="listitem"] > [role="button"]` que contienen
+   * un avatar SVG y el nombre en `span[dir="auto"][title]`. Incluye filas de
+   * acciones con icono (sin avatar), un encabezado de sección y un buscador.
+   */
+  abrirNuevoChat(contactos: readonly ContactoNuevoChat[]): HTMLElement {
+    const d = this.documento;
+    const accion = (etiqueta: string, nombreIcono: string) =>
+      el(d, 'div', { role: 'button', tabindex: '0', 'data-prueba': 'accion' },
+        iconoSvg(d, nombreIcono), el(d, 'span', { dir: 'auto', title: etiqueta }, etiqueta));
+    const panel = el(d, 'div', { 'data-prueba': 'nuevo-chat' },
+      el(d, 'header', {}, el(d, 'button', { type: 'button', 'aria-label': 'Atrás' }, iconoSvg(d, 'wds-ic-back')),
+        el(d, 'h1', {}, 'Nuevo chat')),
+      el(d, 'div', {}, el(d, 'input', { type: 'text', 'aria-label': 'Buscar un nombre o un número', 'data-prueba': 'buscador' })),
+      el(d, 'div', { 'data-prueba': 'lista-nuevo-chat' },
+        accion('Nuevo grupo', 'wds-ic-group-add'),
+        accion('Nueva comunidad', 'wds-ic-community'),
+        el(d, 'div', { 'data-prueba': 'seccion' }, 'Contactos en WhatsApp'),
+        ...contactos.map((c) => this.crearFilaNuevoChat(c))),
+    );
+    this.app.append(panel);
+    return panel;
+  }
+
+  crearFilaNuevoChat({ nombre, info = 'Disponible', avatar, sinBotonInterior }: ContactoNuevoChat): HTMLElement {
+    const d = this.documento;
+    const contenido = avatar === 'svgImagen' ? crearImagenSvg(d) : crearForeignObject(d);
+    const svg = crearSvgConMascara(d, contenido);
+    svg.setAttribute('data-prueba', 'avatar-nuevo-chat');
+    const interior = [
+      el(d, 'div', {}, svg),
+      el(d, 'div', {},
+        el(d, 'span', { dir: 'auto', title: nombre, 'data-prueba': 'nombre-nuevo-chat' }, nombre),
+        el(d, 'span', { title: info, 'data-prueba': 'info-nuevo-chat' }, info)),
+    ];
+    return sinBotonInterior
+      ? el(d, 'div', { role: 'listitem', tabindex: '0', 'data-prueba': 'fila-nuevo-chat' }, ...interior)
+      : el(d, 'div', { role: 'listitem', 'data-prueba': 'fila-nuevo-chat' },
+        el(d, 'div', { role: 'button', tabindex: '0' }, ...interior));
+  }
+
+  /** Simula la carga posterior de contactos: cada fila se añade como un nodo independiente. */
+  agregarFilasNuevoChat(contactos: readonly ContactoNuevoChat[]): HTMLElement[] {
+    const lista = requerir(this.documento.querySelector('[data-prueba="lista-nuevo-chat"]'), 'lista');
+    const filas = contactos.map((c) => this.crearFilaNuevoChat(c));
+    for (const fila of filas) lista.append(fila);
+    return filas;
+  }
+
+  #contadorFilasNuevoChat = 0;
+
+  /**
+   * «Nuevo chat» con la estructura OBSERVADA en WhatsApp Web real
+   * (diagnóstico anonimizado del propietario sobre 0.1.1-beta.1):
+   * `[data-testid="new-chat-drawer"]` > `[data-testid="contact-list-key"]` >
+   * `[role="listitem"][data-testid^="list-item-"]` > `[role="button"]` >
+   * `[data-testid="cell-frame-container"]` > `[role="gridcell"]` >
+   * `span[dir][title]`, y las acciones `new-chat-drawer-new-*-cell`.
+   *
+   * No observado, representado de forma neutra: el avatar (un `<div>` vacío,
+   * porque no es un SVG con la estructura `AVATAR_SVG`), la línea de
+   * información (`span[title]` tras el nombre), el encabezado y el buscador.
+   * Las acciones se colocan en el peor caso: también como filas
+   * `list-item-*`, para comprobar que se excluyen.
+   */
+  abrirNuevoChatObservado(contactos: readonly string[]): HTMLElement {
+    const d = this.documento;
+    const accion = (testId: string, etiqueta: string) =>
+      this.#filaObservada(
+        el(d, 'div', { role: 'button', tabindex: '0', 'data-testid': testId, 'data-prueba': 'accion-observada' },
+          el(d, 'div', { 'data-testid': 'cell-frame-container' },
+            el(d, 'div', { role: 'gridcell' }, el(d, 'span', { dir: 'auto', title: etiqueta }, etiqueta)))),
+      );
+    const panel = el(d, 'div', { 'data-testid': 'new-chat-drawer' },
+      el(d, 'div', { 'data-prueba': 'encabezado-nuevo-chat' }, el(d, 'span', { dir: 'auto', title: 'Nuevo chat' }, 'Nuevo chat')),
+      el(d, 'div', {}, el(d, 'input', { type: 'text', 'aria-label': 'Buscar un nombre o un número', 'data-prueba': 'buscador-observado' })),
+      accion('new-chat-drawer-new-group-cell', 'Nuevo grupo'),
+      accion('new-chat-drawer-new-contact-cell', 'Nuevo contacto'),
+      accion('new-chat-drawer-new-community-cell', 'Nueva comunidad'),
+      // Encabezado de sección en el peor caso: también como fila `list-item-*`, sin `span[dir][title]`.
+      this.#filaObservada(el(d, 'div', { 'data-prueba': 'seccion-observada' }, 'Contactos en WhatsApp')),
+      el(d, 'div', { 'data-testid': 'contact-list-key' }, ...contactos.map((c, i) => this.crearFilaObservada(c, INFOS_OBSERVADAS[i % INFOS_OBSERVADAS.length]))),
+    );
+    this.app.append(panel);
+    return panel;
+  }
+
+  #filaObservada(contenido: Node): HTMLElement {
+    const numero = String(++this.#contadorFilasNuevoChat);
+    return el(this.documento, 'div', { role: 'listitem', 'data-testid': `list-item-${numero}` }, contenido);
+  }
+
+  /**
+   * Fila de contacto con la estructura observada. La información secundaria
+   * no está observada: se representa con varias formas (`InfoObservada`) para
+   * no suponer que usa los mismos atributos que el nombre. Incluye un icono y
+   * un botón dentro de la celda, que nunca deben difuminarse.
+   */
+  crearFilaObservada(nombre: string, info: InfoObservada = 'spanTitle'): HTMLElement {
+    const d = this.documento;
+    const infos: Node[] = [];
+    if (info === 'spanTitle') infos.push(el(d, 'span', { title: 'Disponible', 'data-prueba': 'info-observada' }, 'Disponible'));
+    if (info === 'textoSinAtributos') infos.push(el(d, 'div', {}, el(d, 'span', { 'data-prueba': 'info-observada' }, 'Hola, estoy usando WhatsApp')));
+    if (info === 'emoji') {
+      infos.push(el(d, 'span', { 'data-prueba': 'info-observada' }, 'De vacaciones ',
+        el(d, 'img', { class: 'emoji', alt: '🏖️', src: FOTO, width: '16', height: '16' })));
+    }
+    const fila = this.#filaObservada(
+      el(d, 'div', { role: 'button', tabindex: '0' },
+        el(d, 'div', { 'data-testid': 'cell-frame-container' },
+          el(d, 'div', { 'data-prueba': 'avatar-no-observado', style: 'width:40px;height:40px' }),
+          el(d, 'div', { role: 'gridcell' },
+            el(d, 'span', { dir: 'auto', title: nombre, 'data-prueba': 'nombre-observado' }, nombre),
+            ...(info === 'textoSinAtributos' ? [] : infos)),
+          ...(info === 'textoSinAtributos' ? [el(d, 'div', { role: 'gridcell' }, ...infos)] : []),
+          el(d, 'div', { 'data-prueba': 'funcional-observado' },
+            iconoSvg(d, 'wds-ic-verified'),
+            el(d, 'button', { type: 'button', 'aria-label': 'Más opciones' }, 'Más')))),
+    );
+    fila.setAttribute('data-prueba', 'fila-observada');
+    return fila;
+  }
+
+  get filasObservadas(): HTMLElement[] {
+    return [...this.documento.querySelectorAll<HTMLElement>('[data-prueba="fila-observada"]')];
+  }
+
+  /** Carga posterior o virtualizada: cada fila se añade como nodo independiente. */
+  agregarContactosObservados(nombres: readonly string[]): HTMLElement[] {
+    const lista = requerir(this.documento.querySelector('[data-testid="contact-list-key"]'), 'lista de contactos');
+    const filas = nombres.map((n, i) => this.crearFilaObservada(n, INFOS_OBSERVADAS[i % INFOS_OBSERVADAS.length]));
+    for (const fila of filas) lista.append(fila);
+    return filas;
+  }
+
+  /** Búsqueda: los contactos se sustituyen por los resultados. */
+  buscarContactosObservados(nombres: readonly string[]): void {
+    for (const fila of this.filasObservadas) fila.remove();
+    this.agregarContactosObservados(nombres);
+  }
+
+  /** Desplazamiento en la lista virtualizada: la fila se reutiliza para otro contacto. */
+  reutilizarFilaObservada(indice: number, nombre: string, info: InfoObservada = 'emoji'): void {
+    this.filasObservadas[indice]?.replaceChildren(...this.crearFilaObservada(nombre, info).childNodes);
+  }
+
+  cerrarNuevoChatObservado(): void {
+    this.documento.querySelector('[data-testid="new-chat-drawer"]')?.remove();
+  }
+
+  get filasNuevoChat(): HTMLElement[] {
+    return [...this.documento.querySelectorAll<HTMLElement>('[data-prueba="fila-nuevo-chat"]')];
+  }
+
+  cerrarNuevoChat(): void {
+    this.documento.querySelector('[data-prueba="nuevo-chat"]')?.remove();
+  }
+
+  /** Simula una búsqueda: la lista de contactos se sustituye por los resultados. */
+  buscarEnNuevoChat(resultados: readonly ContactoNuevoChat[]): void {
+    for (const fila of this.filasNuevoChat) fila.remove();
+    requerir(this.documento.querySelector('[data-prueba="lista-nuevo-chat"]'), 'lista').append(
+      ...resultados.map((c) => this.crearFilaNuevoChat(c)),
+    );
+  }
+
+  /** Simula el desplazamiento de la lista virtualizada: la fila se reutiliza para otro contacto. */
+  reutilizarFilaNuevoChat(indice: number, contacto: ContactoNuevoChat): void {
+    this.filasNuevoChat[indice]?.replaceChildren(...this.crearFilaNuevoChat(contacto).childNodes);
+  }
+
+  /** Simula la carga posterior de la foto: el avatar predeterminado pasa a ser una imagen. */
+  cargarFotoNuevoChat(indice: number): void {
+    this.filasNuevoChat[indice]?.querySelector('foreignObject')?.replaceWith(crearImagenSvg(this.documento));
   }
 
   get filasMensaje(): HTMLElement[] {
@@ -707,6 +917,42 @@ export function montarWhatsAppConAvatares(documento: Document = document): Whats
     nombre: 'Grupo con foto',
     mensajes: MENSAJES_EJEMPLO,
   });
+}
+
+/** Formas de la información secundaria en el DOM simulado (no observada en el DOM real). */
+export type InfoObservada = 'spanTitle' | 'textoSinAtributos' | 'emoji' | 'ninguna';
+export const INFOS_OBSERVADAS: readonly InfoObservada[] = ['spanTitle', 'textoSinAtributos', 'emoji', 'ninguna'];
+
+export interface ContactoNuevoChat {
+  readonly nombre: string;
+  readonly info?: string;
+  readonly avatar: 'svgImagen' | 'svgForeignObject';
+  /**
+   * Fila sin `[role="button"]` interior: el único elemento con rol es la
+   * propia fila `[role="listitem"]`. Reproduce el caso en que la fila es el
+   * nodo añadido (lista virtualizada o contactos cargados después de abrir).
+   */
+  readonly sinBotonInterior?: boolean;
+}
+
+export const CONTACTOS_NUEVO_CHAT: readonly ContactoNuevoChat[] = [
+  { nombre: 'Ana García', avatar: 'svgImagen' },
+  { nombre: 'Banco', avatar: 'svgForeignObject', info: 'Cuenta de empresa' },
+  { nombre: 'Luis', avatar: 'svgForeignObject' },
+];
+
+/** Conversación de grupo con remitentes, citas, contacto no guardado, emoji y aviso fijado. */
+export const MENSAJES_GRUPO: readonly MensajeObservado[] = [
+  { tipo: 'texto', direccion: 'entrante', texto: 'Hola a todos', remitente: 'Ana' },
+  { tipo: 'texto', direccion: 'entrante', texto: 'Respondo a Ana', remitente: 'Luis', remitenteVisible: '~ Luis', cita: { autor: 'Ana', texto: 'Hola a todos' } },
+  { tipo: 'texto', direccion: 'entrante', texto: 'Buenas', remitente: 'Eva', emojiRemitente: '🌸' },
+  { tipo: 'texto', direccion: 'saliente', texto: 'Hola', cita: { autor: 'Luis', texto: 'Respondo a Ana' } },
+];
+
+export function montarWhatsAppConGrupo(documento: Document = document): WhatsAppSimulado {
+  const wa = montarWhatsAppSimulado(documento);
+  wa.abrirConversacionObservada('Grupo de prueba', MENSAJES_GRUPO, { autor: 'Ana', texto: 'Reunión el lunes' });
+  return wa;
 }
 
 /** Conversación de grupo con todos los tipos de mensaje contemplados. */
