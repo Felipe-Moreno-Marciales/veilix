@@ -10,6 +10,55 @@ Cada entrega de prueba con cambios en el código recibe una versión nueva. Volv
 
 ## [Sin publicar]
 
+## [0.1.2-beta.0] — 2026-10-22
+
+Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2000` en Chromium y Firefox (`version_name` `0.1.2-beta.0` en Chromium), y `0.1.2` en Safari.
+
+### Corregido
+
+- **RF-04, texto citado en el recuadro «Responder»:** con `0.1.1`, al pulsar «Responder» el texto del mensaje citado, encima del editor, quedaba visible con RF-04 activa.
+  - **Causa confirmada:** el diagnóstico anonimizado en WhatsApp Web real (Chrome, respuesta a un mensaje de texto) mostró que el recuadro está en `#main footer` › `[data-testid="popup_panel"]` › `[data-testid="quoted-message"]`, fuera de las filas de mensaje. RF-04 solo actúa dentro de esas filas.
+  - **Corrección:** una regla CSS en RF-04 para `#main footer [data-testid="quoted-message"] [data-testid="selectable-text"]`.
+    - Excluye `[data-testid="author"]`, que corresponde a RF-01.
+    - Se revela con el recuadro: cursor, foco y Ctrl + Mayús + Espacio.
+    - No añade observadores ni marcas.
+  - **Sin cambios en:**
+    - RF-01: el autor ya se difuminaba como remitente.
+    - RF-05: el editor ya estaba protegido.
+    - Las citas dentro de los mensajes.
+    - Los controles: la X sigue visible.
+  - **Pendiente de evidencia:** las fotos y los vídeos citados y otras variantes de respuesta. No se han añadido selectores para multimedia.
+  - Pendiente de validación real.
+
+### Añadido (pruebas)
+
+- `tests/navegador/respuesta.test.ts`, en Chromium, Firefox y WebKit, con la estructura observada:
+  - Texto citado difuminado solo con RF-04.
+  - Independencia de RF-01 y RF-05, y las dos combinaciones.
+  - Respuestas en grupo, en chat individual y a mensajes propios, y emojis.
+  - Cambio de mensaje citado, y cancelación con la X, que sigue funcionando.
+  - Revelado con cursor, foco y atajo.
+  - Mensajes y citas de la conversación sin cambios.
+  - Escritura con el recuadro abierto.
+  - Restauración sin estilos ni marcas al desactivar.
+
+  Sin la regla nueva fallan 9 de las 12 pruebas.
+- `tests/difuminado/selectores-mensaje.test.ts`: los selectores nuevos alcanzan solo el texto del recuadro del pie, no el autor, la X, las citas dentro de los mensajes ni el editor.
+- `npm run test:extension`: texto citado difuminado y X visible en la extensión compilada.
+
+### Añadido (diagnóstico)
+
+- `scripts/diagnostico-respuesta.js`: diagnóstico anonimizado del recuadro «Responder».
+  - **Muestra:**
+    - Los elementos con texto o imagen fuera de las filas de mensaje, con su ascendencia.
+    - Si coinciden con un remitente o con el inicio de un mensaje, sin mostrarlos.
+    - Las marcas de Veilix y si están difuminados.
+    - Los botones del pie.
+    - El esqueleto del pie.
+  - **No muestra:** textos, nombres, `data-id`, `title`, `aria-label`, `alt` ni direcciones.
+  - No recorre el editor, y no nombra los dominios de imágenes ajenos a WhatsApp.
+  - Probado en Chromium con un DOM inventado lleno de datos ficticios: no se filtró ninguno.
+
 ## [0.1.1] — 2026-10-21
 
 **Versión estable preparada para la aprobación final del propietario.** No está publicada en ninguna tienda, no tiene etiqueta de Git y la Fase 2 sigue abierta.
@@ -477,6 +526,7 @@ Manifiesto: `0.2.0.2002` en Chromium y Firefox, y `0.2.0` en Safari.
 - ESLint, Vitest e integración continua.
 
 [Sin publicar]: #sin-publicar
+[0.1.2-beta.0]: #012-beta0--2026-10-22
 [0.1.1]: #011--2026-10-21
 [0.1.1-beta.5]: #011-beta5--2026-10-20
 [0.1.1-beta.4]: #011-beta4--2026-10-20
