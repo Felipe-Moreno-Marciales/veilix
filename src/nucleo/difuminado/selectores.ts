@@ -83,6 +83,29 @@ export const CAMPO_ENTRADA =
   '#main footer :is([contenteditable="true"], [contenteditable=""], [role="textbox"])';
 
 /**
+ * Recuadro «Responder»: vista previa del mensaje citado encima del editor.
+ * CONFIRMADO con WhatsApp Web real en Chrome (diagnóstico anonimizado del
+ * propietario sobre 0.1.1, con una respuesta a un mensaje de texto):
+ * `#main` › `footer` › `[data-testid="popup_panel"]` ›
+ * `[data-testid="quoted-message"]`, que contiene el autor
+ * (`[data-testid="author"]`) y el texto citado.
+ *
+ * Se limita a `#main footer` para no tocar las citas dentro de los mensajes,
+ * que ya cubre `TEXTO_MENSAJE` desde su fila. La estructura de las fotos y
+ * los vídeos citados no se ha observado, así que no hay selector para ellos.
+ */
+export const CITA_RESPUESTA = '#main footer [data-testid="quoted-message"]';
+
+/**
+ * Texto citado en el recuadro «Responder». CONFIRMADO:
+ * `span.quoted-mention.selectable-text.copyable-text[data-testid="selectable-text"]`.
+ * Se usa el `data-testid`, no las clases. Excluye el autor, que corresponde a
+ * RF-01, para que RF-01 y RF-04 sigan siendo independientes.
+ */
+export const TEXTO_CITA_RESPUESTA =
+  '[data-testid="selectable-text"]:not([data-testid="author"], [data-testid="author"] *)';
+
+/**
  * Iconos funcionales de WhatsApp. Los marcadores los excluyen siempre. Las
  * reglas CSS solo difuminan iconos con selectores específicos, como
  * `ICONO_ESTADO_MENSAJE`.
