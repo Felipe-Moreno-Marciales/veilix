@@ -677,6 +677,40 @@ export class WhatsAppSimulado {
     return fila;
   }
 
+  /**
+   * Abre el recuadro «Responder» con la estructura OBSERVADA en WhatsApp Web
+   * real (diagnóstico del propietario sobre 0.1.1, respuesta a un mensaje de
+   * texto): `footer` › `[data-testid="popup_panel"]` ›
+   * `[data-testid="quoted-message"]`, con `[data-testid="author"]` y el texto
+   * en `span.quoted-mention.selectable-text.copyable-text[data-testid="selectable-text"]`.
+   * El emoji como `<img alt>` dentro del texto y la posición del botón para
+   * cancelar (en `popup_panel`, fuera de la cita) son SUPOSICIONES.
+   * Si ya hay una respuesta abierta, la sustituye, como al elegir otro mensaje.
+   */
+  responderA(cita: { readonly autor: string; readonly texto: string; readonly emoji?: boolean }): HTMLElement {
+    const d = this.documento;
+    this.cancelarRespuesta();
+    const emoji = cita.emoji ? [' ', el(d, 'img', { class: 'emoji', alt: '😀', src: URL_EMOJI, width: '16', height: '16' })] : [];
+    const cancelar = el(d, 'button', { type: 'button', 'aria-label': 'Cancelar respuesta' }, iconoSvg(d, 'wds-ic-close'));
+    cancelar.addEventListener('click', () => {
+      this.clics.set('Cancelar respuesta', (this.clics.get('Cancelar respuesta') ?? 0) + 1);
+      this.cancelarRespuesta();
+    });
+    const panel = el(d, 'div', { 'data-testid': 'popup_panel' },
+      el(d, 'div', { 'data-testid': 'quoted-message', role: 'button', tabindex: '0' },
+        el(d, 'span', { 'data-testid': 'author', dir: 'auto' }, cita.autor),
+        el(d, 'span', { class: 'quoted-mention selectable-text copyable-text', 'data-testid': 'selectable-text', dir: 'ltr' },
+          cita.texto, ...emoji)),
+      cancelar);
+    requerir(this.principal.querySelector('footer'), 'pie').prepend(panel);
+    return panel;
+  }
+
+  /** Cierra el recuadro «Responder», como la X o el envío del mensaje. */
+  cancelarRespuesta(): void {
+    this.principal.querySelector('footer [data-testid="popup_panel"]')?.remove();
+  }
+
   /** Simula la carga de mensajes anteriores al desplazarse hacia arriba. */
   cargarMensajesAnteriores(mensajes: readonly MensajeObservado[]): HTMLElement[] {
     const filas = mensajes.map((m) => this.crearMensajeObservado(m));
