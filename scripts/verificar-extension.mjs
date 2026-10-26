@@ -49,7 +49,14 @@ const PAGINA_SIMULADA = `<!doctype html>
           el('div', { class: 'copyable-text', 'data-pre-plain-text': '[10:40, 15/10/2026] Ana: ' }, el('span', { class: 'selectable-text copyable-text', dir: 'ltr' }, el('span', {}, 'Mensaje privado'))),
           el('div', { 'data-testid': 'msg-meta' }, el('span', { 'data-prueba': 'hora' }, '10:40'), el('span', { 'aria-label': ' Leído ' }, icono('wds-ic-read'))),
           el('button', { 'data-prueba': 'reaccion', type: 'button' }, '👍 1'))))),
-        el('footer', {}, el('div', { contenteditable: 'true', role: 'textbox', 'aria-label': 'Escribe un mensaje' }, el('p', {}, el('br'))))));
+        el('footer', {},
+          // Recuadro «Responder» con la estructura observada en WhatsApp Web real (la posición de la X es supuesta).
+          el('div', { 'data-testid': 'popup_panel' },
+            el('div', { 'data-testid': 'quoted-message' },
+              el('span', { 'data-testid': 'author' }, 'Ana García'),
+              el('span', { class: 'quoted-mention selectable-text copyable-text', 'data-testid': 'selectable-text' }, 'Texto citado secreto')),
+            el('button', { 'aria-label': 'Cancelar respuesta' }, icono('wds-ic-close'))),
+          el('div', { contenteditable: 'true', role: 'textbox', 'aria-label': 'Escribe un mensaje' }, el('p', {}, el('br'))))));
   }, 300);
 </script></body></html>`;
 
@@ -205,6 +212,8 @@ try {
   comprobar((await filtro('#pane-side [aria-label=" Leído "] svg')) === 'blur', 'difuminado en caliente: indicador de leído en la lista');
   comprobar((await filtro('#main [data-testid="msg-meta"] svg')) === 'blur', 'difuminado en caliente: indicador de leído en el mensaje');
   comprobar((await filtro('#pane-side span[title="Secreto 1"] ~ svg')) === 'none', 'el icono de sticker no se difumina');
+  comprobar((await filtro('#main footer [data-testid="quoted-message"] [data-testid="selectable-text"]')) === 'blur', 'difuminado en caliente: texto citado del recuadro «Responder»');
+  comprobar((await filtro('#main footer [aria-label="Cancelar respuesta"] svg')) === 'none', 'la X del recuadro «Responder» no se difumina');
 
   await whatsapp.screenshot({ path: join(CAPTURAS, 'whatsapp-simulado-difuminado.png') });
 
