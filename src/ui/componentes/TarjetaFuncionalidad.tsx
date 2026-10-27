@@ -12,6 +12,8 @@ interface Propiedades {
  */
 export function TarjetaFuncionalidad({ definicion, activa, alCambiar }: Propiedades) {
   const idTitulo = `funcionalidad-${definicion.id}`;
+  const idDescripcion = `${idTitulo}-descripcion`;
+  const idNota = `${idTitulo}-nota`;
   const pendiente = definicion.estado === 'pendiente';
 
   return (
@@ -20,8 +22,14 @@ export function TarjetaFuncionalidad({ definicion, activa, alCambiar }: Propieda
         <h3 id={idTitulo} className="tarjeta__titulo">
           {definicion.titulo}
         </h3>
-        <p className="tarjeta__descripcion">{definicion.descripcion}</p>
-        {definicion.nota ? <p className="tarjeta__nota">{definicion.nota}</p> : null}
+        <p id={idDescripcion} className="tarjeta__descripcion">
+          {definicion.descripcion}
+        </p>
+        {definicion.nota ? (
+          <p id={idNota} className="tarjeta__nota">
+            {definicion.nota}
+          </p>
+        ) : null}
       </div>
       {pendiente ? (
         <span className="insignia">Pendiente</span>
@@ -31,6 +39,7 @@ export function TarjetaFuncionalidad({ definicion, activa, alCambiar }: Propieda
           role="switch"
           aria-checked={activa}
           aria-labelledby={idTitulo}
+          aria-describedby={definicion.nota ? `${idDescripcion} ${idNota}` : idDescripcion}
           className="interruptor"
           onClick={() => {
             alCambiar(!activa);
