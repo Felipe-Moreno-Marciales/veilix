@@ -1,4 +1,4 @@
-/* global document, getComputedStyle, console -- fragmento para la consola del navegador */
+/* global document, window, getComputedStyle, console, URL -- fragmento para la consola del navegador */
 /**
  * Diagnóstico ANONIMIZADO de paneles con listas de contactos fuera de la lista
  * de chats («Nuevo chat», participantes de un grupo, reenvío…), para RF-01 y
@@ -15,14 +15,32 @@
  *   `wds-ic-…` y su estructura (`mask`, `image`, `foreignObject`).
  * - Revisa el resultado antes de compartirlo.
  *
- * Muestra tres tablas: las filas candidatas por rol; desde cada avatar, el
- * motivo por el que Veilix reconoce o no su fila como fila de contacto; y,
- * en «Nuevo chat», qué `span[dir][title]` de cada fila se marca como nombre.
- * Los valores de `data-testid` se anonimizan.
+ * Con «Nuevo chat» abierto muestra primero tres tablas para RF-02, con la
+ * fila completa `[role="listitem"][data-testid^="list-item-"]` como raíz:
+ * A) los hijos del botón de cada fila, con su tamaño y señales visuales;
+ * B) los candidatos a avatar: elementos con imagen, SVG, fondo o máscara CSS
+ *    (también en pseudoelementos), color de fondo o forma redonda, y lo que el
+ *    navegador pinta en la zona del avatar (`elementsFromPoint`), con las
+ *    reglas de RF-02 que los alcanzan y dónde está el filtro;
+ * C) un resumen por categoría de fila (acción, tú, contacto, posible no
+ *    guardado, encabezado) y tipo de elemento.
+ * Después, las tablas generales: filas candidatas por rol (el elemento con rol
+ * más interno, que en «Nuevo chat» es la celda de texto), avatares SVG fuera
+ * de la lista y nombres de «Nuevo chat» (RF-01).
+ *
+ * Los valores de `data-testid` se anonimizan. De las imágenes y los fondos solo
+ * se indica el tipo de origen, nunca la dirección; de los SVG, su estructura y
+ * su `<title>` si tiene la forma `wds-ic-…`. No se muestran colores, nombres,
+ * números ni `aria-label`. La categoría de fila solo compara textos genéricos
+ * de la interfaz («Tú», «Envíate un mensaje») y la forma del nombre («~» o
+ * teléfono), sin mostrarlos.
  */
 (() => {
-  /** `data-testid` anonimizado: números como «#» y nada tras «@» (podrían ser identificadores). */
-  const limpiarTestId = (valor) => valor.replace(/@.*$/, '@…').replace(/\d+/g, '#');
+  /**
+   * `data-testid` anonimizado: números como «#», nada tras «@» y nada tras
+   * `list-item-` (podrían ser identificadores).
+   */
+  const limpiarTestId = (valor) => valor.replace(/^(list-item-).+$/, '$1…').replace(/@.*$/, '@…').replace(/\d+/g, '#');
   const MAXIMO_FILAS = 25;
   const CANDIDATA = ':is([role="listitem"], [role="row"], [role="button"], [role="option"], [role="gridcell"])';
   const AVATAR_SVG = 'svg:not([data-icon] svg):has(mask):has(image, foreignObject)';
@@ -59,6 +77,14 @@
       cadena.push(describir(actual));
     }
     return cadena.join(' < ');
+  };
+
+  /** Ruta desde la fila hasta el elemento (sin incluirlo), con a lo sumo 8 niveles. */
+  const ascendenciaEnFila = (elemento, fila) => {
+    if (elemento === fila) return '(la propia fila)';
+    const cadena = [];
+    for (let actual = elemento.parentElement; actual && actual !== fila && cadena.length < 8; actual = actual.parentElement) cadena.push(describir(actual));
+    return cadena.reverse().join(' › ') || '(directamente en la fila)';
   };
 
   const marcas = (elemento) =>
@@ -164,11 +190,219 @@
     };
   });
 
-  console.log(`Veilix · diagnóstico anonimizado de paneles: ${filas.length} fila(s) candidata(s) fuera de la lista de chats y de la conversación.`);
+  // ─────────────────────────────────────────────────────────────────────────────
+  // «Nuevo chat» · avatares (RF-02). La raíz es la fila completa
+  // `[role="listitem"][data-testid^="list-item-"]` del panel, no la celda de texto:
+  // se examinan todos sus descendientes, incluidos los hermanos de
+  // `cell-frame-container`, y lo que el navegador pinta en la zona del avatar.
+  // ─────────────────────────────────────────────────────────────────────────────
+  const ORIGENES_FOTO_PERFIL = ['pps.whatsapp.net', '/t61.24694-24/'];
+  const REGLAS_RF02 = [
+    ['FOTO_PERFIL', ORIGENES_FOTO_PERFIL.flatMap((o) => [`img[src*="${o}"]`, `[style*="${o}"]`]).join(', ')],
+    ['FOTO_PERFIL_SVG', `svg:not([data-icon] svg):has(${ORIGENES_FOTO_PERFIL.map((o) => `image[*|href*="${o}"]`).join(', ')})`],
+    ['AVATAR_SVG', AVATAR_SVG],
+    ['AVATAR_PREDETERMINADO', ['default-user', 'default-group', 'default-contact', 'default-community'].map((p) => `[data-icon^="${p}"]`).join(', ')],
+    ['FILA_MARCADA_RF02', '[data-veilix-fila-contacto-fotos] *'],
+  ];
+  const reglasQueAlcanzan = (elemento) =>
+    REGLAS_RF02.filter(([, selector]) => {
+      try {
+        return elemento.matches(selector) || elemento.closest(selector) !== null;
+      } catch {
+        return false;
+      }
+    }).map(([nombre]) => nombre).join('+') || 'NINGUNA';
+
+  /** Tipo de origen de una URL, sin mostrarla. */
+  const tipoOrigen = (url) => {
+    if (!url) return 'sin origen';
+    if (url.startsWith('blob:')) return 'blob';
+    if (url.startsWith('data:')) return url.slice(0, Math.max(url.indexOf(';'), url.indexOf(',')) > 0 ? Math.min(...[url.indexOf(';'), url.indexOf(',')].filter((n) => n > 0)) : 15);
+    if (ORIGENES_FOTO_PERFIL.some((o) => url.includes(o))) return 'foto de perfil (pps)';
+    try {
+      return /(^|\.)(whatsapp\.(net|com)|fbcdn\.net)$/.test(new URL(url, document.baseURI).hostname) ? 'otro recurso de WhatsApp' : 'otro dominio';
+    } catch {
+      return 'no válida';
+    }
+  };
+  /** Clasifica un valor CSS de imagen (`background-image`, `mask-image`, `content`) sin mostrar direcciones. */
+  const tipoImagenCss = (valor) => {
+    if (!valor || valor === 'none' || valor === 'normal' || valor === '""') return null;
+    if (/gradient\(/.test(valor)) return 'degradado';
+    const url = /url\(["']?([^"')]+)/.exec(valor)?.[1];
+    return url ? tipoOrigen(url) : 'otro valor';
+  };
+  const esRedondo = (elemento, estilo) =>
+    /50%/.test(estilo.borderRadius) || (parseFloat(estilo.borderRadius) > 0 && parseFloat(estilo.borderRadius) * 2 >= Math.min(elemento.clientWidth, elemento.clientHeight) - 1);
+  const tieneFondoDeColor = (estilo) => estilo.backgroundColor !== 'rgba(0, 0, 0, 0)' && estilo.backgroundColor !== 'transparent';
+  const estructuraSvg = (svg) => {
+    const partes = ['mask', 'clipPath', 'circle', 'image', 'foreignObject', 'path', 'use'].filter((e) => svg.querySelector(e));
+    const caminos = svg.querySelectorAll('path').length;
+    return `${partes.join('+') || 'vacío'}${caminos > 1 ? ` (${caminos} paths)` : ''}`;
+  };
+
+  /** Señales visuales de un elemento: qué podría estar dibujando un avatar. Sin colores ni direcciones. */
+  const senales = (elemento) => {
+    const estilo = getComputedStyle(elemento);
+    const lista = [];
+    if (elemento.localName === 'img') lista.push(`img · ${tipoOrigen(elemento.getAttribute('src'))}`);
+    if (elemento.localName === 'svg' && !elemento.parentElement?.closest('svg')) {
+      lista.push(`svg · ${estructuraSvg(elemento)} · título ${tituloIcono(elemento) ?? 'ninguno'}`);
+    }
+    if (elemento.localName === 'video' || elemento.localName === 'canvas') lista.push(elemento.localName);
+    const fondo = tipoImagenCss(estilo.backgroundImage);
+    if (fondo) lista.push(`fondo CSS · ${fondo}`);
+    const mascara = tipoImagenCss(estilo.maskImage || estilo.webkitMaskImage);
+    if (mascara) lista.push(`máscara CSS · ${mascara}`);
+    for (const pseudo of ['::before', '::after']) {
+      const p = getComputedStyle(elemento, pseudo);
+      if (p.content && p.content !== 'none' && p.content !== 'normal') {
+        const partes = [tipoImagenCss(p.backgroundImage), tipoImagenCss(p.maskImage || p.webkitMaskImage), tipoImagenCss(p.content)].filter(Boolean);
+        lista.push(`${pseudo}${partes.length ? ` · ${partes.join(', ')}` : ''}`);
+      }
+    }
+    if (elemento.hasAttribute('data-icon')) lista.push(`data-icon=${elemento.getAttribute('data-icon')}`);
+    if (tieneFondoDeColor(estilo)) lista.push('color de fondo');
+    if (esRedondo(elemento, estilo)) lista.push('redondo');
+    return lista;
+  };
+
+  const filtroEn = (elemento, fila) => {
+    for (let actual = elemento; actual; actual = actual.parentElement) {
+      if (getComputedStyle(actual).filter !== 'none') {
+        return actual === elemento ? 'el propio elemento' : `${describir(actual)}${fila.contains(actual) ? '' : ' (fuera de la fila)'}`;
+      }
+    }
+    return 'NO difuminado';
+  };
+
+  // Categorías de fila: solo se comparan textos genéricos de la interfaz; nunca se muestran nombres.
+  const ETIQUETA_TU = /^\(?\s*(t[uú]|you)\s*\)?$|^(env[ií]ate un mensaje|message yourself)$/i;
+  const pareceTelefono = (texto) => /^\+?[\d\s().\u00a0-]{7,}$/.test(texto) && texto.replace(/\D/g, '').length >= 7;
+  const categoriaDe = (fila) => {
+    if (fila.matches('[data-testid^="new-chat-drawer-new-"]') || fila.querySelector('[data-testid^="new-chat-drawer-new-"]')) return 'acción';
+    const nombre = fila.querySelector('span[dir][title]');
+    if (!nombre) return 'encabezado de sección u otra';
+    const textos = [...fila.querySelectorAll('span, div')].map((e) => [...e.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join('').trim()).filter(Boolean);
+    if (textos.some((t) => ETIQUETA_TU.test(t))) return 'tú';
+    const textoNombre = (nombre.textContent ?? '').trim();
+    if (textoNombre.startsWith('~') || pareceTelefono(textoNombre)) return 'contacto posiblemente no guardado';
+    return 'contacto';
+  };
+
+  const celdaDe = (fila) => fila.querySelector('[data-testid="cell-frame-container"]');
+  const zonaDe = (elemento, fila) => {
+    const celda = celdaDe(fila);
+    if (!celda) return 'fila sin cell-frame-container';
+    if (celda.contains(elemento)) return elemento.closest('[role="gridcell"]') ? 'dentro de cell-frame-container · gridcell' : 'dentro de cell-frame-container';
+    return 'fuera de cell-frame-container';
+  };
+
+  const visibleEnPantalla = (caja) => caja.width > 0 && caja.height > 0 && caja.bottom > 0 && caja.top < window.innerHeight;
+  const atajoActivo = document.documentElement.hasAttribute('data-veilix-revelar-fotos');
+
+  const categorias = filasNuevoChat.slice(0, MAXIMO_FILAS).map((fila) => categoriaDe(fila));
+
+  // Tabla A · estructura de cada fila: los hijos directos de su botón (o de la fila), con su tamaño y señales.
+  const estructuraFilas = filasNuevoChat.slice(0, MAXIMO_FILAS).map((fila, indice) => {
+    const boton = fila.querySelector(':scope > [role="button"]') ?? fila.querySelector('[role="button"]') ?? fila;
+    const celda = celdaDe(fila);
+    const hijos = [...boton.children].map((hijo) => {
+      const caja = hijo.getBoundingClientRect();
+      const visuales = [hijo, ...hijo.querySelectorAll('*')].flatMap((e) => senales(e));
+      return `${describir(hijo)} ${Math.round(caja.width)}×${Math.round(caja.height)}${hijo === celda || hijo.contains(celda) ? ' (contiene cell-frame-container)' : ''}${visuales.length ? ` [${[...new Set(visuales)].join('; ')}]` : ''}`;
+    });
+    return {
+      fila: indice + 1,
+      categoria: categorias[indice],
+      bajoElCursor: fila.matches(':hover') ? 'sí (se estaría revelando)' : 'no',
+      raiz: describir(boton),
+      hijos: hijos.join(' | ') || '—',
+    };
+  });
+
+  // Tabla B · candidatos a avatar: elementos de la fila con alguna señal visual, más lo pintado en la zona del avatar.
+  const candidatosAvatar = filasNuevoChat.slice(0, MAXIMO_FILAS).flatMap((fila, indice) => {
+    const enFila = [fila, ...fila.querySelectorAll('*')].filter((e) => !e.parentElement?.closest('svg') || e.localName === 'svg');
+    const conSenales = enFila.filter((e) => senales(e).some((s) => s !== 'redondo'));
+    // Lo que el navegador pinta a 30 px del borde inicial de la fila (donde suele dibujarse el avatar).
+    const caja = fila.getBoundingClientRect();
+    const pintados = visibleEnPantalla(caja)
+      ? document.elementsFromPoint(document.dir === 'rtl' ? caja.right - 30 : caja.left + 30, caja.top + caja.height / 2)
+      : [];
+    const enZonaDelAvatar = new Set(pintados.filter((e) => fila.contains(e)));
+    const fuera = pintados.filter((e) => !fila.contains(e) && !e.contains(fila)).slice(0, 3);
+    const elementos = [...new Set([...conSenales, ...enZonaDelAvatar])].slice(0, 12);
+    const filas = elementos.map((e) => {
+      const c = e.getBoundingClientRect();
+      return {
+        fila: indice + 1,
+        categoria: categorias[indice],
+        elemento: describir(e),
+        ruta: ascendenciaEnFila(e, fila),
+        zona: zonaDe(e, fila),
+        tamano: `${Math.round(c.width)}×${Math.round(c.height)}`,
+        senales: senales(e).join('; ') || '—',
+        enLaZonaDelAvatar: enZonaDelAvatar.has(e) ? 'sí' : 'no',
+        reglasRF02: reglasQueAlcanzan(e),
+        difuminado: filtroEn(e, fila),
+      };
+    });
+    if (fuera.length > 0) {
+      filas.push({
+        fila: indice + 1,
+        categoria: categorias[indice],
+        elemento: fuera.map((e) => describir(e)).join(' | '),
+        ruta: '(pintado en la zona del avatar, FUERA de la fila)',
+        zona: 'fuera de la fila',
+        tamano: '—',
+        senales: fuera.flatMap((e) => senales(e)).join('; ') || '—',
+        enLaZonaDelAvatar: 'sí',
+        reglasRF02: fuera.map((e) => reglasQueAlcanzan(e)).join(' | '),
+        difuminado: fuera.map((e) => filtroEn(e, fila)).join(' | '),
+      });
+    }
+    if (filas.length === 0) {
+      filas.push({ fila: indice + 1, categoria: categorias[indice], elemento: visibleEnPantalla(caja) ? 'ningún elemento visual' : 'fila fuera de pantalla (desplázate hasta ella)' });
+    }
+    return filas;
+  });
+
+  // Tabla C · resumen por categoría de fila y tipo de elemento, con los visibles primero.
+  const firmas = new Map();
+  for (const c of candidatosAvatar.filter((c) => c.senales && c.senales !== '—')) {
+    const clave = [c.categoria, c.zona, c.senales.replace(/\b\d+×\d+\b/g, ''), c.reglasRF02].join(' | ');
+    const firma = firmas.get(clave) ?? { tipo: clave, elementos: 0, visibles: 0 };
+    firma.elementos++;
+    if (c.difuminado === 'NO difuminado') firma.visibles++;
+    firmas.set(clave, firma);
+  }
+  const resumenAvatares = [...firmas.values()].sort((a, b) => b.visibles - a.visibles);
+  const recuentoCategorias = categorias.reduce((r, c) => ({ ...r, [c]: (r[c] ?? 0) + 1 }), {});
+
+  if (filasNuevoChat.length > 0) {
+    console.log(
+      `Veilix · «Nuevo chat» (RF-02) · ${filasNuevoChat.length} fila(s) completas [role=listitem]: ${Object.entries(recuentoCategorias).map(([c, n]) => `${n} ${c}`).join(', ')}. ` +
+        `Atajo de revelado ${atajoActivo ? 'ACTIVO (suéltalo y repite)' : 'inactivo'}. Aleja el cursor de la lista antes de ejecutar.`,
+    );
+    console.log('Veilix · A) estructura de cada fila (hijos del botón, tamaño y señales visuales):');
+    console.table(estructuraFilas);
+    console.log('Veilix · B) candidatos a avatar (con señales visuales o pintados en la zona del avatar), con las reglas de RF-02 y el filtro:');
+    console.table(candidatosAvatar);
+    console.log('Veilix · C) resumen por categoría y tipo de elemento (los visibles primero):');
+    console.table(resumenAvatares);
+  } else {
+    console.log('Veilix · «Nuevo chat» no está abierto: ábrelo y repite para obtener las tablas de avatares.');
+  }
+
+  console.log(`Veilix · (general) ${filas.length} fila(s) candidata(s) fuera de la lista de chats y de la conversación. Atención: esta tabla toma el elemento con rol más interno (en «Nuevo chat», la celda de texto), no la fila completa.`);
   console.table(resumen);
-  console.log(`Veilix · ${avataresFuera.length} avatar(es) fuera de la lista de chats y de la conversación, con el motivo por el que su fila se reconoce o no:`);
+  console.log(`Veilix · (general) ${avataresFuera.length} avatar(es) SVG fuera de la lista de chats y de la conversación, con el motivo por el que su fila se reconoce o no:`);
   console.table(porAvatar);
-  console.log(`Veilix · «Nuevo chat»: ${filasNuevoChat.length} fila(s) [role=listitem][data-testid^=list-item-] (nombre marcado y su posición entre los span[dir][title]):`);
+  console.log(`Veilix · «Nuevo chat» (RF-01): nombre marcado y su posición entre los span[dir][title]:`);
   console.table(nuevoChat);
-  console.log('Veilix · resumen (JSON):\n' + JSON.stringify({ filas: resumen, avatares: porAvatar, nuevoChat }, null, 2));
+  console.log(
+    'Veilix · resumen (JSON):\n' +
+      JSON.stringify({ nuevoChat: { recuentoCategorias, atajoActivo, estructuraFilas, candidatosAvatar, resumenAvatares, nombres: nuevoChat }, general: { filas: resumen, avatares: porAvatar } }, null, 2),
+  );
 })();
