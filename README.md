@@ -6,7 +6,19 @@ Extensión de privacidad para WhatsApp Web, desarrollada de forma independiente.
 
 ## Estado
 
-Versión actual: **0.1.2-beta.0**, compilación interna de prueba sobre la estable `0.1.1`, que sigue pendiente de la aprobación final del propietario. Solo añade la protección del texto citado en el recuadro «Responder» (RF-04), pendiente de validación real; ver [Recuadro «Responder»](#recuadro-responder-corrección-en-012-beta0). Ninguna está publicada en tiendas ni tiene etiqueta de Git. `0.1.1` incluye las correcciones de RF-01 y RF-02 sobre `0.1.0` y la identidad visual del candado, con el crédito del desarrollador en el pie del panel (la bandera de Colombia es un SVG local, porque Windows no muestra el emoji 🇨🇴). El estado de cada evidencia está en [Versión 0.1.1](#versión-011-estable-pendiente-de-aprobación) y el historial, en [CHANGELOG.md](CHANGELOG.md).
+Versión actual: **0.1.2-beta.13**, compilación interna de prueba sobre la estable `0.1.1`, que sigue pendiente de la aprobación final del propietario. `0.1.2-beta.13` amplía RF-01 al nombre, el usuario, el teléfono y la descripción de «Info. del contacto», pendiente de validación real; ver [Panel «Info. del contacto»](#panel-info-del-contacto-rf-01-desde-012-beta13). `0.1.2-beta.12` difumina el encabezado «Tú · Estados» de los estados citados (RF-04), pendiente de validación real. `0.1.2-beta.11` difumina la duración de las citas (RF-04), pendiente de validación real. `0.1.2-beta.10` difumina las miniaturas de las citas dentro de los mensajes, como la de una respuesta a un estado (RF-04), pendiente de validación real; ver [Miniaturas de citas](#miniaturas-de-citas-y-respuestas-a-estados-corrección-en-012-beta10). `0.1.2-beta.9` difumina la etiqueta de extensión del icono de los documentos (RF-04), **validado** por el propietario. `0.1.2-beta.8` difumina el nombre, el formato y el tamaño de los documentos adjuntos (RF-04), **validado** por el propietario; ver [Documentos adjuntos](#documentos-adjuntos-corrección-en-012-beta8). `0.1.2-beta.7` difumina las miniaturas de vídeo dibujadas como fondos CSS (RF-04), pendiente de validación real; ver [Miniaturas de vídeo](#miniaturas-de-vídeo-corrección-en-012-beta7). `0.1.2-beta.6` audita los cinco interruptores del panel: actualiza sus textos, corrige un filtro duplicado de RF-03 y añade pruebas de independencia (ver [Interruptores del panel](#interruptores-del-panel-auditoría-de-012-beta6)). Las betas de `0.1.2` añaden cinco correcciones:
+- **Recuadro «Responder»** (RF-04, `0.1.2-beta.0`): el texto citado. Pendiente de validación real; ver [Recuadro «Responder»](#recuadro-responder-corrección-en-012-beta0).
+- **Autores de grupo** (RF-01, `0.1.2-beta.1`): por su estructura `[data-testid="author"]`. **Validada** por el propietario; ver [Remitentes no guardados](#remitentes-no-guardados-en-grupos-corrección-en-012-beta1).
+- **Avatares de «Nuevo chat»** (RF-02, `0.1.2-beta.2`): fotos y avatares predeterminados. Pendiente de validación real; ver [Avatares predeterminados](#avatares-predeterminados-en-nuevo-chat-corrección-en-012-beta2). Ninguna está publicada en tiendas ni tiene etiqueta de Git. `0.1.1` incluye las correcciones de RF-01 y RF-02 sobre `0.1.0` y la identidad visual del candado, con el crédito del desarrollador en el pie del panel (la bandera de Colombia es un SVG local, porque Windows no muestra el emoji 🇨🇴). El estado de cada evidencia está en [Versión 0.1.1](#versión-011-estable-pendiente-de-aprobación) y el historial, en [CHANGELOG.md](CHANGELOG.md).
+- **Avatares de participantes en grupos** (RF-02, `0.1.2-beta.3`): foto e inicial junto a los mensajes. **Validada** por el propietario (ocho pruebas); ver [Avatares de participantes en grupos](#avatares-de-participantes-en-grupos-corrección-en-012-beta3).
+- **«Info. del mensaje»** (RF-04):
+  - Texto de la copia del mensaje (`0.1.2-beta.4`): **validado** por el propietario.
+  - Stickers (`0.1.2-beta.5`): **validados** por el propietario.
+  - Fotos y vídeos: sin diagnóstico.
+
+  Ver [«Info. del mensaje»](#info-del-mensaje-corrección-en-012-beta4).
+
+**Estable `0.1.2`:** preparación detenida hasta que el propietario valide el texto citado del recuadro «Responder» (RF-04), los textos y la independencia de los interruptores de `0.1.2-beta.6` las miniaturas de vídeo de `0.1.2-beta.7` la etiqueta del icono de los documentos de `0.1.2-beta.9` las miniaturas de citas de `0.1.2-beta.10` la duración de las citas de `0.1.2-beta.11` el encabezado de los estados citados de `0.1.2-beta.12` y «Info. del contacto» de `0.1.2-beta.13`. Las miniaturas citadas y las fotos y vídeos de «Info. del mensaje» quedarían como limitaciones documentadas.
 
 - **Fase 1: infraestructura y arquitectura.** Completada y aprobada.
 - **Fase 2: motor de difuminado.** Implementada y **validada funcionalmente en Google Chrome** por el propietario con `0.2.0-beta.8` (sistema operativo sin indicar). La versión final es `0.1.0` (renumeración aprobada), con el mismo comportamiento que `0.2.0-beta.8`. Después, en pruebas reales se detectaron nombres de remitentes de grupo y elementos de «Nuevo chat» sin proteger; `0.1.1-beta.0` los corrige, y `0.1.1` reúne esas correcciones como estable. Con `0.1.1-beta.3`, el propietario validó en Chrome la información secundaria de «Nuevo chat» y los remitentes en grupos, sin regresiones. **La Fase 2 sigue abierta** hasta que el propietario apruebe `0.1.1`. Ver [Versión 0.1.1](#versión-011-estable-pendiente-de-aprobación) y [Cierre de la Fase 2](#cierre-de-la-fase-2).
@@ -38,6 +50,23 @@ Preparada el 21 de octubre de 2026 a partir de `0.1.1-beta.5` con `npm run versi
 | Real en Google Chrome | `0.1.1-beta.3`: información secundaria de «Nuevo chat», remitentes en grupos y ausencia de regresiones | ✅ Correcta; la regresión de beta.2 no volvió a manifestarse |
 | Real en Google Chrome | Candado (beta.4), crédito y bandera (beta.5) y `0.1.1` | ⏳ Sin resultado comunicado (solo cambian la identidad visual y la versión; RF-01 a RF-05 no cambian desde beta.3) |
 | Real en Google Chrome | Recuadro «Responder» (vista previa del mensaje citado encima del editor) con `0.1.1` | ❌ **El texto citado queda visible** con RF-04 activa (comunicado por el propietario el 22 de octubre de 2026). El autor sí se difumina con RF-01. Corrección en `0.1.2-beta.0`, pendiente de validación ([detalle](#recuadro-responder-corrección-en-012-beta0)) |
+| Real en Google Chrome | Remitentes no guardados en grupos con `0.1.2-beta.0` (nombres en color, algunos con «~», emojis o símbolos) | ❌ **Algunos nombres quedan visibles** con RF-01 activa (comunicado por el propietario el 26 de octubre de 2026). Ver [Remitentes no guardados](#remitentes-no-guardados-en-grupos-corrección-en-012-beta1) |
+| Real en Google Chrome | Remitentes no guardados en grupos con `0.1.2-beta.1` | ✅ **Correcto**: el propietario confirmó que la corrección funciona |
+| Real en Google Chrome | Avatares predeterminados de «Nuevo chat» (círculos de color con una silueta) con `0.1.2-beta.1` | ❌ **Siguen visibles** con RF-02 activa; las fotos personalizadas sí se difuminan. Corrección en `0.1.2-beta.2`, pendiente de validación: ver [Avatares predeterminados](#avatares-predeterminados-en-nuevo-chat-corrección-en-012-beta2) |
+| Real en Google Chrome | Avatares de participantes junto a los mensajes de un grupo (silueta, inicial en un círculo de color) con `0.1.2-beta.2` | ❌ **Algunos siguen visibles** con RF-02 activa (comunicado por el propietario). Corrección en `0.1.2-beta.3`, pendiente de validación: ver [Avatares de participantes en grupos](#avatares-de-participantes-en-grupos-corrección-en-012-beta3) |
+| Real en Google Chrome | `0.1.2-beta.3`: las ocho pruebas funcionales de los avatares de participantes en grupos, incluidas la conservación de la lista de chats, el encabezado y «Nuevo chat» | ✅ **Aprobadas** por el propietario; incidencia cerrada. No consta si la prueba incluyó un avatar con silueta |
+| Real en Google Chrome | Recuadro «Responder» con `0.1.2-beta.0` o posterior (texto citado) | ⏳ **Sin resultado comunicado**. Las miniaturas citadas no tienen selector ni diagnóstico |
+| Real en Google Chrome | «Info. del mensaje» con `0.1.2-beta.3` | ❌ **La copia del mensaje se ve sin difuminar** con RF-04 activa (comunicado por el propietario). Corrección en `0.1.2-beta.4`, pendiente de validación: ver [«Info. del mensaje»](#info-del-mensaje-corrección-en-012-beta4) |
+| Real en Google Chrome | «Info. del mensaje» con `0.1.2-beta.4`: texto | ✅ **Correcto**: difuminado y revelado con el cursor; título, cierre, horas, indicadores, «Leído» y «Entregado» visibles |
+| Real en Google Chrome | «Info. del mensaje» con `0.1.2-beta.4`: sticker | ❌ **El sticker queda visible** con RF-04 activa (comunicado por el propietario, con capturas). Corrección en `0.1.2-beta.5`: ver [«Info. del mensaje»](#info-del-mensaje-corrección-en-012-beta4) |
+| Real en Google Chrome | «Info. del mensaje» con `0.1.2-beta.5`: sticker | ✅ **Funciona** (confirmado por el propietario) |
+| Real en Google Chrome | `0.1.2-beta.6`: textos del panel e independencia de los interruptores | ⏳ **Sin resultado comunicado**. Ver [Interruptores del panel](#interruptores-del-panel-auditoría-de-012-beta6) |
+| Real en Google Chrome | Documentos adjuntos (PNG y JPG) con `0.1.2-beta.7` | ❌ **Nombre, formato y tamaño visibles** con RF-04 activa (diagnóstico real: `document-thumb`). Corrección en `0.1.2-beta.8`, pendiente de validación: ver [Documentos adjuntos](#documentos-adjuntos-corrección-en-012-beta8) |
+| Real en Google Chrome | Respuesta a un estado con `0.1.2-beta.10` | ◐ **Miniatura difuminada**, pero el encabezado «Tú · Estados» y la duración «0:18» siguen nítidos (comunicado por el propietario). En investigación |
+| Real en Google Chrome | Documentos con `0.1.2-beta.9`: etiqueta de extensión del icono | ✅ **Funciona** (confirmado por el propietario) |
+| Real en Google Chrome | Respuesta a un estado con `0.1.2-beta.9` | ❌ **La miniatura del estado se ve** con RF-04 activa (diagnóstico real: fondo `data:image/jpeg` en `quoted-message`). Corrección en `0.1.2-beta.10`, pendiente de validación: ver [Miniaturas de citas](#miniaturas-de-citas-y-respuestas-a-estados-corrección-en-012-beta10) |
+| Real en Google Chrome | Documentos con `0.1.2-beta.8`: nombre, formato y tamaño | ✅ **Difuminados** (confirmado por el propietario). La etiqueta PNG/JPG del icono seguía visible; corrección en `0.1.2-beta.9`, pendiente de validación |
+| Real en Google Chrome | Vídeos de una conversación con `0.1.2-beta.6` | ❌ **Una miniatura se ve sin difuminar** con RF-04 activa (diagnóstico real: fondos `data:image/jpeg` en `video-content`). Corrección en `0.1.2-beta.7`, pendiente de validación: ver [Miniaturas de vídeo](#miniaturas-de-vídeo-corrección-en-012-beta7) |
 | Real en Edge, Firefox, Brave, Opera, Vivaldi y Safari | — | ⏳ Ninguna prueba real ([matriz](#matriz-de-compatibilidad)) |
 
 ### Resultados automatizados (`0.1.1`)
@@ -150,10 +179,10 @@ Precisiones técnicas sobre ese resultado:
 
 | Funcionalidad | Categoría | Estado | Observaciones |
 | --- | --- | --- | --- |
-| Difuminar nombres de contactos (RF-01) | Difuminado visual | Disponible · validado en Chrome con `0.2.0-beta.8`. Ampliaciones de `0.1.1` validadas en Chrome con `0.1.1-beta.3`: remitentes en grupos y nombres e información secundaria de «Nuevo chat» | Lista de chats y encabezado de la conversación. Desde `0.1.1-beta.0`, también los remitentes dentro de la conversación (sobre los mensajes de grupo, en citas y respuestas, en el aviso fijado) y los nombres de filas de contacto fuera de la lista («Nuevo chat», participantes…). |
-| Difuminar fotografías de contactos (RF-02) | Difuminado visual | Disponible · validado en Chrome (ampliación de `0.1.1-beta.0` validada en «Nuevo chat»; otros paneles sin comprobar) | Fotos y avatares predeterminados de la lista y del encabezado, y fotos de perfil en cualquier otra zona (panel de información, remitentes en grupos, foto propia). Desde `0.1.1-beta.0`, también los avatares SVG predeterminados en cualquier zona, como «Nuevo chat», que se revelan con su fila. No afecta a iconos, contadores ni imágenes de mensajes. |
+| Difuminar nombres de contactos (RF-01) | Difuminado visual | Disponible · validado en Chrome con `0.2.0-beta.8`. Ampliaciones de `0.1.1` validadas en Chrome con `0.1.1-beta.3`: remitentes en grupos y nombres e información secundaria de «Nuevo chat». Desde `0.1.2-beta.1`, autores de grupo por su estructura `[data-testid="author"]`, incluidos los no guardados y la multimedia sin descripción (validado en Chrome con `0.1.2-beta.1`) | Lista de chats y encabezado de la conversación. Desde `0.1.1-beta.0`, también los remitentes dentro de la conversación (sobre los mensajes de grupo, en citas y respuestas, en el aviso fijado) y los nombres de filas de contacto fuera de la lista («Nuevo chat», participantes…). |
+| Difuminar fotografías de contactos (RF-02) | Difuminado visual | Disponible · validado en Chrome (ampliación de `0.1.1-beta.0` validada en «Nuevo chat»; otros paneles sin comprobar). Con `0.1.2-beta.1`, los avatares predeterminados de «Nuevo chat» seguían visibles; desde `0.1.2-beta.2`, la columna del avatar de cada contacto y de «Tú» (pendiente de validación). Desde `0.1.2-beta.3`, los avatares de participantes junto a los mensajes de un grupo (pendiente de validación; la silueta, de confirmar) | Fotos y avatares predeterminados de la lista y del encabezado, y fotos de perfil en cualquier otra zona (panel de información, remitentes en grupos, foto propia). Desde `0.1.1-beta.0`, también los avatares SVG predeterminados en cualquier zona, como «Nuevo chat», que se revelan con su fila. No afecta a iconos, contadores ni imágenes de mensajes. |
 | Difuminar mensajes recientes (RF-03) | Difuminado visual | Disponible · validado en Chrome (reloj pendiente) | Vista previa en la lista de chats, incluidas las especiales con iconos dentro (por ejemplo, «reaccionó con 👌 a:» con el icono de una foto), y su indicador de **leído** (`wds-ic-read`) cuando el último mensaje es propio. Enviado, entregado y pendiente, pendientes de diagnóstico. Silenciado, fijado, estados, mensajes temporales, stickers y contador de no leídos siguen visibles. |
-| Difuminar mensajes de conversaciones (RF-04) | Difuminado visual | Disponible · validado en Chrome (reloj pendiente) | Texto, descripciones, multimedia (fotos, vídeos y miniaturas), hora y reacciones de los mensajes entrantes y salientes, y el indicador de **leído** de los enviados (`wds-ic-read` en `msg-meta`; los demás estados, pendientes de diagnóstico). El revelado abarca el mensaje completo. Desde `0.1.2-beta.0`, también el texto citado del recuadro «Responder» encima del editor (pendiente de validación real; las miniaturas citadas, pendientes de diagnóstico). Los botones de reaccionar, descargar, responder y reproducir, los demás iconos y los separadores siguen visibles. |
+| Difuminar mensajes de conversaciones (RF-04) | Difuminado visual | Disponible · validado en Chrome (reloj pendiente). Desde `0.1.2-beta.4`, también el texto de «Info. del mensaje» (pendiente de validación). Desde `0.1.2-beta.7`, las miniaturas de vídeo dibujadas como fondos CSS, desde `0.1.2-beta.8`, el nombre, el formato y el tamaño de los documentos adjuntos (validado), desde `0.1.2-beta.9`, la etiqueta de extensión de su icono, y desde `0.1.2-beta.10`, las miniaturas de las citas (ambas pendientes de validación); las miniaturas de vídeo, pendientes de validación | Texto, descripciones, multimedia (fotos, vídeos y miniaturas), hora y reacciones de los mensajes entrantes y salientes, y el indicador de **leído** de los enviados (`wds-ic-read` en `msg-meta`; los demás estados, pendientes de diagnóstico). El revelado abarca el mensaje completo. Desde `0.1.2-beta.0`, también el texto citado del recuadro «Responder» encima del editor (pendiente de validación real; las miniaturas citadas, pendientes de diagnóstico). Los botones de reaccionar, descargar, responder y reproducir, los demás iconos y los separadores siguen visibles. |
 | Difuminar el campo de entrada de mensajes (RF-05) | Difuminado visual | Disponible · validado en Chrome | Se puede escribir, corregir, copiar y enviar con normalidad. |
 | Ocultar el estado de escritura | Actividad y presencia | Pendiente | Antes de implementarla hay que confirmar que es técnicamente viable. |
 | Ver estados de forma privada | Actividad y presencia | Pendiente | Se priorizará la configuración oficial de privacidad de WhatsApp. |
@@ -173,6 +202,27 @@ El contenido difuminado se puede revelar momentáneamente y se vuelve a difumina
 Si la ventana pierde el foco, todo se vuelve a difuminar.
 
 El atajo usa la tecla **Control** en todos los sistemas, también en macOS (no Comando). En Safari, el tabulador solo recorre los campos de formulario por defecto. Para mover el foco por filas y botones hay que usar **Opción + Tab** o activar *Safari > Ajustes > Avanzado > «Pulsar Tab para resaltar cada ítem de una página web»*.
+
+### Interruptores del panel (auditoría de 0.1.2-beta.6)
+
+Cada interruptor guarda solo su clave, `funcionalidades.<id>`, dentro de `local:preferencias`, y el gestor activa o desactiva su módulo en vivo, sin recargar. Cada módulo añade su propio `<style>` y sus propias marcas `data-veilix-*`, y no depende de los demás.
+
+| Interruptor | Módulo | Zonas que protege | Fuera de su alcance | Validación real (Chrome) |
+| --- | --- | --- | --- | --- |
+| RF-01 · nombres e información personal | `difuminar-nombres.ts` | Lista de chats, encabezado, autores y remitentes de grupo, autor citado en «Responder», nombre e información de cada contacto en «Nuevo chat», otras filas de contacto con avatar SVG (hipótesis) y, desde `0.1.2-beta.13`, nombre, usuario, teléfono y descripción de «Info. del contacto» | Textos de mensajes (RF-04) | ✅ hasta `0.1.2-beta.1`; autor citado sin validar |
+| RF-02 · fotos | `difuminar-fotos.ts` | Lista de chats, encabezado, columna del avatar en «Nuevo chat» (también «Tú»), avatares de participantes junto a los mensajes de grupo y fotos de perfil en otras zonas | Fotos y vídeos enviados (RF-04), iconos y contadores | ✅ hasta `0.1.2-beta.3`; la silueta de grupo, sin confirmar |
+| RF-03 · mensajes recientes | `difuminar-mensajes-recientes.ts` | Vista previa de cada fila de la lista, con sus emojis, reacciones e iconos, y el indicador de leído (`wds-ic-read`) | Enviado, entregado y reloj (sin evidencia); silenciado, fijado y contador | ✅ con `0.2.0-beta.8` (reloj pendiente) |
+| RF-04 · mensajes | `difuminar-mensajes-conversacion.ts` | Texto, descripciones, multimedia (también las miniaturas de vídeo como fondos CSS, desde `0.1.2-beta.7`), nombre, formato y tamaño de los documentos adjuntos (desde `0.1.2-beta.8`) y la etiqueta de extensión de su icono (desde `0.1.2-beta.9`), miniaturas de las citas (desde `0.1.2-beta.10`) su duración (desde `0.1.2-beta.11`) y el encabezado de los estados citados (desde `0.1.2-beta.12`), hora, reacciones e indicador de leído de los mensajes; texto citado en «Responder»; texto y stickers de «Info. del mensaje» | Miniaturas citadas, fotos y vídeos de «Info. del mensaje» (sin selector) y nombres (RF-01) | ✅ salvo el texto citado de «Responder» (⏳) |
+| RF-05 · campo de entrada | `difuminar-campo-entrada.ts` | Editor de `#main footer` | Resto del pie | ✅ con `0.2.0-beta.8` |
+
+**Condiciones del foco.** RF-01 a RF-04 revelan con `:focus-visible` en el contenedor o en un descendiente: la fila de la lista, el encabezado, la fila del mensaje, la copia de «Info. del mensaje» o el botón del sticker. Solo ocurre cuando WhatsApp Web permite llegar ahí con el teclado y el navegador marca el foco como visible; un clic con el ratón normalmente no lo hace. RF-05 no revela con el foco, porque el editor lo tiene mientras se escribe.
+
+**Pruebas de independencia** (`tests/navegador/interruptores.test.ts`, DOM simulado): cada interruptor solo, cada uno desactivado con los otros cuatro activos, los cinco activos con un único filtro por elemento, los cinco desactivados sin restos, alternancia en vivo, cambio de conversación, atajo y revelado por cursor y por foco. La prueba del filtro único detectó que RF-03 difuminaba dos veces la vista previa, porque marcaba el `span[title]` y el `span[dir]` interior. Desde `0.1.2-beta.6` solo marca el más externo. No hay evidencia real de ese anidamiento en WhatsApp Web.
+
+**Validación real pendiente de `0.1.2-beta.6`:**
+1. Los textos del panel describen lo que se observa.
+2. Cada interruptor, desactivado con los demás activos, deja visible solo lo suyo.
+3. La vista previa de la lista no se ve más difuminada que los nombres.
 
 ## Principios
 
@@ -203,6 +253,8 @@ npm run dev          # desarrollo con recarga en Chrome
 npm run dev:firefox  # desarrollo en Firefox
 ```
 
+> **Pruebas reales: carga siempre `.output/chrome-mv3`** (tras `npm run build:chrome`). La compilación de desarrollo (`.output/chrome-mv3-dev`, de `npm run dev`) no declara el script de contenido en su manifiesto. WXT lo registra en tiempo de ejecución desde el servidor de desarrollo, así que sin él Veilix no actúa en WhatsApp Web. Además tiene el mismo número de versión, por lo que en `chrome://extensions` no se distingue.
+
 ## Scripts
 
 | Script | Descripción |
@@ -218,7 +270,7 @@ npm run dev:firefox  # desarrollo en Firefox
 | `npm run build` | Compila para Chrome, Edge, Firefox y Safari. |
 | `npm run build:chrome` / `build:edge` / `build:firefox` / `build:safari` | Compila para un solo navegador. `build:chrome` sirve también para Brave, Opera y Vivaldi. |
 | `npm run lint:firefox` | Valida `.output/firefox-mv3` con `web-ext lint`. |
-| `npm run zip:<navegador>` | Genera el paquete `.zip` (`chrome`, `edge`, `firefox` o `safari`) con la versión en el nombre, por ejemplo `veilix-0.1.2-beta.0-chrome.zip`. |
+| `npm run zip:<navegador>` | Genera el paquete `.zip` (`chrome`, `edge`, `firefox` o `safari`) con la versión en el nombre, por ejemplo `veilix-0.1.2-beta.13-chrome.zip`. |
 | `npm run version:beta` | Siguiente versión previa: desde una estable inicia la beta del siguiente parche (`0.1.0` → `0.1.1-beta.0`), y desde una beta la incrementa (`0.1.1-beta.0` → `0.1.1-beta.1`). |
 | `npm run version:parche-beta` / `version:menor-beta` | Primera beta del siguiente parche (`0.2.1-beta.0`) o de la siguiente versión menor (`0.3.0-beta.0`). |
 | `npm run version:estable` | Convierte en estable la beta actual (`0.1.1-beta.5` → `0.1.1`). Ejecutar solo sobre una versión beta. |
@@ -388,6 +440,209 @@ Si alguna foto sigue visible con RF-02 activa:
 
 El fragmento solo lee el DOM. No hace peticiones ni muestra nombres, textos, `title`, `aria-label`, `alt` ni direcciones completas. Lista las imágenes, fondos e iconos de al menos 20 px, con su zona, sus atributos, su ascendencia, el patrón de su origen y si están difuminados. Revisa el resultado y comparte las filas marcadas con `difuminado: NO`.
 
+### Avatares predeterminados en «Nuevo chat» (corrección en 0.1.2-beta.2)
+
+Con `0.1.2-beta.1`, el propietario comprobó en Chrome que, con RF-02 activa, las fotos personalizadas de «Nuevo chat» se difuminan, pero algunos avatares predeterminados (círculos de color con la silueta de una persona) siguen visibles.
+
+**Lo que se sabe por el código:**
+- **Sin regla por fila:** RF-02 no reconoce como filas de contacto las filas de «Nuevo chat». `crearMarcadorFilasContacto` exige exactamente un `AVATAR_SVG`, y el diagnóstico real de `0.1.1-beta.1` mostró que esas filas no tienen ninguno.
+- **Solo la regla global:** en «Nuevo chat» solo actúa la regla que reconoce un avatar por sí mismo:
+  - `FOTO_PERFIL`: origen `pps.whatsapp.net`. Por eso las fotos sí se difuminan.
+  - `FOTO_PERFIL_SVG`.
+  - `AVATAR_SVG`: máscara con `<image>` o `<foreignObject>`.
+  - `AVATAR_PREDETERMINADO`: `data-icon` que empieza por `default-user`, `default-group`, `default-contact` o `default-community`.
+- **Por qué siguen visibles:** un avatar predeterminado que no cumpla ninguna de las cuatro no lo alcanza ninguna regla. La hipótesis de `0.1.1-beta.0`, según la cual «Nuevo chat» usaría el mismo componente de avatar que la lista, no se cumple para estos avatares.
+
+**Lo que falta:**
+- La estructura real del avatar predeterminado: el contenedor que dibuja el círculo, si es un SVG y con qué `<title>`, o si tiene otro atributo estable.
+- Cómo distinguirlo de los iconos de «Nuevo grupo», «Nuevo contacto» y «Nueva comunidad».
+
+**Primer intento de diagnóstico:** el propietario revisó la tabla general, que mostraba `div[role=gridcell]` sin imágenes ni SVG. Esa tabla toma el elemento con rol más interno de cada fila; en «Nuevo chat» es la celda de texto, dentro de `cell-frame-container`, y el avatar no está ahí. Las tablas de «Nuevo chat» del diagnóstico se han rehecho para usar como raíz la fila completa y detectar también avatares dibujados con CSS.
+
+**Diagnóstico real** (tablas A, B y C del [diagnóstico de paneles](#diagnóstico-anonimizado-de-paneles-nuevo-chat), con `0.1.2-beta.1`): 17 contactos y la fila «Tú», con RF-02 cargada y el atajo inactivo. 11 fotos estaban difuminadas por `FOTO_PERFIL`, y 6 avatares predeterminados no los alcanzaba ninguna regla.
+
+```text
+[role="listitem"][data-testid^="list-item-"] › div[role="button"]
+  › div[data-testid="cell-frame-container"]        (fila «Tú»: div[data-testid="message-yourself-row"])
+      › div (77 × 72 px)  ← columna del avatar
+          › div › div (49 × 49 px, redondo)
+              › img (foto, pps.whatsapp.net)                      o bien
+              › div › span › svg (49 × 49 px, path, fondo de color, redondo)
+      › div               ← columna del texto
+          › div[role="gridcell"] › div[data-testid="cell-frame-title"] › … nombre
+          › div[data-testid="cell-frame-secondary"] › … información
+```
+
+- **Dos columnas distintas:** la del avatar y la del texto son hijos distintos de la celda. La del avatar mide 77 px y el nombre, 190 px.
+- **Acciones fuera de las filas:** «Nuevo grupo», «Nuevo contacto» y «Nueva comunidad» están fuera de las filas `list-item-*`, en `div[data-tab="3"]`.
+- **Título del SVG desconocido:** solo consta su longitud (16), así que no se usa.
+
+**Causa confirmada:** el avatar predeterminado es un SVG sin `<mask>`, sin `data-icon` y sin origen `pps`. Ningún selector de RF-02 lo reconocía, y la regla por fila no se aplicaba.
+
+**Corrección (`0.1.2-beta.2`):** RF-02 difumina la **columna del avatar** de cada fila de persona de «Nuevo chat», contactos y «Tú» (`AVATAR_NUEVO_CHAT`).
+- **Qué es la columna del avatar:** el hijo directo de `cell-frame-container` o de `message-yourself-row` que contiene una imagen o un SVG, y ningún `gridcell`, `cell-frame-title`, `cell-frame-secondary`, botón ni campo.
+- **En qué filas:** solo en las filas `list-item-*` de `[data-testid="new-chat-drawer"]` que no contienen una acción.
+- **Unidad:** el SVG y su círculo de color, o la foto, se difuminan como una sola unidad.
+- **Revelado:** con la fila (cursor, foco y Ctrl + Mayús + Espacio).
+- **Solo CSS:** sin observadores nuevos y sin depender de RF-01.
+- **Sin doble filtro:** las reglas anteriores de fotos no se aplican dentro de esa columna.
+
+| Alternativa | Por qué no |
+| --- | --- |
+| `svg` por su `<title>` | El título no está confirmado; solo su longitud |
+| Ruta completa hasta el círculo | Depende de la profundidad interna, que puede cambiar |
+| El círculo por su color o su redondez | Exigiría clases, estilos o colores concretos |
+
+**Riesgos:**
+- **Otro elemento visual en la columna:** si WhatsApp añadiera a la columna del avatar algo que no fuera un control (por ejemplo, un indicador de estado), también se difuminaría.
+- **Columna sin texto ni controles con un icono:** si la celda tuviera otra columna así, se difuminaría. La exclusión de botones y campos reduce este riesgo.
+- **Acciones dentro de las filas:** si WhatsApp las moviera a filas `list-item-*`, seguirían excluidas por contener `new-chat-drawer-new-*`.
+
+### «Info. del mensaje» (corrección en 0.1.2-beta.4)
+
+Con `0.1.2-beta.3`, el propietario comprobó en Chrome que la pantalla «Info. del mensaje» muestra una copia del contenido del mensaje sin difuminar, con RF-04 activa.
+
+**Lo que se sabe por el código:** todas las reglas de RF-04 están limitadas a `#main`: la fila `#main [data-id]`, su `msg-container` y el recuadro «Responder» de `#main footer`. Si «Info. del mensaje» se abre como un panel fuera de `#main`, ninguna regla lo alcanza, aunque reutilice los componentes del mensaje. Es la explicación más probable, pero no está confirmada.
+
+**Lo que falta:**
+- Dónde está el panel.
+- Si reutiliza `msg-container`, `data-pre-plain-text` o `.selectable-text`.
+- Cómo se representa la multimedia.
+- Dónde están el título, el botón de cierre, los estados, las fechas y las horas, que deben seguir visibles.
+
+**Diagnóstico real** ([diagnóstico de «Info. del mensaje»](#diagnóstico-anonimizado-de-info-del-mensaje), con `0.1.2-beta.3`, sobre un mensaje de texto): `dentroDeMain: false`, RF-04 activa y el atajo inactivo.
+
+| Elemento | Estructura |
+| --- | --- |
+| Panel | `div.copyable-area`, dentro de `[data-testid="drawer-right"]` |
+| Copia del mensaje | `[data-testid="msg-container"]` |
+| Texto | `[data-testid="selectable-text"]`, el único texto que coincidía con un mensaje, visible |
+| Hora e indicadores | `[data-testid="msg-meta"]` |
+| Estados de entrega y lectura | `[data-testid="kept-by-info"]` |
+| Multimedia | No había en la muestra |
+
+**Causa confirmada:** las reglas de RF-04 solo actúan dentro de `#main`, y esta copia está fuera.
+
+**Corrección (`0.1.2-beta.4`):** RF-04 difumina el texto de la copia del mensaje.
+- **Selector:** `[data-testid="selectable-text"]` más externo, dentro de `[data-testid="msg-container"]`, en un `[data-testid="drawer-right"]` que contiene `[data-testid="kept-by-info"]` (`MENSAJE_INFO`, `TEXTO_MENSAJE_INFO`).
+- **Qué se excluye:** los metadatos y el autor.
+- **Qué sigue visible:** el título, el cierre, la hora, los indicadores, los estados, las fechas y los otros paneles laterales derechos.
+- **Revelado:** con la copia del mensaje y con Ctrl + Mayús + Espacio.
+- **Solo CSS:** sin observadores nuevos y sin depender de RF-01, RF-02, RF-03 ni RF-05.
+
+**Validación real de `0.1.2-beta.4`:** el texto se difumina y se revela con el cursor, y el título, el cierre, las horas, los indicadores y los estados siguen visibles.
+
+**Stickers (corrección en `0.1.2-beta.5`):** con `0.1.2-beta.4`, el sticker de «Info. del mensaje» quedaba visible (capturas del propietario). Con `0.1.2-beta.5`, el propietario confirmó que funcionan.
+
+**Diagnóstico real** (con un sticker):
+
+```text
+[data-testid="drawer-right"] (con [data-testid="kept-by-info"])
+  › … [data-testid="msg-container"]
+      › [data-testid="sticker-container"]
+          › div[role="button"][tabindex="0"]
+              ├── img (origen blob:, 0 × 0 px; auxiliar)
+              └── canvas (190 × 190 px; el sticker visible)
+```
+
+Ninguna regla de RF-04 alcanzaba esos elementos, y no estaban difuminados. En la conversación, el mismo sticker usa una estructura equivalente y ya se difuminaba.
+
+**Causa confirmada:** la regla de multimedia de RF-04 está limitada a `#main`, y la de esta pantalla solo alcanzaba el texto.
+
+**Corrección:** una regla aparte de RF-04, sobre la misma copia del mensaje, difumina los nodos visuales del sticker.
+- **Selector:** `[data-testid="sticker-container"] :is(img[src^="blob:"], canvas)`, dentro de `MENSAJE_INFO` (`VISUAL_STICKER_INFO`).
+- **Qué no se difumina:** el contenedor ni su botón, que es pulsable. Cada nodo visible recibe un solo filtro.
+- **Revelado:** con la copia del mensaje (cursor, foco del botón del sticker y Ctrl + Mayús + Espacio).
+- **Suposiciones de las pruebas:** el sticker estático (solo el `img` visible) y el orden de los nodos.
+
+**Pendiente de evidencia:**
+- **Multimedia:** fotos y vídeos en esta pantalla no se han observado y no tienen selector. Hay que repetir el diagnóstico con una foto y un vídeo.
+- **Otros paneles laterales:** los que muestren copias de mensajes sin `kept-by-info` (por ejemplo, «Mensajes destacados») quedan fuera por diseño.
+
+### Diagnóstico anonimizado de «Info. del mensaje»
+
+1. Activa RF-04 y abre «Info. del mensaje» de un mensaje propio con texto (después, de uno con foto o vídeo).
+2. Aleja el cursor del panel.
+3. En la consola, pega [`scripts/diagnostico-info-mensaje.js`](scripts/diagnostico-info-mensaje.js) y pulsa Intro.
+
+**Qué busca fuera de la conversación y de la lista de chats:**
+- Componentes de mensaje: `msg-container`, `data-pre-plain-text`, `.selectable-text` y `msg-meta`.
+- Multimedia.
+- Textos que coinciden con un mensaje visible, sin mostrarlos.
+- El título y las etiquetas de estado («Leído», «Entregado»…).
+
+**Qué muestra:**
+- La raíz del panel, que es el antecesor común más pequeño de lo encontrado, y su ascendencia.
+- Un resumen.
+- El esqueleto del panel, con las reglas de RF-04 que alcanzan a cada elemento y si está difuminado.
+
+**Tabla de elementos visuales:** además, lista todos los elementos visuales de cada copia del mensaje. Incluye, para comparar, los de los mensajes multimedia de la conversación. De cada uno indica:
+- **Qué es:** `img` con su tipo de origen; `video` y sus atributos (`autoplay`, `loop`…); `canvas`; SVG; o fondo o máscara CSS, también en pseudoelementos.
+- **Dónde está:** su ruta desde `msg-container` y su tamaño. Se clasifica como contenido o como metadato (`msg-meta`).
+- **Interacción:** si está dentro de un botón y si puede recibir el foco.
+- **Protección:** las reglas de RF-04 que lo alcanzan y dónde está el filtro.
+
+Sirve para los stickers estáticos y animados, las fotos y los vídeos.
+
+No muestra textos, nombres, fechas, horas, teléfonos, `data-id`, `aria-label`, `alt` ni direcciones. De cada texto solo indica su longitud y si parece una hora o una fecha. Solo se ven tal cual el título de la pantalla y las etiquetas de estado conocidas, que son textos genéricos de la interfaz.
+
+### Avatares de participantes en grupos (corrección en 0.1.2-beta.3)
+
+Con `0.1.2-beta.2`, el propietario comprobó en Chrome que, en los grupos, algunos avatares de participantes a la izquierda de los mensajes siguen visibles con RF-02 activa: siluetas predeterminadas y círculos de color con una inicial. RF-01 ya protege sus nombres.
+
+**Lo que se sabe por el código:** dentro de `#main`, RF-02 solo tiene las reglas globales:
+- `FOTO_PERFIL`: imagen de `pps.whatsapp.net`. Una foto real de un participante probablemente ya se difumina.
+- `FOTO_PERFIL_SVG`.
+- `AVATAR_SVG`: máscara con `<image>` o `<foreignObject>`.
+- `AVATAR_PREDETERMINADO`: `data-icon` `default-*`.
+
+Un avatar hecho con un SVG sin máscara, con texto (una inicial) o con CSS no lo alcanza ninguna de ellas.
+
+**Lo que falta:**
+- Dónde está el avatar respecto a la fila del mensaje, a la burbuja y al autor.
+- Cómo se representan la foto, la silueta y la inicial.
+- Qué atributos estables tiene.
+
+**Diagnóstico real** ([diagnóstico de avatares en grupos](#diagnóstico-anonimizado-de-avatares-en-grupos), con `0.1.2-beta.2`), con RF-02 activa, el atajo inactivo y el cursor fuera de la conversación:
+- **Contenedor:** el avatar de cada participante es `[data-testid="group-chat-profile-picture"]`, dentro de `#main [data-testid="conversation-panel-messages"]`.
+- **Foto:** un `img` de unos 28 × 28 px. Ya la difuminaba `FOTO_PERFIL`.
+- **Inicial:** `[data-testid="profile-first-initial"]`, sobre un círculo de color de unos 28 × 28 px. La inicial y el círculo seguían visibles.
+- **Otros elementos:** el diagnóstico recogió también el fondo de la conversación y componentes del editor, ajenos a los avatares.
+
+**Causa confirmada:** el círculo con la inicial no es una imagen, ni un SVG con máscara, ni tiene `data-icon`, así que no lo alcanzaba ninguna regla de RF-02.
+
+**Corrección (`0.1.2-beta.3`):** RF-02 difumina el contenedor `group-chat-profile-picture` más externo de `#main [data-testid="conversation-panel-messages"]` (`AVATAR_PARTICIPANTE`).
+- **Unidad:** la foto, o el círculo y la inicial, se difuminan juntos.
+- **Revelado:** con el propio avatar (cursor, foco y Ctrl + Mayús + Espacio).
+- **Solo CSS:** sin observadores nuevos y sin depender de RF-01 ni de RF-04.
+- **Sin doble filtro:** las reglas anteriores de fotos no se aplican dentro de ese contenedor.
+- **Qué no difumina:** el panel de mensajes, las filas, las burbujas, la multimedia, las reacciones, los controles, el encabezado ni el editor.
+
+**Pendiente de evidencia:**
+- **Silueta:** no se ha confirmado que el avatar predeterminado con silueta use el mismo contenedor. Si lo usa, queda cubierto; si no, seguirá visible.
+- **Posición y foco:** tampoco se conocen la posición exacta del avatar respecto a la fila ni si puede recibir el foco; las pruebas cubren las dos posiciones supuestas.
+
+### Diagnóstico anonimizado de avatares en grupos
+
+1. Abre un grupo con RF-02 activada.
+2. Desplázate hasta que se vean varios avatares: con foto, con silueta y con inicial.
+3. Aleja el cursor de la conversación.
+4. En la consola, pega [`scripts/diagnostico-avatares-grupo.js`](scripts/diagnostico-avatares-grupo.js) y pulsa Intro.
+
+Examina cada fila de mensaje (`#main [data-id]` más externo) y lo que el navegador pinta junto a la burbuja (`elementsFromPoint`, a 20 px, arriba y abajo), dentro o fuera de la fila. De cada elemento muestra:
+- **Ubicación:** su ruta desde la fila y su relación con la burbuja, el autor, `msg-meta` y los botones.
+- **Tamaño y señales:**
+  - Imagen, con su tipo de origen.
+  - SVG, con su estructura y su `<title>` `wds-ic-…`.
+  - Fondo o máscara CSS, también en pseudoelementos.
+  - Color de fondo, forma redonda y texto de una o dos letras (posible inicial).
+- **Clasificación:** foto, inicial, SVG, CSS o círculo de color.
+- **Protección:** las reglas de RF-02 que lo alcanzan y dónde está el filtro.
+
+Termina con un resumen por tipo, con los visibles primero.
+
+No muestra textos, nombres, iniciales, teléfonos, `data-id`, `title`, `aria-label`, `alt`, colores ni direcciones. De un texto corto solo indica cuántas letras tiene.
+
 ### Diagnóstico anonimizado de paneles («Nuevo chat»)
 
 Si algún nombre o avatar de «Nuevo chat» u otro panel con contactos sigue visible:
@@ -402,7 +657,23 @@ Para cada fila candidata fuera de la lista de chats y de la conversación muestr
 - Los `span[title]`, solo con su longitud.
 - Las marcas de Veilix y si el nombre y el avatar están difuminados.
 
-No muestra nombres ni textos.
+**Para RF-02 en «Nuevo chat»**, con el panel abierto, muestra **primero** tres tablas. Usan como raíz la fila completa `[role="listitem"][data-testid^="list-item-"]`, no la celda de texto:
+- **A) Estructura de cada fila:** los hijos de su botón, incluidos los hermanos de `cell-frame-container`, con su tamaño y sus señales visuales.
+- **B) Candidatos a avatar:** cada elemento con alguna señal visual, más lo que el navegador pinta en la zona del avatar (`elementsFromPoint`, a 30 px del borde inicial de la fila). De cada uno indica:
+  - Su ruta y si está dentro o fuera de `cell-frame-container`.
+  - Su tamaño y sus señales:
+    - `img`, con su tipo de origen.
+    - `svg`, con su estructura y su `<title>` `wds-ic-…`.
+    - Fondo o `mask-image` de CSS, también en `::before` y `::after`.
+    - `data-icon`, color de fondo y forma redonda.
+  - Las reglas de RF-02 que lo alcanzan y dónde está el filtro.
+- **C) Resumen** por categoría de fila y tipo de elemento, con los visibles primero.
+
+Cada fila se clasifica como acción, «Tú», contacto, contacto posiblemente no guardado (nombre con «~» o con forma de teléfono) o encabezado de sección. También indica si la fila está bajo el cursor o si el atajo de revelado está activo.
+
+Las tablas generales (filas candidatas por rol, avatares SVG y nombres de «Nuevo chat») van después. La primera toma el elemento con rol más interno, que en «Nuevo chat» es la celda de texto.
+
+No muestra nombres, textos, números, colores, `aria-label` ni direcciones de imágenes o fondos (solo su tipo de origen). De los `data-testid` de las filas (`list-item-…`) no muestra el sufijo. Para clasificar las filas solo compara textos genéricos de la interfaz («Tú», «Envíate un mensaje») y la forma del nombre, sin mostrarlos.
 
 ### Diagnóstico anonimizado de la lista de chats
 
@@ -435,6 +706,128 @@ Para identificar los indicadores de enviado, entregado y pendiente, ejecútalo c
 
 No muestra textos, nombres, identificadores ni direcciones. Del texto solo indica la longitud, si parece una hora y si coincide con el nombre del remitente de `data-pre-plain-text`; esto último sirve para localizar el nombre del remitente en los grupos (RF-01).
 
+### Remitentes no guardados en grupos (corrección en 0.1.2-beta.1)
+
+**Validación real:** el propietario confirmó en Chrome, con `0.1.2-beta.1`, que la corrección funciona.
+
+Con `0.1.2-beta.0`, el propietario comprobó en Chrome que RF-01 deja visibles algunos nombres de participantes no guardados en grupos. Esos nombres aparecen en color, algunos empiezan por «~» y otros contienen emojis, símbolos o texto con forma de etiqueta HTML.
+
+**Diagnóstico real** ([`scripts/diagnostico-remitentes.js`](scripts/diagnostico-remitentes.js)): `rf01Activa: true`, `reglaRemitentes: true`, 7 remitentes marcados en 15 mensajes analizados y 4 remitentes distintos. Mostró dos cosas:
+- **Coincidencia por texto insuficiente:** algunos nombres visibles no coinciden con su `data-pre-plain-text`, y algunos mensajes multimedia no tienen ese bloque.
+- **Estructura del nombre:** está en `[data-testid="author"]` dentro de `msg-container`, como `span[data-testid="author"]` o `span[role="button"][data-testid="author"]`, a veces anidados.
+
+**Causa confirmada:** el marcador de remitentes solo difumina un elemento si su texto visible es idéntico al remitente de algún `data-pre-plain-text`. Fallaba en los casos 1 y 2 de la lista siguiente, que estaba en investigación.
+
+**Corrección (`0.1.2-beta.1`):** el autor se difumina por su estructura, sin comparar textos.
+- **Selector:** `[data-testid="author"]:not([data-testid="author"] *)`, el más externo, para no aplicar dos filtros en los anidados.
+- **Revelado:** con el mensaje (cursor, foco y Ctrl + Mayús + Espacio); fuera de los mensajes, con el propio nombre.
+- **El marcador por texto se conserva** para los nombres sin `author` (aviso fijado…). Sus marcas dentro de un `author` se excluyen del CSS, para no difuminar dos veces.
+- **Sin cambios en** RF-04, RF-05 ni los demás selectores.
+
+Casos posibles que se habían identificado por el código:
+
+1. **Nombre distinto del metadato:** el nombre visible no coincide con el de `data-pre-plain-text`, por ejemplo «~ Nombre público» visible frente a un teléfono en el metadato.
+2. **Mensajes sin bloque de texto:** una foto o un vídeo sin descripción no aportan ningún nombre; solo se reconocen si esa persona tiene otro mensaje con texto.
+3. **Emojis distintos:** un emoji en `<img alt>` puede no ser idéntico al del metadato, por ejemplo por el selector de variación U+FE0F.
+4. **Nombre repartido:** el nombre está en varios elementos y ninguno contiene el texto completo.
+5. **Cambios de texto:** el observador solo ve nodos añadidos, no cambios de texto dentro de un nodo existente.
+
+Los nombres con forma de etiqueta HTML se leen siempre como texto (`textContent`) y no deberían ser un problema.
+
+Con la estructura `author`, los casos 1 a 4 quedan cubiertos sin depender del texto, y el 5 ya no influye, porque la regla es solo CSS. Las pruebas nuevas (`tests/navegador/remitentes-autor.test.ts`) reproducen los casos del diagnóstico y fallan con el código anterior.
+
+**Pendiente de evidencia y riesgos:**
+- **Orden del anidamiento:** no se conoce, así que se prueban los dos.
+- **Teléfono junto al nombre:** si un participante no guardado muestra un número **fuera** del `author`, ese número seguiría visible. El diagnóstico no lo ha mostrado.
+- **Otros usos de `author`:** cualquier `[data-testid="author"]` de `#main` se difumina con RF-01, también el autor de una cita o del recuadro «Responder». Si WhatsApp usara ese atributo para algo que no fuera un nombre, también se difuminaría.
+
+### Inicialización de los módulos (en investigación)
+
+Con `0.1.2-beta.0`, en Chrome real, el propietario tenía los cinco interruptores activados, pero la página no tenía ningún estilo ni elemento marcado por Veilix (`estilosVeilix: []`, `elementosMarcados: 0`, `filtrosAplicados: []`), de forma repetida.
+
+**Comprobado en local** (extensión compilada en Chromium, página simulada y red bloqueada):
+- **Manifiesto correcto:** el script de contenido se inyecta en `https://web.whatsapp.com/*` en `document_start`, sin permisos adicionales.
+- **Carga normal correcta:** los cinco estilos están presentes y los nombres, difuminados.
+- **Recargar la extensión con la pestaña abierta:** la pestaña conserva los estilos del script anterior. En Playwright, la extensión queda desactivada tras `chrome.runtime.reload()`, algo que no ocurre en Chrome real, así que ese experimento no sirve como prueba.
+- **Punto débil confirmado en el código:** si algo elimina un `<style data-veilix-estilo>`, el módulo sigue considerándose activo y no lo vuelve a insertar hasta desactivarlo y reactivarlo. Produce el síntoma exacto, pero no está demostrado que WhatsApp Web elimine esos estilos.
+
+**Causas posibles, sin confirmar:**
+1. El script no se inyectó: pestaña abierta antes de instalar o actualizar la extensión, acceso al sitio restringido, ventana de incógnito sin permiso o extensión desactivada.
+2. El script de una versión anterior quedó con su contexto invalidado.
+3. El script lee otras preferencias (otra instalación u otro perfil).
+4. Los estilos se insertan y algo los elimina.
+
+**Actualización (26 de octubre de 2026):** en una pestaña nueva, tras recargar la extensión, DevTools no muestra ningún contexto «Veilix». Chrome crea ese contexto al inyectar el script aunque este falle de inmediato, así que el script **no se está inyectando**. Quedan descartados el fallo de inicialización y la invalidación del contexto.
+
+**Reproducido en local** (Chromium, página simulada y red bloqueada):
+
+| Carga | Interruptores | Acceso efectivo a WhatsApp Web | Contexto «Veilix» | Estilos |
+| --- | --- | --- | --- | --- |
+| `.output/chrome-mv3` | activos | sí | sí | 5 |
+| `.output/chrome-mv3` con acceso al sitio «Al hacer clic» | **activos** | **no** | **no** | **0** |
+| `.output/chrome-mv3-dev` sin servidor de desarrollo | el panel no carga | sí | no | 0 |
+
+El segundo caso reproduce exactamente el síntoma comunicado. El ZIP `veilix-0.1.2-beta.0-chrome.zip` es una compilación de producción correcta: declara el script de contenido, incluye su archivo y solo pide `storage`.
+
+**Estado posterior:** el diagnóstico de remitentes que le siguió muestra RF-01 cargada (`rf01Activa: true`), así que el script vuelve a ejecutarse en la pestaña. La causa exacta del episodio no se ha comunicado.
+
+**Causa más probable, pendiente de confirmar en el Chrome del propietario:** el acceso de Veilix a `web.whatsapp.com` está restringido. Es un ajuste de Chrome que se conserva al recargar la extensión mientras su identificador no cambie, y no un defecto del código. Se comprueba con el [diagnóstico de la instalación](#diagnóstico-anonimizado-de-la-instalación).
+
+### Diagnóstico anonimizado de la instalación
+
+Si en WhatsApp Web no aparece el contexto «Veilix» en la consola:
+
+1. En `chrome://extensions`, abre «Detalles» de Veilix → «Opciones de extensión».
+2. En esa pestaña (no en WhatsApp Web), abre la consola (F12), pega [`scripts/diagnostico-extension.js`](scripts/diagnostico-extension.js) y pulsa Intro.
+
+**Muestra:**
+- El manifiesto realmente cargado: versión, tipo de compilación (producción o desarrollo), si declara el script de contenido, su ruta y si el archivo existe.
+- El acceso efectivo a `https://web.whatsapp.com/*` y los orígenes concedidos.
+- Si la extensión está permitida en incógnito.
+- Cuántas pestañas de WhatsApp Web puede ver la extensión.
+- Las funcionalidades que lee como activas.
+
+Termina con una lectura y la acción recomendada:
+- Cargar `.output/chrome-mv3`.
+- Volver a compilar.
+- Conceder el acceso al sitio en «Detalles» → «Acceso a sitios».
+- Revisar si hay otra copia de Veilix.
+- Comprobar en el menú de extensiones que estén permitidas en `web.whatsapp.com`.
+
+No muestra el identificador de la extensión, rutas del equipo, URL de pestañas, títulos ni contenidos. Solo consulta archivos de la propia extensión.
+
+### Diagnóstico anonimizado de la inicialización
+
+En la pestaña de WhatsApp Web, con la consola abierta (F12):
+
+1. **Con el contexto «top»** (desplegable arriba a la izquierda de la consola), pega [`scripts/diagnostico-inicializacion.js`](scripts/diagnostico-inicializacion.js) y pulsa Intro. Durante los 20 segundos siguientes, desactiva un interruptor en el panel de Veilix, espera dos segundos y vuelve a activarlo. El fragmento registra si Veilix añade o retira sus estilos.
+2. **Abre el desplegable de contextos y busca «Veilix».**
+   - Si **no aparece**, el script de contenido no está en la pestaña. Recarga la pestaña y revisa el acceso al sitio de la extensión y el modo incógnito.
+   - Si **aparece**, selecciónalo, pega de nuevo el fragmento y pulsa Intro. Indica si el contexto sigue siendo válido, qué versión está inyectada (compárala con `chrome://extensions`) y qué funcionalidades lee como activas.
+3. **Filtra la consola por «Veilix»** y anota cualquier error, como «[Veilix] No se pudo activar» o «Extension context invalidated».
+
+Solo lee el DOM y las preferencias. No muestra textos, nombres, mensajes, URL completas ni identificadores de la extensión.
+
+### Diagnóstico anonimizado de remitentes
+
+Para los [remitentes no guardados](#remitentes-no-guardados-en-grupos-corrección-en-012-beta1):
+
+1. Abre el grupo afectado con RF-01 activada.
+2. Desplázate hasta que se vean los nombres que siguen visibles, mejor junto a mensajes de contactos guardados y alguna foto o vídeo.
+3. Pega [`scripts/diagnostico-remitentes.js`](scripts/diagnostico-remitentes.js) en la consola y pulsa Intro.
+
+Muestra:
+- Las reglas cargadas y los totales: remitentes distintos, cuántos son teléfonos y cuántos están marcados.
+- Un resumen por tipo de nombre, con los que siguen visibles primero. Agrupa por si llevan «~», por si el metadato es un nombre o un teléfono, por la relación entre ambos y por la estructura.
+- Para cada mensaje, hasta tres textos en el lugar del nombre:
+  - Estructura (etiquetas, `role`, `dir`, `data-testid` y clases semánticas) y si tiene color propio.
+  - Longitud, si empieza por «~», si parece un teléfono y si contiene emojis o símbolos.
+  - Relación con el metadato de su mensaje y con los de toda la conversación: idéntico, igual solo al normalizar emojis o Unicode, mismo teléfono con otro formato, metadato con teléfono y visible distinto, distinto…
+  - La misma relación para su contenedor inmediato.
+  - Si está marcado y difuminado, y el tipo de mensaje.
+
+No muestra textos, nombres, teléfonos, `data-id`, `data-pre-plain-text`, `title`, `aria-label`, `alt`, colores ni direcciones. Los `data-testid` se anonimizan y los textos con forma de etiqueta HTML se leen como texto.
+
 ### Diagnóstico anonimizado del recuadro «Responder»
 
 Para el [recuadro «Responder»](#recuadro-responder-corrección-en-012-beta0). Con `0.1.2-beta.0`, el texto citado debería aparecer como `· difuminado`:
@@ -450,6 +843,275 @@ Muestra:
 - El esqueleto del pie que contiene el recuadro y el editor.
 
 No muestra textos, nombres, `data-id`, `title`, `aria-label`, `alt` ni direcciones, y no recorre el contenido del editor. De las imágenes indica solo si son `blob:`, `data:` o de un dominio de WhatsApp, sin nombrar otros dominios. Los `data-testid` se anonimizan.
+
+### Miniaturas de vídeo (corrección en 0.1.2-beta.7)
+
+**Incidencia (Chrome, `0.1.2-beta.6`):** en una misma conversación, con RF-04 activa, la miniatura de un vídeo situado arriba a la izquierda se veía sin difuminar, y otro vídeo más abajo parecía difuminado.
+
+**Causa confirmada** por el diagnóstico real, con RF-04 activa, sin el atajo pulsado, sin el cursor sobre la conversación y sin ningún revelado:
+
+```text
+#main › … › [data-id] › [data-testid="msg-container"] › … › [data-testid="video-content"]
+  ├── div (fondo en línea data:image/jpeg; filter: blur(8px) de WhatsApp)
+  └── div (fondo en línea data:image/jpeg; sin filtro: la miniatura nítida)
+```
+
+- Vídeo superior, vertical: 256 × 354 px. Vídeo inferior, horizontal: 346 × 200 px.
+- `MULTIMEDIA_MENSAJE` solo reconocía `img`, `video`, `canvas` y fondos con `blob:`, así que ninguna regla de Veilix alcanzaba esas capas.
+- El filtro de 8 px es de WhatsApp: Veilix usa 6 px. El vídeo que parecía protegido no lo estaba por RF-04.
+- **Sin confirmar:** si las dos capas son hermanas (como en el esquema) o la nítida contiene a la otra. La nítida no puede estar dentro de la desenfocada, porque se ve nítida.
+
+**Corrección** (`MINIATURA_VIDEO`): RF-04 difumina la capa más externa con fondo `data:image/jpeg` de cada `[data-testid="video-content"]`, dentro de `msg-container`.
+- **Un filtro por capa:** si las capas son hermanas, cada una recibe su filtro de Veilix. Si están anidadas, la interior queda difuminada con la exterior.
+- **Sin doble filtro:** la regla de multimedia y el marcador de horas y reacciones ignoran lo que hay dentro de esa capa.
+- **Qué no se difumina:** `video-content`, la burbuja, el botón de reproducir y los fondos `data:image/jpeg` fuera de `video-content` (fondo de la conversación, encabezado).
+- **Filtro de 8 px de WhatsApp:** mientras RF-04 protege la capa, el de Veilix (6 px) lo sustituye. Durante el revelado, la capa se ve sin filtro. Al desactivar RF-04, recupera sus 8 px sin recargar.
+- **Duración del vídeo:** si tiene formato de hora («0:15»), el marcador de RF-04 la difumina como una hora, igual que antes de esta versión.
+
+### Documentos adjuntos (corrección en 0.1.2-beta.8)
+
+**Incidencia (Chrome, `0.1.2-beta.7`):** en la conversación, las tarjetas de archivo dejaban ver el nombre, el formato y el tamaño con RF-04 activa.
+
+**Diagnóstico real** (dos imágenes enviadas como documento, PNG y JPG; RF-04 activa, sin cursor ni atajo):
+
+```text
+[data-testid="msg-container"]
+  › … [data-testid="document-thumb"][role="button"]
+      ├── contenedor del icono
+      │     ├── [data-icon="document-PNG-icon"] › svg   (dibujo del icono)
+      │     └── div                                      (etiqueta «PNG»)
+      ├── span[dir="auto"]        (nombre del archivo)
+      ├── [data-testid="type"]     (formato)
+      └── span[title]              (tamaño)
+  › descripción del adjunto (.selectable-text, ya difuminada)
+```
+
+El esquema solo indica qué hay dentro de la tarjeta. El orden y el anidamiento interno no constan en la evidencia recibida. Ninguna regla de RF-04 alcanzaba esos tres datos.
+
+**Corrección** (`DATOS_DOCUMENTO`): RF-04 difumina el nombre, el formato y el tamaño dentro de `document-thumb`, en mensajes de `#main`.
+- **La tarjeta no se difumina entera:** es el control que abre o descarga el archivo. Tampoco se difuminan el icono ni los botones que contenga.
+- **Salvaguardas:** solo el elemento más externo de cada grupo, y nunca lo que ya cubre la regla de texto, ni un elemento con iconos o imágenes, ni algo dentro de un botón. Así, cada dato recibe un solo filtro.
+- **Revelado:** con el mensaje (cursor, foco de la tarjeta y Ctrl + Mayús + Espacio).
+- **Descripciones emergentes:** el `title` del tamaño solo aparece con el cursor encima, cuando el mensaje ya está revelado. CSS no oculta los atributos `title`.
+
+**Validación real de `0.1.2-beta.8`:** el propietario confirmó en Chrome que el nombre, el formato y el tamaño se difuminan. La etiqueta PNG/JPG del icono seguía visible.
+
+**Etiqueta del icono (corrección en `0.1.2-beta.9`):** dentro de la tarjeta, el icono es un elemento con `data-icon="document-PNG-icon"` (o `-JPG-`) y su SVG, y la etiqueta es un `div` hermano suyo (estructura confirmada). RF-04 difumina solo ese `div` (`ETIQUETA_ICONO_DOCUMENTO`), en cualquier orden y sin depender de la extensión. El dibujo del icono sigue nítido. Nunca se difumina un hermano con iconos, imágenes, botones o los datos de la tarjeta. Pendiente de validación real.
+
+**Pendiente de evidencia:**
+- **Miniaturas:** las de la tarjeta, si existen, no se han observado.
+- **Otros formatos:** PDF, DOCX y los demás solo se han probado con el DOM simulado.
+
+### Diagnóstico anonimizado de archivos adjuntos
+
+**Pasos:**
+1. Con RF-04 activada, abre una conversación con varios archivos adjuntos a la vista: por ejemplo, un PDF, un documento de texto y una imagen enviada como documento.
+2. Deja el cursor sobre la lista de chats, sin pulsar ninguna tecla.
+3. Abre la consola (F12), pega [`scripts/diagnostico-adjuntos.js`](scripts/diagnostico-adjuntos.js) y pulsa Intro.
+4. Comparte el resumen, la tabla, el JSON y la estructura anonimizada.
+
+**Qué muestra:**
+- **Mensajes:** los visibles con indicios de adjunto, como un texto con forma de tamaño («245 kB»), de páginas o de nombre de archivo, un icono de documento, archivo o descarga, un `data-testid` de documento o un enlace con `download`.
+- **Estructura:** el esqueleto anonimizado de cada uno, con las reglas de RF-04 que alcanzan a cada elemento.
+- **Elementos visibles:** una tabla con sus textos, iconos e imágenes, con su clase, su tamaño en pantalla, si están en un botón, qué regla de RF-04 los alcanza (también `DATOS_DOCUMENTO`) y si están difuminados.
+
+**Privacidad:**
+- Solo lee el DOM. No lo modifica, no descarga nada y no hace peticiones.
+- No muestra textos, nombres de archivo, nombres de personas, teléfonos, `data-id`, `title`, `aria-label`, `alt` ni direcciones.
+- De un nombre de archivo solo indica la extensión, y solo si es común (PDF, DOCX, JPG…).
+- De las imágenes, solo el tipo de origen. Los `data-testid` se anonimizan.
+
+**Probado en Chromium** con un DOM inventado y datos secretos: un PDF con miniatura, icono y botón de descarga, y un enlace con `download` y una extensión poco común.
+- No se filtró ningún dato.
+- La extensión poco común no se mostró.
+- El mensaje de solo texto quedó fuera.
+
+### Miniaturas de citas y respuestas a estados (corrección en 0.1.2-beta.10)
+
+**Incidencia (Chrome, `0.1.2-beta.9`):** cuando un contacto responde a un estado, su mensaje incluye una tarjeta «Tú · Estados» con la miniatura del estado, un indicador de vídeo y la duración. La respuesta se difuminaba; la miniatura, no.
+
+**Diagnóstico real** (RF-04 y RF-01 activas, sin cursor ni atajo):
+
+```text
+[data-testid="msg-container"]
+  › [data-testid="quoted-message"] … div[role="button"][tabindex="0"]
+      ├── span[dir="auto"]                 (encabezado, 12 caracteres)
+      ├── texto de 4 caracteres            (forma de duración)
+      ├── [data-testid="selectable-text"]  (texto citado, ya difuminado)
+      └── div[style]                       (fondo en línea data:image/jpeg, 58 × 58 px: la miniatura)
+```
+
+- **Lo que no se sabe:** el orden y el anidamiento exactos.
+- **Por qué el diagnóstico lo dio por cita convencional:** buscaba «Estados» como texto independiente, y el encabezado es compuesto.
+- **Hipótesis muy probable, no confirmada:** las longitudes coinciden con «Tú · Estados» y «0:18» de la captura, así que es casi seguro una respuesta a un estado.
+
+**Corrección** (`MINIATURA_CITA`): RF-04 difumina la capa más externa con fondo `data:image/jpeg` dentro de un `quoted-message` del mensaje, en `#main`.
+- **No se difumina la cita entera:** el encabezado, el botón, el texto citado (que ya tiene su regla) y la navegación al contenido citado no cambian.
+- **Salvaguardas:** nunca se elige un fondo que contenga el texto citado, el encabezado o botones. La regla de multimedia y el marcador de horas ignoran lo que haya dentro de la miniatura: un solo filtro por elemento.
+- **Fuera del alcance:** el recuadro «Responder» del pie, «Info. del mensaje» y los fondos fuera de una cita.
+- **Duración e indicador:** dentro de la miniatura se difuminan con ella. Fuera, el indicador sigue visible, y la duración, por su forma de hora, la difumina el marcador de horas de RF-04, como antes. Su posición real no está confirmada.
+
+**Sin evidencia:** las respuestas a estados de foto, texto o GIF, y las citas de otros tipos de mensaje. Con el diagnóstico actualizado se pueden observar.
+
+**Validación real de `0.1.2-beta.10`:** la miniatura se difumina, pero el encabezado «Tú · Estados» y la duración «0:18» siguen nítidos.
+
+**Encabezado (corrección en `0.1.2-beta.12`).** Se reconoce por la estructura confirmada (`quoted-message` sin `[data-testid="author"]` › `div[role=""]` › `span[dir="auto"]`, que no es el texto citado) y, como criterio complementario autorizado por el propietario, por la forma de su texto: «… · Estados», «… · Estado» o «… · Status». Se marca con `data-veilix-encabezado-estado` y se difumina solo el `span`.
+- **Idiomas:** el reconocimiento depende del idioma y se limita al español y al inglés. En otros idiomas el encabezado no se difumina.
+- **Por qué no basta la estructura:** una cita convencional dentro de un mensaje no se ha observado, y la de un mensaje propio («Tú») podría compartir la estructura. Las pruebas incluyen esos casos negativos.
+- Pendiente de validación real.
+
+**Antecedentes del encabezado** (antes de `0.1.2-beta.12`): Solo se ha observado una cita dentro de un mensaje en el DOM real, la del estado. Sin una cita convencional real con la que compararla, no se puede identificar de forma fiable la tarjeta de un estado sin mirar su texto, y no se ha cambiado ningún selector.
+- **Duración, causa confirmada:** «0:18» es un nodo de texto directo de un `div[role="button"]` que contiene también `chat-msg-symbol` y el texto citado, con 21 caracteres de `textContent`.
+  - **Por qué no se difumina:** el marcador de horas compara el texto completo de cada elemento y no la reconoce.
+  - **Por qué no basta CSS:** CSS no puede seleccionar un nodo de texto suelto, y difuminar el `div` alcanzaría el icono y el texto citado.
+  - **Por qué no se toca el DOM:** envolver el texto en un elemento propio está prohibido por la regla 9.
+  - **Contenido del `div`,** comprobado con `contains()` en una réplica del árbol real: `chat-msg-symbol` (un icono SVG), el texto «0:18» y el texto citado. El encabezado y la miniatura están fuera. El «contiene: encabezado» del diagnóstico anterior era un error, porque el texto citado también lleva `dir="auto"`; ya está corregido.
+  - **Corrección en `0.1.2-beta.11`** (autorizada por el propietario): el marcador de mensajes reconoce, dentro de un `quoted-message` del mensaje, el elemento con `chat-msg-symbol` como hijo directo y un texto directo con forma de duración (`CANDIDATO_DURACION_CITA`). Lo marca con `data-veilix-duracion-cita` y RF-04 lo difumina entero.
+    - El texto citado de su interior pierde su propio filtro, así que queda con uno solo.
+    - Nunca se marca un contenedor con autor, encabezado, miniatura, botones u otra cita.
+    - El icono `chat-msg-symbol` se difumina también (coste aceptado).
+    - Una cita convencional con la misma estructura también se difuminaría; no se ha observado ninguna.
+    - Pendiente de validación real.
+- **Criterio candidato, sin confirmar:** en el encabezado del estado (`div[role=""]` › `span[dir="auto"]`) no hay `[data-testid="author"]`. En el recuadro «Responder» del pie, la única cita convencional observada (respuesta a un mensaje del contacto), el encabezado sí es `[data-testid="author"]`. Faltan dos comparaciones:
+  - nunca se ha observado una cita convencional **dentro de un mensaje**;
+  - nunca se ha observado la cita de un **mensaje propio** («Tú»), que es la que más se parece al encabezado del estado.
+- **Evidencia indispensable:** una ejecución del diagnóstico con dos citas convencionales dentro de mensajes, una de un mensaje del contacto y otra de un mensaje propio. Se necesitan las filas de la tabla de rasgos (`conAutor`, `encabezados` con su ruta, `dataTestidDentro`, `iconos`).
+- **Decisión según el resultado:**
+  - **Las dos citas convencionales tienen `[data-testid="author"]`:** se difumina el `span[dir="auto"]` del encabezado de las citas sin autor (nunca el texto citado), sin depender del texto.
+  - **Alguna no lo tiene:** hace falta otro rasgo que solo tenga el estado, como el `div[role=""]`, `chat-msg-symbol` o el título del icono. Si no aparece ninguno, el encabezado no se protege.
+- **Qué se busca:** la tabla de **rasgos de cada cita** muestra, sin textos:
+  - sus `data-testid`, iconos, autor, texto citado, miniaturas, encabezados y elementos interactivos;
+  - la duración, con los hijos de su contenedor en orden y lo que contiene.
+
+  Reconoce también las citas sin `data-testid` `quoted…`, por su texto citado (`.quoted-mention`) o su autor.
+
+### Diagnóstico anonimizado de respuestas a estados
+
+**Pasos:**
+1. Con RF-04 activada, abre la conversación con la respuesta al estado y déjala a la vista. Si puedes, deja también a la vista un mensaje que cite otro mensaje, para comparar.
+2. Deja el cursor sobre la lista de chats, sin pulsar ninguna tecla.
+3. Abre la consola (F12), pega [`scripts/diagnostico-respuestas-estado.js`](scripts/diagnostico-respuestas-estado.js) y pulsa Intro.
+4. Comparte el resumen, la tabla, el JSON y la estructura anonimizada. Si hay respuestas a estados de otros tipos (foto, texto, GIF), repite con cada una.
+
+**Qué muestra:**
+- **Mensajes, en cuatro grupos:**
+  - **Respuesta a un estado confirmada:** por un identificador inequívoco, como un `data-testid` de estado o el icono `wds-ic-status…`.
+  - **Posible respuesta a un estado:** la palabra «Estados» en el encabezado, sola o compuesta.
+  - **Cita con miniatura.**
+  - **Cita convencional:** hasta dos, para comparar.
+- **Estructura:** el esqueleto anonimizado de cada mensaje, con las reglas de RF-04 y de autores de RF-01 que alcanzan a cada elemento.
+- **Textos e imágenes:** su tipo (`img`, `video`, `canvas`, SVG, fondos y máscaras CSS), su tipo de origen y su tamaño. También si están en la cita o en un elemento interactivo, sus filtros propios y de antecesores, y lo que se pinta encima.
+- **Revelado:** si el mensaje está revelado por el cursor, el foco o el atajo.
+
+**Privacidad:**
+- Solo lee el DOM. No lo modifica, no descarga nada y no hace peticiones.
+- No muestra textos, nombres, teléfonos, `data-id`, `title`, `aria-label`, `alt` ni direcciones.
+- Solo muestran su texto las etiquetas genéricas «Tú», «Estados», «Tú · Estados» y los separadores; un encabezado con un nombre no se muestra. Del resto, la longitud y si parece una hora o una duración.
+- De las imágenes, solo el tipo de origen. Los `data-testid` se anonimizan.
+
+**Probado en Chromium** con un DOM inventado y datos secretos: una respuesta a un estado de vídeo con miniatura como fondo `data:image/jpeg`, y una cita convencional.
+- No se filtró ningún dato.
+- Distinguió los dos tipos de mensaje y señaló la miniatura sin ninguna regla.
+
+### Panel «Info. del contacto» (RF-01 desde 0.1.2-beta.13)
+
+**Incidencia (Chrome, `0.1.2-beta.12`):** al abrir «Info. del contacto», la foto se difuminaba (RF-02), pero el nombre, el nombre de usuario, el teléfono y la descripción quedaban visibles. El propietario aprobó ampliar RF-01 a esa información, sin un interruptor nuevo.
+
+**Diagnóstico real** (Chrome, contacto guardado de una cuenta de empresa):
+
+```text
+[data-testid="drawer-right"] › … › [data-testid="chat-info-drawer"]
+  ├── header › [data-testid="contact-info-header"] › h2 «Info. del contacto»
+  └── … section
+        ├── div
+        │     ├── foto (SVG, RF-02)
+        │     ├── div (bloque de perfil)
+        │     │     ├── div › … › span[data-testid="contact-info-subtitle selectable-text"]   (nombre)
+        │     │     └── div › span[data-testid="selectable-text"][dir="auto"] › div › span   (usuario)
+        │     ├── acciones «Llamar», «Video», «Buscar»
+        │     └── [data-testid="notes-section"] › … marcador «Añade notas…»
+        ├── div › [data-testid="section-phone-number"] «Número de teléfono»  +  div (valor)
+        ├── div › [data-testid="section-about"] «Info.»  +  div › span › div › span (texto y emojis GIF)
+        └── filas de acciones (archivos, destacados, silenciar…)
+```
+
+**Corrección** (`0.1.2-beta.13`): RF-01 difumina el nombre, el usuario, el valor del teléfono y el texto de la descripción, cada uno con un solo filtro. Los emojis quedan bajo el de su texto.
+- **Selectores:** `NOMBRE_INFO_CONTACTO`, `USUARIO_INFO_CONTACTO`, `VALOR_INFO_CONTACTO` y `TEXTO_VALOR_INFO_CONTACTO`, todos dentro de `chat-info-drawer`.
+- **Visibles:** el título, las etiquetas, los botones, el marcador de las notas, los contadores, los interruptores y la foto, que sigue en RF-02.
+- **Revelado:** el cursor sobre un dato revela solo ese dato; Ctrl + Mayús + Espacio, todos.
+- **Sin evidencia, sin cubrir:** las notas guardadas o en edición, los números no guardados, otros diseños de empresa, otros idiomas y las repeticiones del nombre en las filas inferiores, cuyos contenedores no constan.
+- **Textos no atribuidos del mismo panel**, que siguen visibles y podrían ser datos personales:
+  - un `span.selectable-text[data-testid="selectable-text"][title]` de 968 caracteres, no interactivo, con la misma forma que la descripción;
+  - un `span[dir="auto"][title]` de 20 caracteres y un texto de 16, no interactivos;
+  - los textos interactivos de 7, 13, 15 y 76 caracteres.
+
+  Para cubrirlos hace falta la parte del árbol anonimizado posterior a `contact-info-dm-setting-row`.
+- Pendiente de validación real.
+
+### Diagnóstico anonimizado de «Info. del contacto»
+
+**Pasos:**
+1. Con RF-01 y RF-02 activadas, abre una conversación y pulsa su encabezado para abrir «Info. del contacto».
+2. Deja el cursor sobre la lista de chats, sin pulsar ninguna tecla.
+3. Abre la consola (F12), pega [`scripts/diagnostico-info-contacto.js`](scripts/diagnostico-info-contacto.js) y pulsa Intro.
+4. Repite con un contacto guardado, con un número no guardado y, si los tienes, con un contacto con notas y con una empresa.
+5. Comparte, de cada ejecución, el resumen, las tablas, el JSON y la estructura anonimizada.
+
+**Qué muestra:**
+- La raíz del panel (`drawer-right` o, si no existe, su antecesor de al menos media ventana fuera de la conversación) y el esqueleto anonimizado.
+- Cada texto, con su clase:
+  - **Genérico:** de una lista cerrada en español e inglés («Número de teléfono», «Llamar», «Buscar», «Notas»…), tal cual.
+  - **Resto, anonimizado:** la longitud y su forma: parece un teléfono, empieza por «~» o «@», contador, fecha, coincide con el nombre del chat.
+- Las imágenes, con las reglas de RF-02 que las alcanzan.
+- Los campos de las notas: su marcador de posición (genérico o no) y la longitud de su contenido.
+
+**Privacidad:**
+- Solo lee el DOM. No lo modifica, no descarga nada y no hace peticiones.
+- No muestra nombres, teléfonos, nombres de usuario, descripciones, notas, `title`, `aria-label`, `alt` ni direcciones.
+- Los `data-testid` se anonimizan.
+
+**Probado en Chromium** con un DOM inventado y datos secretos (nombre, usuario, teléfono, descripción, nota y foto).
+- No se filtró ningún dato.
+- Distinguió cada dato personal de los textos genéricos y de los controles.
+
+### Diagnóstico anonimizado de vídeos visibles
+
+**Qué cubre RF-04** (`MULTIMEDIA_MENSAJE` y `MINIATURA_VIDEO`):
+- Elementos: `img` de origen `blob:` o `data:image/jpeg`, `video` (con su `poster`), `canvas`, fondos **en línea** con `blob:` y, desde `0.1.2-beta.7`, las capas con fondo `data:image/jpeg` de `video-content`.
+- Ubicación: solo dentro de un mensaje de `#main` (fila `[data-id]` o `msg-container`).
+
+**Qué queda fuera:**
+- Una `img` con otro origen (`data:image/png`, `data:image/webp` o un recurso de WhatsApp).
+- Fondos CSS con `data:` fuera de `video-content`, o definidos en una hoja de estilos.
+- Imágenes fuera de los mensajes, como la miniatura de un aviso fijado.
+- Lo revelado en ese momento: con el cursor o el foco del teclado sobre el mensaje, o con el atajo pulsado.
+
+**Pasos:**
+1. Con RF-04 activada, abre la conversación y desplázala hasta que **los dos vídeos** se vean a la vez.
+2. Deja el cursor sobre la lista de chats, sin pulsar ninguna tecla. Si has hecho clic en el vídeo, haz clic en un hueco de la lista de chats.
+3. Abre la consola (F12), pega [`scripts/diagnostico-videos.js`](scripts/diagnostico-videos.js) y pulsa Intro.
+4. Comparte el resumen, la tabla y el JSON. Indica qué número de la tabla corresponde al vídeo visible («A») y cuál al difuminado («B»): la columna `posicion` ayuda a reconocerlos.
+
+**Qué muestra cada elemento que pinta una imagen** (de al menos 40 × 40 px):
+- **Posición y tamaño** en pantalla.
+- **Qué lo pinta:** `img` y su tipo de origen; `video`, su `poster` y si se reproduce; `canvas`; SVG con `<image>`; fondos, máscaras o `content` CSS, también en pseudoelementos.
+- **Dónde está:** la zona (mensaje, fila sin `msg-container`, encabezado, pie, fuera de los mensajes o fuera de `#main`), si es enviado o recibido, y si está en una cita o en un botón.
+- **Filtros:** si lo alcanza el selector de multimedia de RF-04; `filter` y `backdrop-filter` propios, y qué antecesor tiene filtro.
+- **Revelado:** si la fila o el contenedor tienen `:hover`, `:focus-visible` o el foco dentro, y si el atajo está pulsado.
+- **Capas del vídeo:** su relación con las demás del mismo `video-content` (hermana, antecesora o descendiente) y si el filtro va en línea.
+- **Capas:** lo que se pinta encima de su centro, por si una capa sin difuminar tapa a la difuminada.
+
+**Privacidad:**
+- Solo lee el DOM. No lo modifica, no descarga nada y no hace peticiones.
+- No muestra textos, nombres, teléfonos, `data-id`, `title`, `aria-label`, `alt` ni direcciones.
+- Del `data-id` solo deduce si el mensaje es enviado o recibido.
+- De las imágenes solo indica el tipo de origen.
+- Los `data-testid` se anonimizan: números, lo que sigue a «@», fragmentos con mayúsculas y fragmentos largos.
+
+**Probado en Chromium** con un DOM inventado: un vídeo como fondo `data:image/jpeg`, otro como `img` de `blob:`, un `video` con `poster` y la miniatura de un aviso fijado, con datos secretos.
+- No se filtró ningún dato.
+- Distinguió los elementos difuminados de los visibles.
+- Detectó el cursor y el foco del teclado sobre el mensaje.
 
 ## Verificación pendiente en WhatsApp Web real
 
@@ -482,7 +1144,7 @@ WhatsApp Web solo muestra la interfaz de chats con una sesión iniciada, y desde
 
 ## Matriz de compatibilidad
 
-Estado a 22 de octubre de 2026 (versión `0.1.2-beta.0`). Las columnas distinguen tres tipos de evidencia:
+Estado de la versión `0.1.2-beta.13`. Las columnas distinguen tres tipos de evidencia:
 
 - **Compilación:** se genera un paquete válido para ese navegador.
 - **Pruebas simuladas:** pruebas automatizadas sobre un DOM que imita WhatsApp Web, ejecutadas en Linux (Codespaces y GitHub Actions).
@@ -500,7 +1162,7 @@ Estado a 22 de octubre de 2026 (versión `0.1.2-beta.0`). Las columnas distingue
 
 Leyenda: ✅ comprobado · ◐ evidencia indirecta (mismo motor de renderizado, otro navegador) · ❌ no realizado · ⏳ pendiente de prueba real · — no aplica.
 
-- **Motor de difuminado (simulado):** las 126 pruebas de `tests/navegador` en cada motor:
+- **Motor de difuminado (simulado):** las 281 pruebas de `tests/navegador` en cada motor:
 
   | Archivo | Pruebas |
   | --- | --- |
@@ -512,6 +1174,17 @@ Leyenda: ✅ comprobado · ◐ evidencia indirecta (mismo motor de renderizado, 
   | Vistas previas especiales | 9 |
   | Crédito del panel | 5 |
   | Recuadro «Responder» | 12 |
+  | Autores por estructura (RF-01) | 9 |
+  | Avatares de «Nuevo chat» (RF-02) | 9 |
+  | Avatares de participantes en grupos (RF-02) | 9 |
+  | «Info. del mensaje» (RF-04): texto y stickers | 16 |
+  | Independencia de los cinco interruptores | 19 |
+  | Tarjetas del panel (desbordamiento y teclado) | 4 |
+  | Miniaturas de vídeo (RF-04), capas hermanas y anidadas | 28 |
+  | Documentos adjuntos (RF-04) | 16 |
+  | Miniaturas y duraciones de citas (RF-04) | 18 |
+  | Encabezado de los estados citados (RF-04) | 11 |
+  | «Info. del contacto» (RF-01 y RF-02) | 16 |
  Comprueban el CSS calculado, el revelado con cursor, Tab y atajo, la escritura, los clics y los cambios dinámicos.
 - **Extensión cargada (simulado):** `npm run test:extension`. Carga el paquete compilado, lo usa desde su panel real, bloquea la red y sirve una página simulada en `web.whatsapp.com`. Playwright solo puede cargar extensiones en Chromium.
 - **WebKit de Playwright no es Safari:** comparte el motor de renderizado, pero no la integración de extensiones de Safari (permisos por sitio, almacenamiento, ventana emergente), ni el sistema macOS ni la versión exacta de Safari.
@@ -710,7 +1383,7 @@ Todas usan un DOM **simulado**. Pasar estas pruebas no demuestra compatibilidad 
   - Se reconocen comparando el texto visible con los nombres de `data-pre-plain-text` de la conversación abierta. El atributo está confirmado, pero el formato «[hora, fecha] Nombre: » es una hipótesis. Si no coincide, no se difumina nada.
   - El remitente de un mensaje **sin texto** (por ejemplo, una foto sin descripción) solo se reconoce si esa persona tiene otro mensaje con texto visible en la conversación.
   - Un nombre que forma parte de un texto más largo (por ejemplo, «Ana: hola» en un único elemento) no se reconoce.
-  - En contactos no guardados se reconoce el nombre que figura en `data-pre-plain-text` (con o sin «~»). Si WhatsApp muestra además otro dato, como el nombre público junto al número, ese dato puede quedar visible.
+  - En contactos no guardados se reconoce el nombre que figura en `data-pre-plain-text` (con o sin «~»). Si WhatsApp muestra además otro dato, como el nombre público junto al número, ese dato puede quedar visible. **Desde `0.1.2-beta.1`**, los autores de mensajes se difuminan por su estructura `[data-testid="author"]`, sin comparar textos, y estas limitaciones solo afectan a los nombres sin `author`, como el aviso fijado (ver [Remitentes no guardados](#remitentes-no-guardados-en-grupos-corrección-en-012-beta1)).
 - **Filas de contacto fuera de la lista de chats (RF-01 y RF-02, desde `0.1.1-beta.0`).**
   - **«Nuevo chat» (desde `0.1.1-beta.2`, estructura confirmada):** filas `[role="listitem"][data-testid^="list-item-"]` dentro de `[data-testid="new-chat-drawer"]`, sin las acciones `new-chat-drawer-new-*`. El nombre es el primer `span[dir][title]` sin iconos. Desde `0.1.1-beta.3`, el resto de textos de `cell-frame-container` también se difumina, así que aunque el nombre no fuera el primero, todo el texto del contacto queda protegido. Un texto funcional dentro de la celda que no sea un botón, un icono o un campo (por ejemplo, una etiqueta de estado de la app) también se difuminaría.
   - **Otros paneles (hipótesis sin confirmar):** filas con rol `listitem`, `row` o `button` que contienen exactamente un avatar SVG y un `span[title]`. En «Nuevo chat» esta regla no se cumplía, porque sus filas no contienen avatares SVG.
@@ -720,9 +1393,11 @@ Todas usan un DOM **simulado**. Pasar estas pruebas no demuestra compatibilidad 
   - En la lista de chats, el selector de avatares SVG (`<svg>` con máscara y `<image>` o `<foreignObject>`) se basa en el DOM real observado.
   - En el encabezado, el selector SVG se aplica por la misma estructura, pero no está observado en el DOM real.
   - En otras zonas, los avatares se reconocen por el origen de la foto (una hipótesis) y, desde `0.1.1-beta.0`, también por la estructura SVG confirmada en la lista, aplicada a cualquier zona. Se supone que «Nuevo chat» y otros paneles usan el mismo componente de avatar. Un SVG con esa misma estructura que no fuera un avatar también se difuminaría.
+  - **En «Nuevo chat», desde `0.1.2-beta.2`,** se difumina la columna del avatar de cada contacto y de «Tú», por su estructura confirmada. Con `0.1.2-beta.1`, los avatares predeterminados seguían visibles. Ver [Avatares predeterminados](#avatares-predeterminados-en-nuevo-chat-corrección-en-012-beta2).
   - Fuera de la lista y del encabezado, el revelado por foco de teclado no está disponible; sí el cursor y Ctrl + Mayús + Espacio.
   - No se cubren los avatares en `<canvas>` ni las imágenes de fondo aplicadas desde hojas de estilo (solo las que van en el atributo `style`).
-- **Recuadro «Responder» (RF-04, desde `0.1.2-beta.0`).** Se difumina el texto citado con la estructura confirmada. Las miniaturas de fotos y vídeos citados siguen visibles hasta confirmar su estructura. El autor solo se difumina con RF-01 si coincide con un remitente de `data-pre-plain-text` (no la etiqueta «Tú»). Ver [Recuadro «Responder»](#recuadro-responder-corrección-en-012-beta0).
+- **Recuadro «Responder» (RF-04, desde `0.1.2-beta.0`).** Se difumina el texto citado con la estructura confirmada. Las miniaturas de fotos y vídeos citados siguen visibles hasta confirmar su estructura. Desde `0.1.2-beta.1`, RF-01 difumina el autor del recuadro por su estructura `[data-testid="author"]`, también cuando es la etiqueta «Tú». Ver [Recuadro «Responder»](#recuadro-responder-corrección-en-012-beta0).
+- **«Info. del mensaje» (RF-04, desde `0.1.2-beta.4`).** Se difumina el texto de la copia del mensaje con la estructura confirmada y, desde `0.1.2-beta.5`, los stickers (`canvas` e `img` de `blob:` dentro de `sticker-container`). Las fotos y los vídeos de esa pantalla no están observados y no se difuminan. Los demás paneles laterales derechos (sin `kept-by-info`) quedan fuera. Ver [«Info. del mensaje»](#info-del-mensaje-corrección-en-012-beta4).
 - **Carga inicial.** Leer las preferencias es asíncrono. Si WhatsApp pintara antes de esa lectura, el contenido podría verse unos milisegundos.
 - **Atajo de teclado.** Si se suelta Ctrl o Mayús manteniendo pulsado el Espacio, la repetición automática del Espacio puede escribir espacios en el editor.
 - **Avisos de `web-ext lint`.** Muestra dos avisos `UNSAFE_VAR_ASSIGNMENT` que vienen del código interno de `react-dom`, no de Veilix, que no usa `dangerouslySetInnerHTML`.
