@@ -41,14 +41,70 @@ const PAGINA_SIMULADA = `<!doctype html>
     const fila = (n, p) => el('div', { role: 'listitem' }, el('div', { role: 'button', tabindex: '0' },
       el('img', { alt: '' }), el('div', {}, el('div', {}, el('span', { dir: 'auto', title: n }, n), el('div', {}, '10:45')),
       el('div', {}, el('span', { 'aria-label': ' Leído ' }, icono('wds-ic-read')), el('span', { title: p }, el('span', { dir: 'ltr' }, p)), icono('wds-ic-sticker'), el('span', { 'data-icon': 'muted' })))));
+    // «Nuevo chat» con la estructura observada: celda con columna de avatar (foto o SVG predeterminado
+    // sobre un círculo de color) y columna de texto; la acción, fuera de las filas list-item-*.
+    const svgAvatar = icono('abcdefghijklmnop'); svgAvatar.setAttribute('style', 'width:49px;height:49px;border-radius:50%;background:#d6a2ff');
+    const contactoNuevoChat = (n, avatar) => el('div', { role: 'listitem', 'data-testid': 'list-item-' + n.length }, el('div', { role: 'button', tabindex: '0' },
+      el('div', { 'data-testid': 'cell-frame-container' },
+        el('div', { 'data-prueba': 'avatar-nuevo-chat' }, el('div', {}, el('div', { style: 'border-radius:50%' }, avatar))),
+        el('div', {}, el('div', { role: 'gridcell' }, el('div', { 'data-testid': 'cell-frame-title' }, el('span', { dir: 'auto', title: n }, n)))))));
+    app.append(el('div', { 'data-testid': 'new-chat-drawer' },
+      el('div', { 'data-tab': '3' }, el('div', { role: 'button', 'data-testid': 'new-chat-drawer-new-group-cell' }, icono('wds-ic-group-add'), el('span', {}, 'Nuevo grupo'))),
+      contactoNuevoChat('Contacto sin foto', el('div', {}, el('span', {}, svgAvatar))),
+      contactoNuevoChat('Contacto con foto', el('img', { alt: '' }))));
+    // «Info. del mensaje» con la estructura observada: fuera de #main, en drawer-right con kept-by-info.
+    app.append(el('div', { 'data-testid': 'drawer-right' },
+      el('div', { class: 'copyable-area' },
+        el('span', {}, 'Info. del mensaje'),
+        el('div', { 'data-testid': 'msg-container' },
+          el('div', { 'data-pre-plain-text': '[10:40, 15/10/2026] Yo: ' }, el('span', { 'data-testid': 'selectable-text' }, 'Copia secreta')),
+          el('div', { 'data-testid': 'sticker-container' }, el('div', { role: 'button', tabindex: '0' }, el('canvas', { width: '190', height: '190' }))),
+          el('div', { 'data-testid': 'msg-meta' }, el('span', { 'data-prueba': 'hora-info' }, '10:40'))),
+        el('div', { 'data-testid': 'kept-by-info' }, el('span', { 'data-prueba': 'estado-info' }, 'Leído')))));
+    // «Info. del contacto» con la estructura observada: nombre, usuario, teléfono (valor en el div hermano de la sección) y su etiqueta.
+    app.append(el('div', { 'data-testid': 'drawer-right' },
+      el('div', { 'data-testid': 'chat-info-drawer' },
+        el('section', {},
+          el('div', {},
+            el('div', {}, el('span', { class: 'selectable-text copyable-text', 'data-testid': 'contact-info-subtitle selectable-text', dir: 'auto', 'data-prueba': 'dato-contacto' }, 'Marta Secreta')),
+            el('div', {}, el('span', { class: 'selectable-text copyable-text', 'data-testid': 'selectable-text', dir: 'auto', 'data-prueba': 'dato-contacto' }, el('div', {}, el('span', {}, '@marta'))))),
+          el('div', {},
+            el('div', { 'data-testid': 'section-phone-number' }, el('span', { 'data-prueba': 'etiqueta-contacto' }, 'Número de teléfono')),
+            el('div', {}, el('div', {}, el('span', { 'data-prueba': 'dato-contacto' }, '+57 300 0000002'))))))));
     app.append(
       el('div', { id: 'side' }, el('div', { id: 'pane-side' }, el('div', { role: 'grid' }, fila('Ana García', 'Secreto 1'), fila('Banco', 'Código 123456')))),
       el('div', { id: 'main' },
         el('header', {}, el('img', { alt: '' }), el('span', { dir: 'auto', title: 'Ana García' }, 'Ana García')),
-        el('div', { role: 'application' }, el('div', { role: 'row' }, el('div', { 'data-id': 'false_prueba' }, el('div', { 'data-testid': 'msg-container' },
-          el('div', { class: 'copyable-text', 'data-pre-plain-text': '[10:40, 15/10/2026] Ana: ' }, el('span', { class: 'selectable-text copyable-text', dir: 'ltr' }, el('span', {}, 'Mensaje privado'))),
+        el('div', { role: 'application', 'data-testid': 'conversation-panel-messages' }, el('div', { role: 'row' },
+          // Avatar del participante con la estructura observada: círculo de color con la inicial.
+          el('div', { 'data-testid': 'group-chat-profile-picture' }, el('div', { style: 'width:28px;height:28px;border-radius:50%;background:#d6a2ff' }, el('span', { 'data-testid': 'profile-first-initial' }, 'P'))),
+          el('div', { 'data-id': 'false_prueba' }, el('div', { 'data-testid': 'msg-container' },
+          // Autor con la estructura observada; su nombre visible no coincide con el metadato (participante no guardado).
+          el('span', { 'data-testid': 'author', role: 'button' }, '~ Participante'),
+          el('div', { class: 'copyable-text', 'data-pre-plain-text': '[10:40, 15/10/2026] +57 300 0000001: ' }, el('span', { class: 'selectable-text copyable-text', dir: 'ltr' }, el('span', {}, 'Mensaje privado'))),
           el('div', { 'data-testid': 'msg-meta' }, el('span', { 'data-prueba': 'hora' }, '10:40'), el('span', { 'aria-label': ' Leído ' }, icono('wds-ic-read'))),
-          el('button', { 'data-prueba': 'reaccion', type: 'button' }, '👍 1'))))),
+          el('button', { 'data-prueba': 'reaccion', type: 'button' }, '👍 1'),
+          // Miniatura de vídeo con la estructura observada: dos capas con fondo en línea data:image/jpeg, una con el filtro de WhatsApp.
+          el('div', { 'data-testid': 'video-content', style: 'position:relative;width:200px;height:120px' },
+            el('div', { 'data-prueba': 'capa-video', style: 'position:absolute;inset:0;background-image:url(data:image/jpeg;base64,AAAA);filter:blur(8px)' }),
+            el('div', { 'data-prueba': 'capa-video', style: 'position:absolute;inset:0;background-image:url(data:image/jpeg;base64,AAAA)' })),
+          // Cita con miniatura con la estructura observada (respuesta a un estado, muy probablemente): fondo data:image/jpeg en quoted-message.
+          el('div', { 'data-testid': 'quoted-message' },
+            el('div', { role: 'button', tabindex: '0', 'data-prueba': 'boton-cita' },
+              el('div', { role: '' }, el('span', { dir: 'auto', 'data-prueba': 'encabezado-cita' }, 'Tú · Estados')),
+              // Duración como texto directo, junto al icono chat-msg-symbol y al texto citado (estructura observada).
+              el('div', { role: 'button', 'data-prueba': 'duracion-cita' },
+                el('div', { 'data-testid': 'chat-msg-symbol' }, icono('status-v-ic')),
+                '0:18',
+                el('span', { class: 'quoted-mention selectable-text copyable-text', 'data-testid': 'selectable-text', dir: 'auto', 'data-prueba': 'texto-duracion' }, 'Hola!')),
+              el('div', { 'data-prueba': 'miniatura-cita', style: 'width:58px;height:58px;background-image:url(data:image/jpeg;base64,AAAA)' }))),
+          // Documento adjunto con la estructura observada: nombre, formato y tamaño dentro de document-thumb.
+          el('div', { 'data-testid': 'document-thumb', role: 'button', tabindex: '0' },
+            el('div', {}, el('span', { 'data-icon': 'document-PNG-icon', 'data-prueba': 'dibujo-documento' }, icono('document-icon')), el('div', { 'data-prueba': 'dato-documento' }, 'PNG')),
+            el('span', { dir: 'auto', 'data-prueba': 'dato-documento' }, 'captura-secreta.png'),
+            el('span', { 'data-testid': 'type', 'data-prueba': 'dato-documento' }, 'PNG'),
+            el('span', { title: '245 kB', 'data-prueba': 'dato-documento' }, '245 kB'),
+            el('button', { type: 'button', 'aria-label': 'Descargar', 'data-prueba': 'descargar-documento' }, icono('wds-ic-download'))))))),
         el('footer', {},
           // Recuadro «Responder» con la estructura observada en WhatsApp Web real (la posición de la X es supuesta).
           el('div', { 'data-testid': 'popup_panel' },
@@ -212,8 +268,61 @@ try {
   comprobar((await filtro('#pane-side [aria-label=" Leído "] svg')) === 'blur', 'difuminado en caliente: indicador de leído en la lista');
   comprobar((await filtro('#main [data-testid="msg-meta"] svg')) === 'blur', 'difuminado en caliente: indicador de leído en el mensaje');
   comprobar((await filtro('#pane-side span[title="Secreto 1"] ~ svg')) === 'none', 'el icono de sticker no se difumina');
+  comprobar((await filtro('#main [data-testid="msg-container"] > [data-testid="author"]')) === 'blur', 'difuminado en caliente: autor no guardado con nombre distinto del metadato');
   comprobar((await filtro('#main footer [data-testid="quoted-message"] [data-testid="selectable-text"]')) === 'blur', 'difuminado en caliente: texto citado del recuadro «Responder»');
   comprobar((await filtro('#main footer [aria-label="Cancelar respuesta"] svg')) === 'none', 'la X del recuadro «Responder» no se difumina');
+  comprobar(
+    (await whatsapp.evaluate(() => [...document.querySelectorAll('[data-prueba="avatar-nuevo-chat"]')].map((c) => getComputedStyle(c).filter).join(' '))) === 'blur(6px) blur(6px)',
+    'difuminado en caliente: avatares de «Nuevo chat» (predeterminado y foto), un filtro por columna',
+  );
+  comprobar((await filtro('[data-testid="new-chat-drawer-new-group-cell"] svg')) === 'none', 'el icono de «Nuevo grupo» no se difumina');
+  comprobar(
+    (await whatsapp.evaluate(() => getComputedStyle(document.querySelector('[data-testid="group-chat-profile-picture"]')).filter)) === 'blur(6px)',
+    'difuminado en caliente: avatar del participante en el grupo (inicial), un solo filtro en su contenedor',
+  );
+  comprobar((await filtro('[data-testid="conversation-panel-messages"] > [role="row"]')) === 'none', 'la fila del mensaje del grupo no se difumina entera');
+  comprobar(
+    (await whatsapp.$$eval('[data-prueba="capa-video"]', (capas) => capas.map((c) => getComputedStyle(c).filter).join())) === 'blur(6px),blur(6px)' &&
+      (await whatsapp.evaluate(() => getComputedStyle(document.querySelector('[data-testid="video-content"]')).filter)) === 'none',
+    'difuminado en caliente: las dos capas de la miniatura de vídeo, sin filtro en video-content',
+  );
+  comprobar(
+    (await whatsapp.$$eval('[data-prueba="dato-documento"]', (datos) => datos.map((d) => getComputedStyle(d).filter).join())) === 'blur(6px),blur(6px),blur(6px),blur(6px)' &&
+      (await filtro('[data-prueba="dibujo-documento"]')) === 'none' &&
+      (await filtro('[data-testid="document-thumb"]')) === 'none' &&
+      (await filtro('[data-prueba="descargar-documento"]')) === 'none',
+    'difuminado en caliente: nombre, formato, tamaño y etiqueta del icono del documento, sin el dibujo, la tarjeta ni el botón de descarga',
+  );
+  comprobar(
+    (await whatsapp.evaluate(() => getComputedStyle(document.querySelector('[data-prueba="miniatura-cita"]')).filter)) === 'blur(6px)' &&
+      (await filtro('[data-prueba="boton-cita"]')) === 'none' &&
+      (await whatsapp.evaluate(() => getComputedStyle(document.querySelector('[data-prueba="encabezado-cita"]').parentElement).filter)) === 'none',
+    'difuminado en caliente: miniatura de la cita, sin la cita ni el contenedor del encabezado',
+  );
+  comprobar(
+    (await whatsapp.evaluate(() => getComputedStyle(document.querySelector('[data-prueba="duracion-cita"]')).filter)) === 'blur(6px)' &&
+      (await whatsapp.evaluate(() => getComputedStyle(document.querySelector('[data-prueba="texto-duracion"]')).filter)) === 'none',
+    'difuminado en caliente: duración de la cita con su icono y su texto citado, con un solo filtro',
+  );
+  comprobar(
+    (await whatsapp.evaluate(() => getComputedStyle(document.querySelector('[data-prueba="encabezado-cita"]')).filter)) === 'blur(6px)',
+    'difuminado en caliente: encabezado «Tú · Estados» de la cita (solo el span)',
+  );
+  comprobar(
+    (await whatsapp.$$eval('[data-prueba="dato-contacto"]', (datos) => datos.map((d) => getComputedStyle(d).filter).join())) === 'blur(6px),blur(6px),blur(6px)' &&
+      (await filtro('[data-prueba="etiqueta-contacto"]')) === 'none',
+    'difuminado en caliente: nombre, usuario y teléfono de «Info. del contacto», sin la etiqueta',
+  );
+  comprobar((await filtro('[data-testid="drawer-right"] [data-testid="selectable-text"]')) === 'blur', 'difuminado en caliente: texto de «Info. del mensaje»');
+  comprobar(
+    (await whatsapp.evaluate(() => getComputedStyle(document.querySelector('[data-testid="drawer-right"] [data-testid="sticker-container"] canvas')).filter)) === 'blur(6px)' &&
+      (await whatsapp.evaluate(() => getComputedStyle(document.querySelector('[data-testid="drawer-right"] [data-testid="sticker-container"]')).filter)) === 'none',
+    'difuminado en caliente: sticker de «Info. del mensaje» (canvas), sin filtro en su contenedor',
+  );
+  comprobar(
+    (await filtro('[data-testid="drawer-right"] [data-prueba="hora-info"]')) === 'none' && (await filtro('[data-testid="drawer-right"] [data-prueba="estado-info"]')) === 'none',
+    'la hora y el estado «Leído» de «Info. del mensaje» no se difuminan',
+  );
 
   await whatsapp.screenshot({ path: join(CAPTURAS, 'whatsapp-simulado-difuminado.png') });
 
@@ -227,7 +336,7 @@ try {
   await panel.getByRole('switch', { name: 'Difuminar nombres de contactos' }).click();
   await whatsapp.waitForFunction(() => document.querySelectorAll('style[data-veilix-estilo]').length === 4);
   comprobar((await filtro('#pane-side span[title="Ana García"]')) === 'none', 'al desactivar nombres se revelan sin recargar');
-  comprobar((await filtro('.selectable-text span')) === 'blur', 'los mensajes siguen difuminados');
+  comprobar((await filtro('#main .selectable-text span')) === 'blur', 'los mensajes siguen difuminados');
 
   comprobar(
     peticionesExternas.length === 0,
