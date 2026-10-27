@@ -102,6 +102,16 @@ describe('PanelConfiguracion', () => {
     }
   });
 
+  it('cada interruptor se describe con la descripción y la nota de su tarjeta', async () => {
+    render(<PanelConfiguracion variante="emergente" />);
+    for (const { titulo, descripcion, nota } of DISPONIBLES) {
+      const interruptor = await screen.findByRole('switch', { name: titulo });
+      const ids = interruptor.getAttribute('aria-describedby')?.split(' ') ?? [];
+      const textos = ids.map((id) => document.getElementById(id)?.textContent);
+      expect(textos).toEqual(nota ? [descripcion, nota] : [descripcion]);
+    }
+  });
+
   it('muestra «Veilix <versión>» con la versión de package.json', async () => {
     render(<PanelConfiguracion variante="emergente" />);
     expect(await screen.findByText(`Veilix ${versionDescriptiva(VERSION)}`)).toBeDefined();
