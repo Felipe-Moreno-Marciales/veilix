@@ -57,7 +57,7 @@
       .join('')
       .trim();
 
-  const normalizar = (texto) => texto.replace(/[‎‏‪-‮⁦-⁩]/g, '').replace(/\s+/g, ' ').trim();
+  const normalizar = (texto) => texto.replace(/[\u200e\u200f\u202a-\u202e\u2066-\u2069]/g, '').replace(/\s+/g, ' ').trim();
 
   // Remitentes y textos de los mensajes visibles: solo se usan para comparar y nunca se muestran.
   const remitentes = new Set();
