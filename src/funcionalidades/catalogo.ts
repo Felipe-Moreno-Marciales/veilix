@@ -7,8 +7,11 @@
  */
 import { ATAJO_REVELADO } from '@/nucleo/difuminado/revelado-teclado';
 
-const REVELADO_GENERAL = `Revelar: cursor encima, foco del teclado o ${ATAJO_REVELADO}.`;
-const REVELADO_EDITOR = `Revelar: cursor encima o ${ATAJO_REVELADO}. Se escribe con normalidad.`;
+// El foco solo revela cuando WhatsApp permite enfocar con el teclado la fila,
+// el mensaje o el panel (`:focus-visible`). En el editor, el foco no revela:
+// si lo hiciera, el texto quedaría visible siempre mientras se escribe.
+const REVELADO_GENERAL = `Revelar: cursor encima o ${ATAJO_REVELADO}; también con el foco del teclado donde WhatsApp lo permita.`;
+const REVELADO_EDITOR = `Revelar: cursor encima o ${ATAJO_REVELADO}.`;
 
 export const IDS_FUNCIONALIDADES = [
   'difuminarNombres',
@@ -55,7 +58,7 @@ export const CATALOGO_FUNCIONALIDADES: readonly DefinicionFuncionalidad[] = [
   {
     id: 'difuminarNombres',
     titulo: 'Difuminar nombres de contactos',
-    descripcion: 'Oculta los nombres de contactos y grupos hasta pasar el cursor sobre ellos.',
+    descripcion: 'Difumina la identidad de contactos y grupos: sus nombres en la lista de chats, el encabezado de la conversación, los remitentes de los mensajes de grupo, el autor citado al responder y «Nuevo chat», y el nombre, el usuario, el teléfono y la descripción en «Info. del contacto».',
     categoria: 'difuminado',
     estado: 'disponible',
     nota: REVELADO_GENERAL,
@@ -63,7 +66,7 @@ export const CATALOGO_FUNCIONALIDADES: readonly DefinicionFuncionalidad[] = [
   {
     id: 'difuminarFotos',
     titulo: 'Difuminar fotografías de contactos',
-    descripcion: 'Difumina las fotografías de perfil de contactos y grupos.',
+    descripcion: 'Difumina las fotografías y los avatares de contactos y grupos, incluidos los predeterminados y los de iniciales, en la lista de chats, el encabezado, «Nuevo chat» y junto a los mensajes de grupo.',
     categoria: 'difuminado',
     estado: 'disponible',
     nota: REVELADO_GENERAL,
@@ -71,7 +74,7 @@ export const CATALOGO_FUNCIONALIDADES: readonly DefinicionFuncionalidad[] = [
   {
     id: 'difuminarMensajesRecientes',
     titulo: 'Difuminar mensajes recientes',
-    descripcion: 'Difumina la vista previa del último mensaje en la lista de chats.',
+    descripcion: 'Difumina la vista previa del último mensaje de cada chat en la lista, con sus emojis, sus reacciones y el indicador de leído.',
     categoria: 'difuminado',
     estado: 'disponible',
     nota: REVELADO_GENERAL,
@@ -79,7 +82,7 @@ export const CATALOGO_FUNCIONALIDADES: readonly DefinicionFuncionalidad[] = [
   {
     id: 'difuminarMensajesConversacion',
     titulo: 'Difuminar mensajes de conversaciones',
-    descripcion: 'Difumina el contenido de los mensajes dentro de la conversación abierta.',
+    descripcion: 'Difumina el texto, la multimedia, la hora y las reacciones de los mensajes, el texto citado al responder y el texto y los stickers de «Info. del mensaje».',
     categoria: 'difuminado',
     estado: 'disponible',
     nota: REVELADO_GENERAL,
@@ -87,7 +90,7 @@ export const CATALOGO_FUNCIONALIDADES: readonly DefinicionFuncionalidad[] = [
   {
     id: 'difuminarCampoEntrada',
     titulo: 'Difuminar el campo de entrada',
-    descripcion: 'Difumina el texto que se está escribiendo en el campo de mensaje.',
+    descripcion: 'Difumina lo que escribes en el campo de mensaje, sin impedir escribir, corregir ni enviar.',
     categoria: 'difuminado',
     estado: 'disponible',
     nota: REVELADO_EDITOR,
