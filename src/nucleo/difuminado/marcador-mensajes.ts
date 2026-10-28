@@ -15,6 +15,17 @@
  * - Indicador de estado: `<svg>` con `<title>` de estado confirmado
  *   (`wds-ic-read`) dentro de `[data-testid="msg-meta"]` (estructura
  *   confirmada en WhatsApp Web real).
+ * - Duración de una cita (desde 0.1.2-beta.11, estructura confirmada): el
+ *   contenedor `CANDIDATO_DURACION_CITA` cuyo texto directo tiene forma de
+ *   duración («0:18»). Su texto completo incluye el del icono y el del texto
+ *   citado, por eso la regla de la hora no lo reconoce. Lo que contiene no se
+ *   clasifica como hora ni como reacción.
+ * - Encabezado de un estado citado (desde 0.1.2-beta.12): el `span`
+ *   `CANDIDATO_ENCABEZADO_ESTADO` (estructura confirmada) cuyo texto completo
+ *   tiene la forma «… · Estados». La etiqueta es solo un criterio
+ *   complementario de la estructura, y depende del idioma: se reconocen el
+ *   español («Estado», «Estados») y el inglés («Status»). En otros idiomas el
+ *   encabezado no se difumina.
  *
  * Solo se examina la fila de cada mensaje, fuera del texto y la multimedia
  * (que ya se difuminan). El texto se lee en el navegador solo para
@@ -23,15 +34,26 @@
 import { iconosEstadoEn } from './iconos-estado';
 import type { Marcador } from './modulo-difuminado';
 import {
+  CANDIDATO_DURACION_CITA,
+  CANDIDATO_ENCABEZADO_ESTADO,
   CONTENEDOR_MENSAJE,
+  DATOS_DOCUMENTO,
+  ETIQUETA_ICONO_DOCUMENTO,
   FILA_MENSAJE,
   MENSAJE,
   META_MENSAJE,
+  MINIATURA_CITA,
+  MINIATURA_VIDEO,
   MULTIMEDIA_MENSAJE,
   TEXTO_MENSAJE,
 } from './selectores';
 
 const EXPRESION_HORA = /^\d{1,2}[:.]\d{2}(?: ?[ap]\.? ?m\.?)?$/i;
+const EXPRESION_DURACION = /^\d{1,2}:\d{2}(?::\d{2})?$/;
+/** «Tú · Estados», «You · Status»…: algo, un separador «·» o «•» y la etiqueta de estado (español o inglés). */
+const EXPRESION_ENCABEZADO_ESTADO = /^\S.*\s[·•]\s(?:estados?|status)$/iu;
+/** Marcas de dirección de texto que WhatsApp puede intercalar. */
+const MARCAS_DIRECCION = /[\u200e\u200f\u202a-\u202e\u2066-\u2069]/g;
 const EMOJI = /\p{Extended_Pictographic}/u;
 /**
  * Emojis, modificadores y componentes de emoji (incluidos el selector de
@@ -64,18 +86,49 @@ export function ambitoDe(elemento: Element): Element | null {
   return elemento.closest(FILA_MENSAJE) ?? elemento.closest(MENSAJE);
 }
 
-const CONTENIDO_YA_DIFUMINADO = `:is(${TEXTO_MENSAJE}, ${MULTIMEDIA_MENSAJE})`;
+const CONTENIDO_YA_DIFUMINADO = `:is(${TEXTO_MENSAJE}, ${MULTIMEDIA_MENSAJE}, ${MINIATURA_VIDEO}, ${DATOS_DOCUMENTO}, ${ETIQUETA_ICONO_DOCUMENTO}, ${MINIATURA_CITA})`;
 
 export interface ClasificacionMensaje {
   readonly horas: readonly Element[];
   readonly reacciones: readonly Element[];
   /** Indicadores de estado dentro de `msg-meta`. */
   readonly estados: readonly Element[];
+  /** Contenedores de la duración de una cita (con su icono y su texto citado). */
+  readonly duracionesCita: readonly Element[];
+  /** Encabezados de estados citados («Tú · Estados»). */
+  readonly encabezadosEstado: readonly Element[];
+}
+
+export function esEncabezadoEstado(texto: string): boolean {
+  return EXPRESION_ENCABEZADO_ESTADO.test(texto.replace(MARCAS_DIRECCION, '').replace(/\s+/g, ' ').trim());
+}
+
+/** Texto de los nodos de texto directos del elemento, normalizado (sin el de sus descendientes). */
+function textoDirecto(elemento: Element): string {
+  let texto = '';
+  for (const nodo of elemento.childNodes) {
+    if (nodo.nodeType === Node.TEXT_NODE) texto += nodo.textContent ?? '';
+  }
+  return texto.replace(/\s+/g, ' ').trim();
+}
+
+export function esDuracion(texto: string): boolean {
+  return EXPRESION_DURACION.test(texto);
 }
 
 export function clasificarMensaje(ambito: Element): ClasificacionMensaje {
+  const duracionesCita = [...ambito.querySelectorAll('*')].filter(
+    (elemento) => elemento.matches(CANDIDATO_DURACION_CITA) && esDuracion(textoDirecto(elemento)),
+  );
+  const encabezadosEstado = [...ambito.querySelectorAll('*')].filter(
+    (elemento) => elemento.matches(CANDIDATO_ENCABEZADO_ESTADO) && esEncabezadoEstado(elemento.textContent),
+  );
+  const dentroDeDuracion = (elemento: Element) =>
+    [...duracionesCita, ...encabezadosEstado].some((marcado) => marcado.contains(elemento));
+
   const candidatos = [...ambito.querySelectorAll('*')].filter(
     (elemento) =>
+      !dentroDeDuracion(elemento) &&
       !elemento.matches(MENSAJE) &&
       !elemento.matches(CONTENIDO_YA_DIFUMINADO) &&
       !elemento.closest(CONTENIDO_YA_DIFUMINADO) &&
@@ -99,7 +152,7 @@ export function clasificarMensaje(ambito: Element): ClasificacionMensaje {
     return meta !== null && ambito.contains(meta);
   });
 
-  return { horas, reacciones, estados };
+  return { horas, reacciones, estados, duracionesCita, encabezadosEstado };
 }
 
 /** Ámbitos de mensaje afectados por un lote de mutaciones, sin repeticiones. */
@@ -137,17 +190,21 @@ export interface AtributosMensaje {
   readonly hora: string;
   readonly reaccion: string;
   readonly estado: string;
+  readonly duracionCita: string;
+  readonly encabezadoEstado: string;
 }
 
-/** Marcador de hora, reacciones e indicadores de estado para `crearModuloDifuminado`. */
+/** Marcador de hora, reacciones, indicadores de estado, duraciones de citas y encabezados de estados para `crearModuloDifuminado`. */
 export function crearMarcadorMensajes(atributos: AtributosMensaje): Marcador {
-  const todos = [atributos.hora, atributos.reaccion, atributos.estado];
+  const todos = [atributos.hora, atributos.reaccion, atributos.estado, atributos.duracionCita, atributos.encabezadoEstado];
   const marcar = (ambitos: Iterable<Element>) => {
     for (const ambito of ambitos) {
-      const { horas, reacciones, estados } = clasificarMensaje(ambito);
+      const { horas, reacciones, estados, duracionesCita, encabezadosEstado } = clasificarMensaje(ambito);
       sincronizar(ambito, atributos.hora, horas);
       sincronizar(ambito, atributos.reaccion, reacciones);
       sincronizar(ambito, atributos.estado, estados);
+      sincronizar(ambito, atributos.duracionCita, duracionesCita);
+      sincronizar(ambito, atributos.encabezadoEstado, encabezadosEstado);
     }
   };
   return {
