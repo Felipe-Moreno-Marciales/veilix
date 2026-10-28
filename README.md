@@ -6,26 +6,103 @@ Extensión de privacidad para WhatsApp Web, desarrollada de forma independiente.
 
 ## Estado
 
-Versión actual: **0.1.2-beta.13**, compilación interna de prueba sobre la estable `0.1.1`, que sigue pendiente de la aprobación final del propietario. `0.1.2-beta.13` amplía RF-01 al nombre, el usuario, el teléfono y la descripción de «Info. del contacto», pendiente de validación real; ver [Panel «Info. del contacto»](#panel-info-del-contacto-rf-01-desde-012-beta13). `0.1.2-beta.12` difumina el encabezado «Tú · Estados» de los estados citados (RF-04), pendiente de validación real. `0.1.2-beta.11` difumina la duración de las citas (RF-04), pendiente de validación real. `0.1.2-beta.10` difumina las miniaturas de las citas dentro de los mensajes, como la de una respuesta a un estado (RF-04), pendiente de validación real; ver [Miniaturas de citas](#miniaturas-de-citas-y-respuestas-a-estados-corrección-en-012-beta10). `0.1.2-beta.9` difumina la etiqueta de extensión del icono de los documentos (RF-04), **validado** por el propietario. `0.1.2-beta.8` difumina el nombre, el formato y el tamaño de los documentos adjuntos (RF-04), **validado** por el propietario; ver [Documentos adjuntos](#documentos-adjuntos-corrección-en-012-beta8). `0.1.2-beta.7` difumina las miniaturas de vídeo dibujadas como fondos CSS (RF-04), pendiente de validación real; ver [Miniaturas de vídeo](#miniaturas-de-vídeo-corrección-en-012-beta7). `0.1.2-beta.6` audita los cinco interruptores del panel: actualiza sus textos, corrige un filtro duplicado de RF-03 y añade pruebas de independencia (ver [Interruptores del panel](#interruptores-del-panel-auditoría-de-012-beta6)). Las betas de `0.1.2` añaden cinco correcciones:
-- **Recuadro «Responder»** (RF-04, `0.1.2-beta.0`): el texto citado. Pendiente de validación real; ver [Recuadro «Responder»](#recuadro-responder-corrección-en-012-beta0).
-- **Autores de grupo** (RF-01, `0.1.2-beta.1`): por su estructura `[data-testid="author"]`. **Validada** por el propietario; ver [Remitentes no guardados](#remitentes-no-guardados-en-grupos-corrección-en-012-beta1).
-- **Avatares de «Nuevo chat»** (RF-02, `0.1.2-beta.2`): fotos y avatares predeterminados. Pendiente de validación real; ver [Avatares predeterminados](#avatares-predeterminados-en-nuevo-chat-corrección-en-012-beta2). Ninguna está publicada en tiendas ni tiene etiqueta de Git. `0.1.1` incluye las correcciones de RF-01 y RF-02 sobre `0.1.0` y la identidad visual del candado, con el crédito del desarrollador en el pie del panel (la bandera de Colombia es un SVG local, porque Windows no muestra el emoji 🇨🇴). El estado de cada evidencia está en [Versión 0.1.1](#versión-011-estable-pendiente-de-aprobación) y el historial, en [CHANGELOG.md](CHANGELOG.md).
-- **Avatares de participantes en grupos** (RF-02, `0.1.2-beta.3`): foto e inicial junto a los mensajes. **Validada** por el propietario (ocho pruebas); ver [Avatares de participantes en grupos](#avatares-de-participantes-en-grupos-corrección-en-012-beta3).
-- **«Info. del mensaje»** (RF-04):
-  - Texto de la copia del mensaje (`0.1.2-beta.4`): **validado** por el propietario.
-  - Stickers (`0.1.2-beta.5`): **validados** por el propietario.
-  - Fotos y vídeos: sin diagnóstico.
+Versión actual: **0.1.2**, estable preparada el 28 de octubre de 2026 y seleccionada para el **primer lanzamiento público** de Veilix. Su publicación sigue pendiente de la aprobación definitiva del propietario: no está publicada en ninguna tienda ni tiene etiqueta de Git.
+- **Qué reúne:** las correcciones de `0.1.2-beta.0` a `0.1.2-beta.13`, sin cambios de comportamiento respecto a beta.13 (congelación de funcionalidades).
+- **Validación:** el propietario comunicó que terminó la validación funcional de la serie beta en Google Chrome.
+- **Detalle:** el contenido, la evidencia y las limitaciones conocidas están en [Versión 0.1.2](#versión-012-estable-pendiente-de-aprobación), y el historial completo, en [CHANGELOG.md](CHANGELOG.md).
+- **Antecedente:** `0.1.1` es una estable preparada el 21 de octubre de 2026 durante el desarrollo.
+  - No consta que se aprobara ni que se publicara, y su aprobación no es un requisito para publicar `0.1.2`.
+  - Se conserva como antecedente; ver [Versión 0.1.1](#versión-011-estable-anterior-antecedente).
+- **Siguiente versión:** el desarrollo posterior al lanzamiento empezará en `0.1.3-beta.0` (`npm run version:beta`).
 
-  Ver [«Info. del mensaje»](#info-del-mensaje-corrección-en-012-beta4).
-
-**Estable `0.1.2`:** preparación detenida hasta que el propietario valide el texto citado del recuadro «Responder» (RF-04), los textos y la independencia de los interruptores de `0.1.2-beta.6` las miniaturas de vídeo de `0.1.2-beta.7` la etiqueta del icono de los documentos de `0.1.2-beta.9` las miniaturas de citas de `0.1.2-beta.10` la duración de las citas de `0.1.2-beta.11` el encabezado de los estados citados de `0.1.2-beta.12` y «Info. del contacto» de `0.1.2-beta.13`. Las miniaturas citadas y las fotos y vídeos de «Info. del mensaje» quedarían como limitaciones documentadas.
+Las secciones de cada corrección conservan el nombre de la beta en que se introdujo, por ejemplo [«Info. del contacto»](#panel-info-del-contacto-rf-01-desde-012-beta13) o [Miniaturas de vídeo](#miniaturas-de-vídeo-corrección-en-012-beta7).
 
 - **Fase 1: infraestructura y arquitectura.** Completada y aprobada.
-- **Fase 2: motor de difuminado.** Implementada y **validada funcionalmente en Google Chrome** por el propietario con `0.2.0-beta.8` (sistema operativo sin indicar). La versión final es `0.1.0` (renumeración aprobada), con el mismo comportamiento que `0.2.0-beta.8`. Después, en pruebas reales se detectaron nombres de remitentes de grupo y elementos de «Nuevo chat» sin proteger; `0.1.1-beta.0` los corrige, y `0.1.1` reúne esas correcciones como estable. Con `0.1.1-beta.3`, el propietario validó en Chrome la información secundaria de «Nuevo chat» y los remitentes en grupos, sin regresiones. **La Fase 2 sigue abierta** hasta que el propietario apruebe `0.1.1`. Ver [Versión 0.1.1](#versión-011-estable-pendiente-de-aprobación) y [Cierre de la Fase 2](#cierre-de-la-fase-2).
+- **Fase 2: motor de difuminado.** Implementada y **validada funcionalmente en Google Chrome** por el propietario con `0.2.0-beta.8` (sistema operativo sin indicar). La versión final es `0.1.0` (renumeración aprobada), con el mismo comportamiento que `0.2.0-beta.8`. Después, en pruebas reales se detectaron nombres de remitentes de grupo y elementos de «Nuevo chat» sin proteger; `0.1.1-beta.0` los corrige, y `0.1.1` reúne esas correcciones como estable. Con `0.1.1-beta.3`, el propietario validó en Chrome la información secundaria de «Nuevo chat» y los remitentes en grupos, sin regresiones. Sus entregables técnicos (RF-01 a RF-05, con el revelado temporal, el panel y las preferencias) están integrados y ampliados en `0.1.2`. El cierre formal de la fase requiere la aprobación explícita del propietario («Flujo de trabajo por fases» de `AGENTS.md`), que no consta; **no condiciona el lanzamiento de `0.1.2`**. Ver [Cierre de la Fase 2](#cierre-de-la-fase-2).
 - **Ampliación multiplataforma.** Una sola base de código genera los paquetes de Chromium (Chrome, Brave, Opera y Vivaldi), Edge, Firefox y Safari. El motor de difuminado se prueba de forma automatizada en Chromium, Firefox y WebKit. **Fuera de Google Chrome no se ha hecho ninguna prueba real, y Safari no se ha ejecutado nunca** (requiere macOS).
 - **Fase 3:** no iniciada.
 
-## Versión 0.1.1 (estable, pendiente de aprobación)
+## Versión 0.1.2 (estable, pendiente de aprobación)
+
+Preparada el 28 de octubre de 2026 a partir de `0.1.2-beta.13` con `npm run version:estable`, sin cambios de comportamiento. Manifiesto `0.1.2` en Chrome, Edge, Firefox y Safari, sin `version_name`. El panel muestra «Veilix 0.1.2».
+
+### Contenido de 0.1.2
+
+| Interruptor | Novedades respecto a `0.1.1` |
+| --- | --- |
+| RF-01 · nombres e información personal | Autores de grupo por su estructura `[data-testid="author"]` (beta.1). Nombre, usuario, teléfono y descripción de «Info. del contacto» (beta.13) |
+| RF-02 · fotografías y avatares | Avatares de «Nuevo chat», también el de «Tú» (beta.2). Avatares de participantes junto a los mensajes de grupo (beta.3) |
+| RF-03 · vista previa | Un solo filtro por vista previa (beta.6) |
+| RF-04 · contenido de los mensajes | Texto citado de «Responder» (beta.0). Texto y stickers de «Info. del mensaje» (beta.4 y beta.5). Miniaturas de vídeo (beta.7). Nombre, formato, tamaño y etiqueta del icono de los documentos (beta.8 y beta.9). Miniatura y duración de las citas (beta.10 y beta.11). Encabezado de los estados citados (beta.12) |
+| RF-05 · campo de entrada | Sin cambios |
+
+Además:
+- **Panel de Veilix:** textos de los interruptores revisados, con `aria-describedby` (beta.6).
+- **Diagnósticos:** nuevos diagnósticos anonimizados en `scripts/`, que no se incluyen en los paquetes.
+- **Pruebas:** de independencia de los cinco interruptores.
+- **Sin cambios:** los permisos (solo `storage`) y el almacenamiento.
+
+### Evidencia de 0.1.2, por tipo
+
+| Tipo | Alcance | Resultado |
+| --- | --- | --- |
+| Compilación | Chrome, Edge, Firefox y Safari | ✅ |
+| Pruebas simuladas | Chromium, Firefox y WebKit de Playwright | ✅ 843 de 843 (281 por motor) |
+| Extensión cargada (simulado) | Paquete de Chrome con la red bloqueada | ✅ |
+| Real en Google Chrome (propietario) | Confirmadas por elemento: autores (beta.1), avatares de grupo (beta.3), «Info. del mensaje» (beta.4 y beta.5), documentos (beta.8 y beta.9) y miniatura de la cita de un estado (beta.10) | ✅ |
+| Real en Google Chrome (propietario) | Serie `0.1.2-beta` completa | ✅ Validación funcional terminada, comunicada el 28 de octubre de 2026, sin detalle por elemento del resto de correcciones |
+| Real en Edge, Firefox, Brave, Opera, Vivaldi y Safari | — | ⏳ Ninguna prueba real ([matriz](#matriz-de-compatibilidad)) |
+
+### Resultados automatizados (`0.1.2`)
+
+| Verificación | Resultado |
+| --- | --- |
+| `compile`, `lint` | Sin errores |
+| `npm test` | 232 de 232 (21 archivos) |
+| `test:navegador` | 843 de 843 (281 por motor en Chromium, Firefox y WebKit) |
+| `build:chrome`, `build:edge`, `build:firefox`, `build:safari` | Correctos |
+| `lint:firefox` | 0 errores; los 2 avisos conocidos `UNSAFE_VAR_ASSIGNMENT` de `react-dom` |
+| `test:extension` | Todas las comprobaciones correctas, sin peticiones de red externas |
+| `version:comprobar` | Correcta: `0.1.2`, sin cambios de código respecto al último commit |
+| `zip:*` (solo en local) | `veilix-0.1.2-{chrome,edge,firefox,safari}.zip` y `veilix-0.1.2-sources.zip` |
+
+**Revisión de los paquetes:**
+- **Manifiesto:** versión `0.1.2` sin `version_name`, nombre «Veilix», solo el permiso `storage`, sin `host_permissions` y script de contenido limitado a `https://web.whatsapp.com/*`. Versiones mínimas: Chromium 116, Firefox 140 y Safari 17.4.
+- **Contenido:** 13 archivos por paquete, sin diagnósticos, pruebas ni mapas de código fuente. Conservan los iconos del candado y el crédito.
+- **Observación:** el fragmento del panel incluye el *polyfill* `modulepreload` de Vite, que usa `fetch` solo para precargar módulos de la propia extensión. No es código de Veilix, no está en el script de contenido, y la prueba de extremo a extremo no registra peticiones externas.
+- **Paquete de fuentes:** `veilix-0.1.2-sources.zip`, para la revisión de Firefox, contiene el código fuente, incluidos los diagnósticos de `scripts/`, pero no `node_modules` ni `.env`.
+- **Licencia:** `"license": "UNLICENSED"` (propietaria).
+
+### Limitaciones conocidas de 0.1.2
+
+La lista completa está en la entrada [0.1.2 del CHANGELOG](CHANGELOG.md#012--2026-10-28). Las principales son:
+
+- **«Info. del contacto»:**
+  - Las notas guardadas o en edición no se han observado.
+  - Los números no guardados y otros diseños de empresa no se han observado.
+  - Hay otros textos no genéricos del panel sin cubrir, entre ellos uno de 968 caracteres.
+  - Las repeticiones del nombre en las filas inferiores tampoco están cubiertas.
+- **Estados citados:** el encabezado solo se reconoce en español e inglés, y los estados de foto, texto o GIF no tienen evidencia.
+- **Sin diagnóstico:** las fotos y los vídeos de «Info. del mensaje», y las miniaturas citadas del recuadro «Responder».
+- **Vídeos y citas:**
+  - Las capas de la miniatura de un vídeo no se han confirmado (hermanas o anidadas).
+  - La duración de una cita se difumina con su icono.
+  - La duración de un vídeo con forma de hora se difumina como una hora.
+- **Documentos:** PDF, DOCX y los demás formatos solo están probados con el DOM simulado.
+- **Indicadores:** los de enviado, entregado y reloj no tienen evidencia, y la silueta de grupo de RF-02 no está confirmada.
+- **Inicialización:** si algo elimina un estilo de Veilix de la página, no se vuelve a insertar hasta desactivar y reactivar su interruptor, y la causa del episodio de `0.1.2-beta.0` no se ha confirmado (ver [Inicialización de los módulos](#inicialización-de-los-módulos-en-investigación)).
+- **Navegadores:** no hay pruebas reales fuera de Chrome, y Safari no se ha ejecutado nunca.
+
+Las tablas de evidencia y las notas «pendiente de validación» de las secciones anteriores conservan el estado comunicado en su momento. El cierre de la validación de la serie está en [Evidencia de 0.1.2, por tipo](#evidencia-de-012-por-tipo).
+
+### Antes de aprobar 0.1.2
+
+1. **Prueba de humo en Chrome:** carga `veilix-0.1.2-chrome.zip` (o `.output/chrome-mv3`), comprueba que el panel muestra «Veilix 0.1.2» y que los cinco interruptores funcionan.
+2. **Paquetes locales antiguos:** descarta cualquiera con el mismo nombre que los de esta versión.
+
+## Versión 0.1.1 (estable anterior, antecedente)
+
+> **Antecedente histórico.** `0.1.1` se preparó como estable durante el desarrollo. No consta que el propietario la aprobara ni que se publicara. Su aprobación ya no es un requisito: la estable seleccionada para el primer lanzamiento público es [`0.1.2`](#versión-012-estable-pendiente-de-aprobación). El contenido de esta sección, «Antes de aprobar» incluido, conserva el estado de entonces.
 
 Preparada el 21 de octubre de 2026 a partir de `0.1.1-beta.5` con `npm run version:estable`, sin cambios de comportamiento. Manifiesto `0.1.1` en Chrome, Edge, Firefox y Safari, sin `version_name`. El panel muestra «Veilix 0.1.1».
 
@@ -170,19 +247,20 @@ Precisiones técnicas sobre ese resultado:
 
 - **Otros navegadores y sistemas:** pruebas manuales en Edge, Brave, Opera, Vivaldi, Firefox y Safari, y en Chrome con el sistema operativo indicado. Ver la [matriz de compatibilidad](#matriz-de-compatibilidad).
 - **Indicador de reloj (pendiente):** validación pendiente.
-- **Prueba de humo de `0.1.1` en Chrome:** identidad visual y versión (ver [Antes de aprobar](#antes-de-aprobar)).
-- **Correcciones de RF-01 y RF-02 de `0.1.1`:** validadas en Chrome real con `0.1.1-beta.0`, `0.1.1-beta.2` y `0.1.1-beta.3`. La causa de la regresión de remitentes de beta.2 sigue sin conocerse, aunque no se repitió en beta.3. Ver [Versión 0.1.1](#versión-011-estable-pendiente-de-aprobación).
+- **Prueba de humo:** la vigente es la de `0.1.2` (ver [Antes de aprobar 0.1.2](#antes-de-aprobar-012)). La de `0.1.1` ya no es necesaria para el lanzamiento.
+- **Correcciones de RF-01 y RF-02 de `0.1.1`:** validadas en Chrome real con `0.1.1-beta.0`, `0.1.1-beta.2` y `0.1.1-beta.3`. La causa de la regresión de remitentes de beta.2 sigue sin conocerse, aunque no se repitió en beta.3. Ver [Versión 0.1.1](#versión-011-estable-anterior-antecedente).
 - **Alertas de `npm audit`** en dependencias de desarrollo (`web-ext → node-forge`).
-- **Commits:** parte del trabajo de `0.1.1` ya está confirmado en `development`, pero no todo. El `HEAD` actual no compila sin los archivos pendientes (ver [Antes de aprobar](#antes-de-aprobar)).
+- **Commits:** el trabajo de las betas de `0.1.2` está confirmado en `development`. Los cambios de la preparación de la estable `0.1.2` están pendientes de confirmar por el propietario.
+- **Cierre formal de la Fase 2:** sus entregables técnicos están integrados y ampliados en `0.1.2`. El cierre requiere la aprobación explícita del propietario («Flujo de trabajo por fases» de `AGENTS.md`), que no consta. No condiciona el lanzamiento de `0.1.2`.
 
 ## Funcionalidades aprobadas
 
 | Funcionalidad | Categoría | Estado | Observaciones |
 | --- | --- | --- | --- |
-| Difuminar nombres de contactos (RF-01) | Difuminado visual | Disponible · validado en Chrome con `0.2.0-beta.8`. Ampliaciones de `0.1.1` validadas en Chrome con `0.1.1-beta.3`: remitentes en grupos y nombres e información secundaria de «Nuevo chat». Desde `0.1.2-beta.1`, autores de grupo por su estructura `[data-testid="author"]`, incluidos los no guardados y la multimedia sin descripción (validado en Chrome con `0.1.2-beta.1`) | Lista de chats y encabezado de la conversación. Desde `0.1.1-beta.0`, también los remitentes dentro de la conversación (sobre los mensajes de grupo, en citas y respuestas, en el aviso fijado) y los nombres de filas de contacto fuera de la lista («Nuevo chat», participantes…). |
-| Difuminar fotografías de contactos (RF-02) | Difuminado visual | Disponible · validado en Chrome (ampliación de `0.1.1-beta.0` validada en «Nuevo chat»; otros paneles sin comprobar). Con `0.1.2-beta.1`, los avatares predeterminados de «Nuevo chat» seguían visibles; desde `0.1.2-beta.2`, la columna del avatar de cada contacto y de «Tú» (pendiente de validación). Desde `0.1.2-beta.3`, los avatares de participantes junto a los mensajes de un grupo (pendiente de validación; la silueta, de confirmar) | Fotos y avatares predeterminados de la lista y del encabezado, y fotos de perfil en cualquier otra zona (panel de información, remitentes en grupos, foto propia). Desde `0.1.1-beta.0`, también los avatares SVG predeterminados en cualquier zona, como «Nuevo chat», que se revelan con su fila. No afecta a iconos, contadores ni imágenes de mensajes. |
+| Difuminar nombres de contactos (RF-01) | Difuminado visual | Disponible · validado en Chrome. En `0.1.2`: autores de grupo por su estructura e información personal de «Info. del contacto» (serie `0.1.2-beta` validada por el propietario; ver [Versión 0.1.2](#versión-012-estable-pendiente-de-aprobación)) | Lista de chats y encabezado de la conversación; remitentes y autores de grupo (también en citas y en el aviso fijado); autor citado en «Responder»; nombre e información de «Nuevo chat»; otras filas de contacto con avatar SVG (hipótesis); y nombre, usuario, teléfono y descripción de «Info. del contacto». Las notas guardadas, los números no guardados y otros textos del panel no están cubiertos. |
+| Difuminar fotografías de contactos (RF-02) | Difuminado visual | Disponible · validado en Chrome. En `0.1.2`: avatares de «Nuevo chat» y de participantes en grupos (serie `0.1.2-beta` validada por el propietario) | Fotos y avatares predeterminados de la lista, del encabezado, de «Nuevo chat» (también «Tú») y junto a los mensajes de grupo (foto e inicial; la silueta, sin confirmar), y fotos de perfil en cualquier otra zona, como «Info. del contacto». No afecta a iconos, contadores ni imágenes de mensajes. |
 | Difuminar mensajes recientes (RF-03) | Difuminado visual | Disponible · validado en Chrome (reloj pendiente) | Vista previa en la lista de chats, incluidas las especiales con iconos dentro (por ejemplo, «reaccionó con 👌 a:» con el icono de una foto), y su indicador de **leído** (`wds-ic-read`) cuando el último mensaje es propio. Enviado, entregado y pendiente, pendientes de diagnóstico. Silenciado, fijado, estados, mensajes temporales, stickers y contador de no leídos siguen visibles. |
-| Difuminar mensajes de conversaciones (RF-04) | Difuminado visual | Disponible · validado en Chrome (reloj pendiente). Desde `0.1.2-beta.4`, también el texto de «Info. del mensaje» (pendiente de validación). Desde `0.1.2-beta.7`, las miniaturas de vídeo dibujadas como fondos CSS, desde `0.1.2-beta.8`, el nombre, el formato y el tamaño de los documentos adjuntos (validado), desde `0.1.2-beta.9`, la etiqueta de extensión de su icono, y desde `0.1.2-beta.10`, las miniaturas de las citas (ambas pendientes de validación); las miniaturas de vídeo, pendientes de validación | Texto, descripciones, multimedia (fotos, vídeos y miniaturas), hora y reacciones de los mensajes entrantes y salientes, y el indicador de **leído** de los enviados (`wds-ic-read` en `msg-meta`; los demás estados, pendientes de diagnóstico). El revelado abarca el mensaje completo. Desde `0.1.2-beta.0`, también el texto citado del recuadro «Responder» encima del editor (pendiente de validación real; las miniaturas citadas, pendientes de diagnóstico). Los botones de reaccionar, descargar, responder y reproducir, los demás iconos y los separadores siguen visibles. |
+| Difuminar mensajes de conversaciones (RF-04) | Difuminado visual | Disponible · validado en Chrome (reloj pendiente). En `0.1.2`: «Responder», «Info. del mensaje», vídeos, documentos, citas y estados citados (serie `0.1.2-beta` validada por el propietario) | Texto, descripciones, multimedia (fotos, vídeos, miniaturas de vídeo y stickers), hora, reacciones e indicador de **leído** de los mensajes. Texto citado del recuadro «Responder». Texto y stickers de «Info. del mensaje». Nombre, formato, tamaño y etiqueta del icono de los documentos. Miniatura, duración y encabezado «Tú · Estados» de las citas (encabezado solo en español e inglés). Los botones, los demás iconos y los separadores siguen visibles. Sin cubrir: fotos y vídeos de «Info. del mensaje», miniaturas citadas de «Responder» y estados de foto, texto o GIF. |
 | Difuminar el campo de entrada de mensajes (RF-05) | Difuminado visual | Disponible · validado en Chrome | Se puede escribir, corregir, copiar y enviar con normalidad. |
 | Ocultar el estado de escritura | Actividad y presencia | Pendiente | Antes de implementarla hay que confirmar que es técnicamente viable. |
 | Ver estados de forma privada | Actividad y presencia | Pendiente | Se priorizará la configuración oficial de privacidad de WhatsApp. |
@@ -270,10 +348,10 @@ npm run dev:firefox  # desarrollo en Firefox
 | `npm run build` | Compila para Chrome, Edge, Firefox y Safari. |
 | `npm run build:chrome` / `build:edge` / `build:firefox` / `build:safari` | Compila para un solo navegador. `build:chrome` sirve también para Brave, Opera y Vivaldi. |
 | `npm run lint:firefox` | Valida `.output/firefox-mv3` con `web-ext lint`. |
-| `npm run zip:<navegador>` | Genera el paquete `.zip` (`chrome`, `edge`, `firefox` o `safari`) con la versión en el nombre, por ejemplo `veilix-0.1.2-beta.13-chrome.zip`. |
+| `npm run zip:<navegador>` | Genera el paquete `.zip` (`chrome`, `edge`, `firefox` o `safari`) con la versión en el nombre, por ejemplo `veilix-0.1.2-chrome.zip`. |
 | `npm run version:beta` | Siguiente versión previa: desde una estable inicia la beta del siguiente parche (`0.1.0` → `0.1.1-beta.0`), y desde una beta la incrementa (`0.1.1-beta.0` → `0.1.1-beta.1`). |
 | `npm run version:parche-beta` / `version:menor-beta` | Primera beta del siguiente parche (`0.2.1-beta.0`) o de la siguiente versión menor (`0.3.0-beta.0`). |
-| `npm run version:estable` | Convierte en estable la beta actual (`0.1.1-beta.5` → `0.1.1`). Ejecutar solo sobre una versión beta. |
+| `npm run version:estable` | Convierte en estable la beta actual (`0.1.2-beta.13` → `0.1.2`). Ejecutar solo sobre una versión beta. |
 | `npm run version:comprobar` | Falla si el código cambió respecto a `HEAD` (o a la referencia indicada) y la versión no, salvo una renumeración aprobada en `version-renumeraciones.json` para ese commit base. |
 
 Los resultados se generan en `.output/<navegador>-mv3/`.
@@ -1144,7 +1222,7 @@ WhatsApp Web solo muestra la interfaz de chats con una sesión iniciada, y desde
 
 ## Matriz de compatibilidad
 
-Estado de la versión `0.1.2-beta.13`. Las columnas distinguen tres tipos de evidencia:
+Estado de la versión `0.1.2`. Las columnas distinguen tres tipos de evidencia:
 
 - **Compilación:** se genera un paquete válido para ese navegador.
 - **Pruebas simuladas:** pruebas automatizadas sobre un DOM que imita WhatsApp Web, ejecutadas en Linux (Codespaces y GitHub Actions).
@@ -1377,8 +1455,9 @@ Todas usan un DOM **simulado**. Pasar estas pruebas no demuestra compatibilidad 
 - **Mensajes (RF-04).**
   - El contenedor `[data-testid="msg-container"]` y el bloque `[data-pre-plain-text]` están confirmados por el diagnóstico real. El resto son hipótesis: descripciones como `.selectable-text`, multimedia por su origen `blob:` o `data:image/jpeg`, y la fila `[data-id]` como mensaje completo.
   - La hora y las reacciones se marcan con una heurística sobre la forma del texto (formato de hora; solo emojis y contador), que se reevalúa con cada cambio del mensaje. Pueden escaparse formatos de hora no contemplados (por ejemplo, con segundos) y reacciones que incluyan texto o iconos. Un elemento del mensaje formado solo por emojis fuera del texto (por ejemplo, un nombre de remitente compuesto solo de emojis) también se difuminaría.
-  - No se cubren las encuestas, los contactos compartidos, la ubicación, los documentos (nombre de archivo) ni las notas de voz, salvo que incluyan alguno de los elementos anteriores.
+  - No se cubren las encuestas, los contactos compartidos, la ubicación ni las notas de voz, salvo que incluyan alguno de los elementos anteriores. Los documentos adjuntos se cubren desde `0.1.2-beta.8` (nombre, formato y tamaño) y `0.1.2-beta.9` (etiqueta del icono); ver [Documentos adjuntos](#documentos-adjuntos-corrección-en-012-beta8).
   - El revelado se delimita por mensaje.
+- **«Info. del contacto» (RF-01, desde `0.1.2-beta.13`).** Solo se cubren el nombre, el usuario, el teléfono y la descripción de la estructura observada (un contacto guardado de una cuenta de empresa). Las limitaciones están en [Limitaciones conocidas de 0.1.2](#limitaciones-conocidas-de-012).
 - **Nombres de remitentes en la conversación (RF-01, desde `0.1.1-beta.0`).**
   - Se reconocen comparando el texto visible con los nombres de `data-pre-plain-text` de la conversación abierta. El atributo está confirmado, pero el formato «[hora, fecha] Nombre: » es una hipótesis. Si no coincide, no se difumina nada.
   - El remitente de un mensaje **sin texto** (por ejemplo, una foto sin descripción) solo se reconoce si esa persona tiene otro mensaje con texto visible en la conversación.
