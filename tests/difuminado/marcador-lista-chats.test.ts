@@ -7,6 +7,7 @@ import {
   esSoloIcono,
   estadosDeVistaPrevia,
   filasAfectadas,
+  soloExternos,
   textoVisible,
 } from '@/nucleo/difuminado/marcador-lista-chats';
 import {
@@ -122,6 +123,14 @@ describe('marcador de la lista de chats', () => {
     expect(textosMarcados(fila, VISTA)).toContain('Otro mensaje');
   });
 
+  it('marca solo el elemento más externo de cada vista previa', () => {
+    for (const fila of wa.filas) {
+      for (const marcado of fila.querySelectorAll(`[${VISTA}]`)) {
+        expect(marcado.parentElement?.closest(`[${VISTA}]`) ?? null).toBeNull();
+      }
+    }
+  });
+
   it('desmarca todo sin tocar el texto', () => {
     const textoAntes = wa.lista.textContent;
     marcadorNombre.desmarcarTodo(document);
@@ -196,6 +205,26 @@ describe('vistas previas especiales', () => {
     elemento.append(...hijos);
     return elemento;
   };
+
+  it('soloExternos descarta los elementos contenidos en otro de la lista', () => {
+    const interior = span('Texto');
+    const exterior = span(interior);
+    const aparte = span('Otro');
+    expect(soloExternos([interior, exterior, aparte])).toEqual([exterior, aparte]);
+  });
+
+  it('no marca un indicador de estado que está dentro de la vista previa', () => {
+    const wa = montarWhatsAppSimulado();
+    const fila = wa.filas[0];
+    const vista = fila?.querySelector('span[title] > span[dir="ltr"]');
+    if (!fila || !vista) throw new Error('sin vista previa');
+    vista.append(iconoLeido(document));
+    const marcador = crearMarcadorEstadoVistaPrevia('data-veilix-estado-vista-previa');
+    marcador.marcarTodo(document);
+    expect(fila.querySelectorAll('[data-veilix-estado-vista-previa]')).toHaveLength(0);
+    marcador.desmarcarTodo(document);
+    wa.desmontar();
+  });
 
   it('textoVisible ignora los <title> de los SVG', () => {
     expect(textoVisible(span(iconoSvg(document, 'wds-ic-read')))).toBe('');
