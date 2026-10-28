@@ -282,7 +282,7 @@ describe('RF-01 y RF-02 fuera de la lista de chats', () => {
     const infos = () => [...document.querySelectorAll('[data-prueba="info-observada"]')];
     const noProtegidos = () => [
       ...document.querySelectorAll(
-        '[data-prueba="accion-observada"] span, [data-prueba="encabezado-nuevo-chat"] span, [data-prueba="buscador-observado"], [data-prueba="seccion-observada"], [data-prueba="avatar-no-observado"], [data-prueba="funcional-observado"], [data-prueba="funcional-observado"] *',
+        '[data-prueba="accion-observada"] span, [data-prueba="encabezado-nuevo-chat"] span, [data-prueba="buscador-observado"], [data-prueba="seccion-observada"], [data-prueba="icono-accion"], [data-prueba="icono-accion"] *, [data-prueba="funcional-observado"], [data-prueba="funcional-observado"] *',
       ),
     ];
 
