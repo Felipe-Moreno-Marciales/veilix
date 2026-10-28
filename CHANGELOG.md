@@ -12,7 +12,7 @@ Cada entrega de prueba con cambios en el código recibe una versión nueva. Volv
 
 ## [0.1.2] — 2026-10-28
 
-**Versión estable preparada y seleccionada para el primer lanzamiento público de Veilix.** Su publicación sigue pendiente de la aprobación definitiva del propietario: no está publicada en ninguna tienda y no tiene etiqueta de Git. Congelación de funcionalidades: no incluye ningún cambio de comportamiento respecto a `0.1.2-beta.13`.
+**Versión estable aprobada por el propietario para el primer lanzamiento público de Veilix** (28 de octubre de 2026). Todavía no está publicada en ninguna tienda y no tiene etiqueta de Git. Congelación de funcionalidades: no incluye ningún cambio de comportamiento respecto a `0.1.2-beta.13`.
 
 Manifiesto: `0.1.2` en Chrome, Edge, Firefox y Safari (sin `version_name`). Panel: «Veilix 0.1.2». Paquetes: `veilix-0.1.2-{chrome,edge,firefox,safari}.zip`.
 
@@ -52,6 +52,12 @@ Todo lo entregado de `0.1.2-beta.0` a `0.1.2-beta.13`, consolidado. El detalle d
   - Las cuatro funcionalidades pendientes, que siguen sin interruptor.
   - La identidad visual y el crédito.
   - `version-renumeraciones.json`.
+
+### Aprobación
+
+- **Primer lanzamiento público:** el 28 de octubre de 2026, el propietario aprobó `0.1.2` como la estable del primer lanzamiento público. La publicación todavía no se ha hecho.
+- **Fase 2:** el mismo día, el propietario aprobó expresamente su cierre oficial. Sus entregables técnicos (RF-01 a RF-05, revelado temporal, panel, preferencias y aplicación en caliente) están consolidados en esta versión. El cierre no implica que se hayan validado todas las variantes de WhatsApp Web ni todos los navegadores; ver «Limitaciones conocidas».
+- **Siguiente versión prevista:** `0.1.3-beta.0`, todavía no iniciada.
 
 ### Cambiado (versionado)
 
@@ -109,7 +115,6 @@ Todo lo entregado de `0.1.2-beta.0` a `0.1.2-beta.13`, consolidado. El detalle d
   - Las variantes de respuesta no observadas (beta.0).
   - En «Info. del contacto», otros idiomas (beta.13).
 - **Regresión de beta.2 de `0.1.1`:** su causa sigue sin identificarse.
-- **Fase 2:** sus entregables técnicos están integrados y ampliados en esta versión. Su cierre formal requiere la aprobación explícita del propietario, que no consta, y no condiciona este lanzamiento.
 - **`0.1.1`:** se conserva como antecedente histórico. No consta su aprobación ni su publicación, y su aprobación no es requisito de este lanzamiento.
 
 ## Compilaciones internas de 0.1.2
@@ -824,7 +829,7 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2000` en Chromi
 
 **Versión estable preparada para la aprobación final del propietario.** No está publicada en ninguna tienda, no tiene etiqueta de Git y la Fase 2 sigue abierta.
 
-> **Nota (28 de octubre de 2026):** el párrafo anterior describe el estado al preparar esta versión. `0.1.1` queda como antecedente histórico. No consta su aprobación ni su publicación, y su aprobación ya no es un requisito: la estable seleccionada para el primer lanzamiento público es [0.1.2].
+> **Nota (28 de octubre de 2026):** el párrafo anterior describe el estado al preparar esta versión. `0.1.1` queda como antecedente histórico. No consta su aprobación ni su publicación, y su aprobación ya no es un requisito: la estable aprobada para el primer lanzamiento público es [0.1.2], y la Fase 2 se cerró oficialmente el 28 de octubre de 2026.
 
 Manifiesto: `0.1.1` en Chrome, Edge, Firefox y Safari (sin `version_name`). Panel: «Veilix 0.1.1». Paquetes: `veilix-0.1.1-{chrome,edge,firefox,safari}.zip`.
 
