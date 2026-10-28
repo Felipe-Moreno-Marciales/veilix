@@ -8,17 +8,19 @@ Extensión de privacidad para WhatsApp Web, desarrollada de forma independiente.
 
 **Última versión estable: `0.1.2`** · Proyecto propietario de código cerrado.
 
-> ⏳ **Publicación pendiente.** Veilix `0.1.2` está aprobada para su primer lanzamiento público, pero todavía no hay ninguna descarga publicada: no existe una Release ni una ficha en ninguna tienda. Los enlaces se añadirán aquí cuando se publique.
+> ⏳ **Publicación pendiente.** Veilix `0.1.2` está aprobada para su primer lanzamiento público, pero todavía no hay ninguna descarga publicada: no existe una Release ni una ficha en ninguna tienda. La primera publicación incluirá **Chrome** (que sirve también para Brave, Opera y Vivaldi) y **Edge**. Los enlaces se añadirán aquí cuando se publique.
 
 ### Disponibilidad por navegador
 
-| Navegador | Paquete | Descarga | Estado |
+| Navegador | Primera publicación | Descarga | Estado |
 | --- | --- | --- | --- |
-| 🌐 Google Chrome | `veilix-0.1.2-chrome.zip` | Publicación pendiente | Paquete preparado. Validado por el propietario en Chrome. Instalación manual |
-| 🌐 Brave, Opera y Vivaldi | `veilix-0.1.2-chrome.zip` (el mismo de Chrome) | Publicación pendiente | Paquete preparado. Sin prueba real en estos navegadores |
-| 🌊 Microsoft Edge | `veilix-0.1.2-edge.zip` | Publicación pendiente | Paquete preparado. Sin prueba real en Edge |
-| 🦊 Mozilla Firefox | `veilix-0.1.2-firefox.zip` | Publicación pendiente | Paquete técnico **sin firmar**: solo admite la carga temporal. Falta la firma de Mozilla. Sin prueba real |
-| 🧭 Apple Safari (macOS) | `veilix-0.1.2-safari.zip` | No disponible para usuarios finales | Solo contiene los archivos de la extensión, no un instalador. Necesita una app de macOS generada con Xcode. Nunca se ha probado en Safari |
+| 🌐 Google Chrome | ✅ Incluido: `veilix-0.1.2-chrome.zip` | Publicación pendiente | Paquete preparado. Validado por el propietario en Chrome. Instalación manual |
+| 🌐 Brave, Opera y Vivaldi | ✅ Incluido: el paquete de Chrome | Publicación pendiente | Mismo paquete que Chrome. Sin prueba real en estos navegadores |
+| 🌊 Microsoft Edge | ✅ Incluido: `veilix-0.1.2-edge.zip` | Publicación pendiente | Paquete preparado. Sin prueba real en Edge |
+| 🦊 Mozilla Firefox | ⏸️ No incluido | Pendiente de firma | Solo existe un paquete técnico **sin firmar**, que no se distribuye. Hace falta la firma de Mozilla. Sin prueba real |
+| 🧭 Apple Safari (macOS) | ⛔ No incluido | No disponible para usuarios finales | No hay instalador: hace falta una app de macOS generada con Xcode y firmada. Nunca se ha probado en Safari |
+
+✅ Formará parte de la primera publicación · ⏸️ Pendiente de un requisito previo · ⛔ No disponible para usuarios finales
 
 **Requisitos:**
 - WhatsApp Web abierto en una pestaña de `https://web.whatsapp.com`.
@@ -27,7 +29,7 @@ Extensión de privacidad para WhatsApp Web, desarrollada de forma independiente.
 
 ### Instalación
 
-Los pasos de Chrome, Edge y Firefox sirven para el paquete descargado, cuando se publique. Mientras tanto, solo se pueden seguir con los paquetes que genera `npm run zip:<navegador>`.
+Los pasos de Chrome y Edge sirven para los paquetes de la primera publicación, cuando esté disponible. Hasta entonces, solo se pueden seguir con los paquetes que genera `npm run zip:chrome` o `npm run zip:edge`.
 
 #### 🌐 Google Chrome (y Brave, Opera y Vivaldi)
 
@@ -48,14 +50,14 @@ Esta es una instalación manual. El navegador puede mostrar avisos sobre extensi
 
 #### 🦊 Mozilla Firefox
 
-`veilix-0.1.2-firefox.zip` es un **paquete técnico sin firmar**, no una extensión pública instalable. Firefox solo instala de forma permanente las extensiones firmadas por Mozilla.
+**Pendiente de firma: no hay descarga para Firefox.** Firefox solo instala de forma permanente las extensiones firmadas por Mozilla. El proyecto solo genera un paquete técnico sin firmar (`npm run zip:firefox`), que no se distribuye.
 
-- **Para probarlo:** descomprímelo, abre `about:debugging#/runtime/this-firefox`, pulsa **«Cargar complemento temporal…»** y elige su `manifest.json`. Firefox lo elimina al cerrarse.
+- **Para desarrolladores:** se puede probar con ese paquete técnico. Descomprímelo, abre `about:debugging#/runtime/this-firefox`, pulsa **«Cargar complemento temporal…»** y elige su `manifest.json`. Firefox lo elimina al cerrarse.
 - **Para usuarios finales:** el enlace aparecerá aquí cuando exista una versión firmada por Mozilla.
 
 #### 🧭 Apple Safari
 
-`veilix-0.1.2-safari.zip` contiene solo los archivos de la extensión. **No es un instalador**: Safari no instala extensiones a partir de un ZIP, sino mediante una app de macOS que la contiene, generada con Xcode. Ese paquete no existe todavía, y no hay ninguna publicación en la App Store ni en otra tienda.
+**No disponible para usuarios finales.** Safari no instala extensiones a partir de un ZIP, sino mediante una app de macOS que la contiene, generada con Xcode y firmada. El proyecto solo genera los archivos de la extensión (`npm run zip:safari`), que no se distribuyen. No existe ese instalador, y no hay ninguna publicación en la App Store ni en otra tienda.
 
 Los desarrolladores con un Mac pueden cargarla de forma temporal; ver [Probar en Safari (macOS)](#probar-en-safari-macos).
 
@@ -65,28 +67,59 @@ Los desarrolladores con un Mac pueden cargarla de forma temporal; ver [Probar en
 
 **Opción propuesta, pendiente de tu autorización:** un repositorio público aparte, dedicado solo a la distribución.
 
-| Contendría | Nunca contendría |
+| Primera publicación (`v0.1.2`) | Nunca se publica |
 | --- | --- |
-| Los paquetes `veilix-0.1.2-{chrome,edge,firefox,safari}.zip` (o, en Firefox, el `.xpi` firmado por Mozilla) | `veilix-0.1.2-sources.zip`: es el código fuente para la revisión de Mozilla, que se entrega solo a Mozilla |
-| Un `SHA256SUMS.txt` con las huellas de los paquetes | El código fuente (`src/`, `scripts/`, `tests/`, configuración) y los diagnósticos |
-| Un README breve para usuarios, con la sección «Descargar Veilix», y las notas de la versión | `CHANGELOG.md`, `AGENTS.md` y la documentación interna |
+| `veilix-0.1.2-chrome.zip` y `veilix-0.1.2-edge.zip` | `veilix-0.1.2-sources.zip`: es el código fuente, y solo se entrega a Mozilla para su revisión |
+| `SHA256SUMS.txt`, con las huellas de **solo** esos dos paquetes | `veilix-0.1.2-firefox.zip` y `veilix-0.1.2-safari.zip`: son paquetes técnicos, no instalables por usuarios finales |
+| Un README breve para usuarios, con la sección «Descargar Veilix», y las notas de la versión | El código fuente (`src/`, `scripts/`, `tests/`, configuración), los diagnósticos, `CHANGELOG.md`, `AGENTS.md` y la documentación interna |
 | Los términos de uso de la licencia propietaria | Credenciales, `.env` y datos personales |
+
+**Publicaciones posteriores:** el `.xpi` de Firefox, cuando Mozilla lo firme, y la app de Safari, cuando exista y esté firmada.
 
 Los paquetes contienen el código compilado de la extensión, como cualquier extensión de navegador. Ya se revisó que no incluyen diagnósticos, pruebas, mapas de código ni credenciales.
 
 **Pasos, cuando lo autorices:**
-1. **Confirma los identificadores provisionales** antes de distribuir: `veilix@veilix.app` (Firefox) y `app.veilix.Veilix` (Safari).
-2. **Crea el repositorio público de distribución.** Por ejemplo, con un nombre como `veilix-releases`; el nombre lo decides tú.
-3. **Genera las huellas** desde `.output/`:
+
+1. **Crea el repositorio público de distribución.** Por ejemplo, con un nombre como `veilix-releases`; el nombre lo decides tú. Que no contenga nada más que lo indicado arriba.
+2. **Prepara la Release desde `.output/`** con una **lista explícita** de paquetes autorizados. No uses comodines: `veilix-0.1.2-*.zip` incluiría `veilix-0.1.2-sources.zip`.
 
    ```bash
-   sha256sum veilix-0.1.2-chrome.zip veilix-0.1.2-edge.zip veilix-0.1.2-firefox.zip veilix-0.1.2-safari.zip > SHA256SUMS.txt
+   cd .output
+
+   # Paquetes autorizados para la primera publicación (lista explícita, sin comodines).
+   AUTORIZADOS=(veilix-0.1.2-chrome.zip veilix-0.1.2-edge.zip)
+
+   # Ninguno puede ser el paquete de fuentes ni el de Firefox o Safari.
+   printf '%s\n' "${AUTORIZADOS[@]}" | grep -E 'sources|firefox|safari' && echo "DETENER: paquete no autorizado"
+
+   # Solo la extensión compilada: sin código fuente, diagnósticos, pruebas ni mapas de código.
+   for paquete in "${AUTORIZADOS[@]}"; do unzip -Z1 "$paquete"; done \
+     | grep -E '(^|/)(src|scripts|tests)/|diagnostico|\.map$|\.env|\.ts$' && echo "DETENER: contenido interno"
+
+   # Huellas de solo los paquetes autorizados (en macOS: shasum -a 256).
+   sha256sum "${AUTORIZADOS[@]}" > SHA256SUMS.txt
+   cat SHA256SUMS.txt   # Deben aparecer exactamente dos líneas: chrome y edge.
    ```
-4. **Crea la Release `v0.1.2`** en ese repositorio con los cuatro paquetes y `SHA256SUMS.txt`, pero sin `veilix-0.1.2-sources.zip`. Por ejemplo, con `gh release create v0.1.2 … --repo <propietario>/<repositorio>`, o desde la web de GitHub.
-5. **Firefox:** fírmalo en addons.mozilla.org, como extensión pública o para distribución propia, y publica el `.xpi` firmado en lugar del ZIP técnico.
-6. **Safari:** solo se puede distribuir con una app de macOS generada con Xcode y firmada con una cuenta del Apple Developer Program. Hasta entonces, mantén «No disponible para usuarios finales».
-7. **Sustituye cada «Publicación pendiente»** de la tabla por su enlace directo, con la estructura de GitHub Releases: `https://github.com/<propietario>/<repositorio>/releases/download/v0.1.2/veilix-0.1.2-chrome.zip` (y su equivalente para cada navegador).
-8. **Actualiza el aviso** de «Publicación pendiente» con el enlace a la página de la Release.
+
+   Si aparece «DETENER», no publiques: revisa la lista o el paquete.
+3. **Crea la Release `v0.1.2`** en el repositorio de distribución con la misma lista y nada más, desde la web de GitHub o con:
+
+   ```bash
+   gh release create v0.1.2 "${AUTORIZADOS[@]}" SHA256SUMS.txt \
+     --repo <propietario>/<repositorio-de-distribución> --title "Veilix 0.1.2" --notes-file <notas-de-la-versión>.md
+   ```
+4. **Comprueba lo publicado.** Deben aparecer exactamente `veilix-0.1.2-chrome.zip`, `veilix-0.1.2-edge.zip` y `SHA256SUMS.txt`:
+
+   ```bash
+   gh release view v0.1.2 --repo <propietario>/<repositorio-de-distribución> --json assets --jq '.assets[].name'
+   ```
+5. **Actualiza este README:**
+   - En las filas de Chrome, de Brave, Opera y Vivaldi, y de Edge, sustituye «Publicación pendiente» por el enlace directo. Su estructura es `https://github.com/<propietario>/<repositorio-de-distribución>/releases/download/v0.1.2/veilix-0.1.2-chrome.zip`, y lo mismo con `-edge.zip`.
+   - Actualiza el aviso de «Publicación pendiente» con el enlace a la página de la Release.
+   - Firefox y Safari no cambian.
+6. **Más adelante:**
+   - **Firefox:** confirma el identificador provisional `veilix@veilix.app`, firma la extensión en addons.mozilla.org (pública o para distribución propia) y publica el `.xpi` firmado en una nueva Release o como archivo añadido.
+   - **Safari:** confirma el identificador provisional `app.veilix.Veilix` y genera y firma la app de macOS con Xcode y una cuenta del Apple Developer Program.
 
 ## Estado
 
