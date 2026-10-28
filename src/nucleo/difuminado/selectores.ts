@@ -72,11 +72,177 @@ export const TEXTO_MENSAJE =
  * No incluye emojis, avatares ni iconos, que usan otros orígenes o
  * `data-icon`. Así no se difuminan todas las `img` del mensaje.
  */
-export const MULTIMEDIA_MENSAJE =
-  ':is(img[src^="blob:"], img[src^="data:image/jpeg"], video, canvas, [style*="blob:"]):not([data-icon] *)';
+/**
+ * Miniatura de un vídeo (CONFIRMADO, Chrome, diagnóstico real sobre
+ * 0.1.2-beta.6): dentro de `msg-container`, el vídeo está en
+ * `[data-testid="video-content"]` y su miniatura son dos capas `div` con un
+ * fondo en línea `data:image/jpeg`. Una trae `filter: blur(8px)` de WhatsApp y
+ * la otra, sin filtro, muestra la miniatura nítida. Ninguna es `img`, `video`
+ * ni `canvas`, por eso `MULTIMEDIA_MENSAJE` no las alcanzaba.
+ *
+ * SIN CONFIRMAR: si las capas son hermanas o la nítida contiene a la otra (no
+ * puede estar dentro de la desenfocada, porque se ve nítida). Por eso se
+ * difumina solo la capa más externa de cada miniatura. Si son hermanas, cada
+ * una recibe su filtro. Si están anidadas, la interior queda difuminada con la
+ * exterior, con un solo filtro de Veilix.
+ */
+export const CONTENIDO_VIDEO = '[data-testid="video-content"]';
+const CAPA_MINIATURA_VIDEO = `${CONTENIDO_VIDEO} [style*="data:image/jpeg"]`;
+export const MINIATURA_VIDEO = `[data-testid="msg-container"] ${CAPA_MINIATURA_VIDEO}:not(${CAPA_MINIATURA_VIDEO} *)`;
 
-/** Contenido visual de un mensaje que se difumina: texto y multimedia. */
-export const CONTENIDO_MENSAJE = `${TEXTO_MENSAJE}, ${MULTIMEDIA_MENSAJE}`;
+/**
+ * Miniatura de una cita dentro de un mensaje (CONFIRMADO, Chrome, diagnóstico
+ * real sobre 0.1.2-beta.9): en `msg-container` › `[data-testid="quoted-message"]`,
+ * la miniatura de 58 × 58 px es un `div` con un fondo en línea
+ * `data:image/jpeg`, junto a un encabezado `span[dir="auto"]`, un texto con
+ * forma de duración y el texto citado (`selectable-text`, ya difuminado).
+ * Por las longitudes del texto anonimizado y la captura del propietario, es
+ * muy probablemente una respuesta a un estado de vídeo («Tú · Estados»,
+ * «0:18»), pero el diagnóstico no lo confirma.
+ *
+ * Se difumina la capa más externa con ese fondo, nunca la cita entera. No se
+ * elige un fondo que contenga el texto citado, el encabezado, botones o
+ * `[role="button"]`: eso no sería la miniatura sino un contenedor mayor.
+ * SIN CONFIRMAR: si la duración o el indicador de vídeo están dentro de la
+ * miniatura (entonces se difuminan con ella) o fuera (siguen visibles).
+ */
+const CAPA_MINIATURA_CITA = '[data-testid="quoted-message"] [style*="data:image/jpeg"]';
+export const MINIATURA_CITA = [
+  `[data-testid="msg-container"] ${CAPA_MINIATURA_CITA}`,
+  `:not(${CAPA_MINIATURA_CITA} *)`,
+  `:not(:where(${CAPA_MINIATURA_VIDEO}, ${CAPA_MINIATURA_VIDEO} *))`,
+  ':not(:has([data-testid="selectable-text"], .selectable-text, span[dir="auto"], button, [role="button"]))',
+].join('');
+
+/**
+ * Multimedia de un mensaje. Excluye lo que esté dentro de una miniatura de
+ * vídeo o de una cita, que ya se difuminan enteras (`MINIATURA_VIDEO` y
+ * `MINIATURA_CITA`), para no superponer dos filtros.
+ */
+export const MULTIMEDIA_MENSAJE =
+  `:is(img[src^="blob:"], img[src^="data:image/jpeg"], video, canvas, [style*="blob:"]):not([data-icon] *):not(:where(${CAPA_MINIATURA_VIDEO}, ${CAPA_MINIATURA_CITA}) *)`;
+
+/**
+ * Datos de un documento adjunto (CONFIRMADO, Chrome, diagnóstico real sobre
+ * 0.1.2-beta.7, con imágenes enviadas como documento PNG y JPG): la tarjeta es
+ * `[data-testid="document-thumb"][role="button"]` dentro de `msg-container`, y
+ * dentro de ella el nombre está en un `span[dir="auto"]`, el formato en
+ * `[data-testid="type"]` y el tamaño en un `span[title]`. La descripción del
+ * adjunto ya la cubre `TEXTO_MENSAJE`.
+ *
+ * La tarjeta no se difumina entera, porque es el control que abre o descarga
+ * el archivo. Solo se difuminan esos datos, con estas salvaguardas:
+ * - el más externo de cada grupo anidado, para no superponer filtros;
+ * - nunca lo que ya cubre `TEXTO_MENSAJE`;
+ * - nunca un elemento con iconos o imágenes, ni los controles (`button`,
+ *   `[role="button"]`) que haya dentro de la tarjeta.
+ *
+ * SIN CONFIRMAR: si otros formatos (PDF, DOCX…) usan la misma tarjeta.
+ */
+export const DOCUMENTO = '[data-testid="document-thumb"]';
+const CAMPO_DOCUMENTO = `${DOCUMENTO} :is(span[dir="auto"], [data-testid="type"], span[title])`;
+export const DATOS_DOCUMENTO = [
+  `[data-testid="msg-container"] ${CAMPO_DOCUMENTO}`,
+  `:not(${CAMPO_DOCUMENTO} *)`,
+  `:not(:where(${TEXTO_MENSAJE}, ${TEXTO_MENSAJE} *))`,
+  ':not(:has(svg, img, canvas, video, [data-icon]))',
+  `:not(:where(${DOCUMENTO} :is(button, [role="button"]), ${DOCUMENTO} :is(button, [role="button"]) *))`,
+].join('');
+
+/**
+ * Etiqueta de la extensión en el icono de un documento (CONFIRMADO, Chrome,
+ * diagnóstico real sobre 0.1.2-beta.7 con PNG y JPG): dentro de la tarjeta, el
+ * icono es un elemento con `data-icon="document-PNG-icon"` (o `-JPG-`), con
+ * su SVG, y la etiqueta es un `div` hermano suyo, en el mismo contenedor.
+ *
+ * Se difumina solo ese `div`, en cualquier orden respecto al icono, sin
+ * depender de la extensión. El icono y su SVG siguen nítidos. Salvaguardas:
+ * nunca un hermano que contenga iconos, imágenes, botones o los datos de
+ * `DATOS_DOCUMENTO`, para no difuminar otra parte de la tarjeta ni superponer
+ * filtros.
+ */
+/**
+ * Contenedor de la duración de una cita dentro de un mensaje (CONFIRMADO,
+ * Chrome, diagnóstico real sobre 0.1.2-beta.10, en una respuesta a un
+ * estado): dentro de `quoted-message`, un `div[role="button"]` con, en orden,
+ * `[data-testid="chat-msg-symbol"]` (un icono SVG), la duración como nodo de
+ * texto directo («0:18») y el texto citado. El encabezado y la miniatura
+ * están fuera.
+ *
+ * CSS no puede seleccionar un nodo de texto suelto, así que este selector
+ * solo acota los candidatos: el marcador de mensajes comprueba que su texto
+ * directo tenga forma de duración y lo marca, y se difumina el contenedor
+ * entero, icono incluido. Salvaguardas: nunca un contenedor con un autor, un
+ * encabezado (`span[dir="auto"]` que no sea el texto citado), una miniatura,
+ * botones u otra cita.
+ */
+const TEXTO_CITADO = '[data-testid="selectable-text"], .selectable-text';
+export const CANDIDATO_DURACION_CITA = [
+  '[data-testid="msg-container"] [data-testid="quoted-message"] :has(> [data-testid="chat-msg-symbol"])',
+  `:not(:has([data-testid="author"], span[dir="auto"]:not(${TEXTO_CITADO}), [style*="data:image/jpeg"], button, [role="button"], [data-testid="quoted-message"]))`,
+].join('');
+
+/**
+ * Encabezado de un estado citado («Tú · Estados»; CONFIRMADO, Chrome,
+ * diagnósticos reales sobre 0.1.2-beta.9 y 0.1.2-beta.10): dentro de
+ * `quoted-message`, un `div[role=""]` › `span[dir="auto"]`, en una cita sin
+ * `[data-testid="author"]`.
+ *
+ * Este selector solo acota los candidatos por estructura. Una cita
+ * convencional podría compartirla (la de un mensaje propio no se ha
+ * observado), así que el marcador de mensajes exige además que el texto
+ * completo tenga la forma «… · Estados» (o «… · Estado», «… · Status»), y solo
+ * entonces lo marca. El texto citado nunca es candidato.
+ */
+export const CANDIDATO_ENCABEZADO_ESTADO = [
+  '[data-testid="msg-container"] [data-testid="quoted-message"]:not(:has([data-testid="author"])) [role=""] > span[dir="auto"]',
+  `:not(${TEXTO_CITADO})`,
+].join('');
+
+const ICONO_DOCUMENTO = '[data-icon^="document-"][data-icon$="-icon"]';
+export const ETIQUETA_ICONO_DOCUMENTO = [
+  `[data-testid="msg-container"] ${DOCUMENTO} :has(> ${ICONO_DOCUMENTO}) > div`,
+  `:not(${ICONO_DOCUMENTO})`,
+  ':not(:has(svg, img, canvas, video, [data-icon], button, [role="button"], span[dir="auto"], [data-testid="type"], span[title]))',
+].join('');
+
+/** Contenido visual de un mensaje que se difumina: texto, multimedia, miniaturas de vídeo y de citas, y datos de documentos. */
+export const CONTENIDO_MENSAJE = `${TEXTO_MENSAJE}, ${MULTIMEDIA_MENSAJE}, ${MINIATURA_VIDEO}, ${DATOS_DOCUMENTO}, ${ETIQUETA_ICONO_DOCUMENTO}, ${MINIATURA_CITA}`;
+
+/**
+ * Pantalla «Info. del mensaje». CONFIRMADO con WhatsApp Web real en Chrome
+ * (diagnóstico de «Info. del mensaje» sobre 0.1.2-beta.3): se abre fuera de
+ * `#main`, en `[data-testid="drawer-right"]`, con una copia del mensaje en
+ * `[data-testid="msg-container"]` (texto en `[data-testid="selectable-text"]`
+ * y metadatos en `[data-testid="msg-meta"]`) y los estados de entrega y
+ * lectura en `[data-testid="kept-by-info"]`. Ese bloque de estados distingue
+ * esta pantalla de otros paneles laterales derechos, que quedan fuera.
+ */
+export const INFO_MENSAJE = '[data-testid="drawer-right"]:has([data-testid="kept-by-info"])';
+
+/** Copia del mensaje en «Info. del mensaje» (CONFIRMADO). */
+export const MENSAJE_INFO = `${INFO_MENSAJE} [data-testid="msg-container"]`;
+
+/**
+ * Texto del mensaje en «Info. del mensaje» (CONFIRMADO): el
+ * `[data-testid="selectable-text"]` más externo, sin los metadatos (hora e
+ * indicadores) ni el autor, que corresponde a RF-01.
+ */
+export const TEXTO_MENSAJE_INFO =
+  '[data-testid="selectable-text"]:not([data-testid="selectable-text"] *, [data-testid="msg-meta"] *, [data-testid="author"], [data-testid="author"] *)';
+
+/**
+ * Elementos visuales de un sticker en «Info. del mensaje». CONFIRMADO con
+ * WhatsApp Web real en Chrome (diagnóstico de «Info. del mensaje» sobre
+ * 0.1.2-beta.4): la copia del mensaje contiene
+ * `[data-testid="sticker-container"]`, con un `div[role="button"][tabindex="0"]`,
+ * un `canvas` visible (190 × 190 px) y un `img` auxiliar de origen `blob:`
+ * (0 × 0 px). En la conversación, el mismo sticker usa una estructura
+ * equivalente. Se difuminan solo esos nodos visuales, no el contenedor, que
+ * es pulsable. Las fotos y los vídeos de esta pantalla no están observados y
+ * no tienen selector.
+ */
+export const VISUAL_STICKER_INFO = '[data-testid="sticker-container"] :is(img[src^="blob:"], canvas)';
 
 /** Editor de mensajes de la conversación abierta. */
 export const CAMPO_ENTRADA =
@@ -206,6 +372,41 @@ export const BLOQUE_CON_REMITENTE = '[data-pre-plain-text]';
 /** Zona de la conversación abierta donde se buscan nombres de remitentes. */
 export const PANEL_CONVERSACION = '#main';
 
+/**
+ * Nombre del autor de un mensaje. CONFIRMADO con WhatsApp Web real en Chrome
+ * (diagnóstico anonimizado de remitentes del propietario sobre 0.1.2-beta.0):
+ * dentro de `[data-testid="msg-container"]`, como `span[data-testid="author"]`
+ * o `span[role="button"][data-testid="author"]`, a veces anidados. Aparece
+ * también cuando el nombre visible no coincide con `data-pre-plain-text`
+ * (participantes no guardados, «~ Nombre») y en mensajes sin ese bloque
+ * (multimedia sin descripción). El recuadro «Responder» usa el mismo atributo
+ * (CONFIRMADO en 0.1.1).
+ */
+export const AUTOR = '[data-testid="author"]';
+
+/**
+ * Lista de mensajes de la conversación abierta. CONFIRMADO con WhatsApp Web
+ * real en Chrome (diagnóstico de avatares en grupos sobre 0.1.2-beta.2).
+ */
+export const PANEL_MENSAJES = '[data-testid="conversation-panel-messages"]';
+
+/**
+ * Avatar de un participante junto a los mensajes de un grupo. CONFIRMADO con
+ * WhatsApp Web real en Chrome (diagnóstico de avatares en grupos sobre
+ * 0.1.2-beta.2): `[data-testid="group-chat-profile-picture"]` dentro de
+ * `PANEL_MENSAJES`. Contiene la foto (`img` de `pps.whatsapp.net`, unos
+ * 28 × 28 px) o un círculo de color de unos 28 × 28 px con la inicial
+ * (`[data-testid="profile-first-initial"]`). HIPÓTESIS sin confirmar: que el
+ * avatar con silueta predeterminada use el mismo contenedor.
+ *
+ * Se difumina el contenedor más externo como una sola unidad (foto, o
+ * círculo e inicial), sin depender de colores, letras ni del contenido.
+ */
+export const AVATAR_PARTICIPANTE = `${PANEL_CONVERSACION} ${PANEL_MENSAJES} [data-testid="group-chat-profile-picture"]:not([data-testid="group-chat-profile-picture"] *)`;
+
+/** Solo el `author` más externo, para no aplicar dos filtros a la misma información. */
+export const AUTOR_EXTERNO = `${AUTOR}:not(${AUTOR} *)`;
+
 /** Editor de texto, que nunca se trata como nombre (lo protege RF-05). */
 export const EDITABLE = '[contenteditable]:not([contenteditable="false"])';
 
@@ -239,6 +440,41 @@ export const ACCION_NUEVO_CHAT = '[data-testid^="new-chat-drawer-new-"]';
  */
 export const CELDA_NUEVO_CHAT = '[data-testid="cell-frame-container"]';
 
+/**
+ * Celda de contenido de la fila «Tú» de «Nuevo chat», en lugar de
+ * `cell-frame-container`. CONFIRMADO (diagnóstico de paneles sobre
+ * 0.1.2-beta.1): `[role="button"]` › `[data-testid="message-yourself-row"]`,
+ * con la misma columna de avatar y de texto que los demás contactos.
+ */
+export const CELDA_TU_NUEVO_CHAT = '[data-testid="message-yourself-row"]';
+
+/**
+ * Fila de una persona en «Nuevo chat» (contacto o «Tú»): cualquier fila
+ * `list-item-*` del panel salvo las que contienen una acción. Los
+ * encabezados de sección quedan fuera porque no tienen celda de contacto.
+ */
+export const FILA_PERSONA_NUEVO_CHAT = `${FILA_NUEVO_CHAT}:not(:has(${ACCION_NUEVO_CHAT}))`;
+
+/**
+ * Columna del avatar dentro de la celda de una fila de «Nuevo chat».
+ * CONFIRMADO con WhatsApp Web real en Chrome (diagnóstico de paneles sobre
+ * 0.1.2-beta.1, 17 contactos y la fila «Tú»): la celda tiene como hijos
+ * directos una columna de avatar (77 × 72 px) y una de texto. La del avatar
+ * contiene el círculo (49 × 49 px) con la foto (`img` de `pps.whatsapp.net`)
+ * o, sin foto, un `svg` con `path` sobre un fondo de color. La de texto
+ * contiene `[role="gridcell"]`, `cell-frame-title` y `cell-frame-secondary`.
+ *
+ * Se reconoce como el hijo directo de la celda que contiene una imagen o un
+ * SVG y ningún texto de la fila ni control. No depende del `<title>` del SVG
+ * (no confirmado), de clases, colores, tamaños ni de la profundidad interna.
+ * Se difumina la columna entera: el SVG y su fondo circular, o la foto, como
+ * una sola unidad.
+ */
+export const AVATAR_NUEVO_CHAT = `:is(${CELDA_NUEVO_CHAT}, ${CELDA_TU_NUEVO_CHAT}) > :not(:has([role="gridcell"], [data-testid="cell-frame-title"], [data-testid="cell-frame-secondary"], button, [role="button"], input)):has(img, svg)`;
+
+/** Columna del avatar de las filas de persona de «Nuevo chat», con su ámbito completo. */
+export const AVATAR_EN_FILA_NUEVO_CHAT = `${FILA_PERSONA_NUEVO_CHAT} ${AVATAR_NUEVO_CHAT}`;
+
 /** Elementos que nunca se tratan como información secundaria (funcionales). */
 export const NO_TEXTO_DE_CONTACTO = 'svg, [data-icon], input, textarea, select, [contenteditable]';
 
@@ -270,3 +506,51 @@ export const FILA_CONTACTO_CANDIDATA = ':is([role="listitem"], [role="row"], [ro
 export const AVATAR_PREDETERMINADO = ['default-user', 'default-group', 'default-contact', 'default-community']
   .map((prefijo) => `[data-icon^="${prefijo}"]`)
   .join(', ');
+
+/**
+ * Panel «Info. del contacto» (CONFIRMADO, Chrome, diagnóstico real sobre
+ * 0.1.2-beta.12, un contacto guardado de una cuenta de empresa):
+ * `[data-testid="drawer-right"]` › … › `[data-testid="chat-info-drawer"]`.
+ * `contact-info-header` solo contiene el título genérico, no el nombre.
+ */
+export const INFO_CONTACTO = '[data-testid="drawer-right"] [data-testid="chat-info-drawer"]';
+
+/**
+ * Nombre del contacto en el panel: `span[data-testid="contact-info-subtitle
+ * selectable-text"]` (CONFIRMADO). El `data-testid` tiene dos palabras, por
+ * eso se selecciona por palabra (`~=`).
+ */
+export const NOMBRE_INFO_CONTACTO = `${INFO_CONTACTO} [data-testid~="contact-info-subtitle"]`;
+
+/**
+ * Nombre de usuario (CONFIRMADO): en el bloque de perfil, el `div` hermano del
+ * que contiene el nombre tiene como hijo directo un
+ * `span[data-testid="selectable-text"][dir="auto"]` con el valor. Se elige por
+ * esa relación, no porque el texto empiece por «@».
+ */
+export const USUARIO_INFO_CONTACTO = [
+  `${INFO_CONTACTO} div:has(> div [data-testid~="contact-info-subtitle"])`,
+  ' > div:not(:has([data-testid~="contact-info-subtitle"]))',
+  ' > span[data-testid="selectable-text"][dir="auto"]',
+].join('');
+
+/**
+ * Valores del teléfono y de la descripción (CONFIRMADO): `section-phone-number`
+ * y `section-about` contienen solo la etiqueta («Número de teléfono»,
+ * «Info.»); el valor está en el `div` hermano siguiente. La descripción
+ * incluye sus emojis como `img` dentro del mismo texto.
+ */
+export const VALOR_INFO_CONTACTO = ['section-phone-number', 'section-about']
+  .map((seccion) => `${INFO_CONTACTO} [data-testid="${seccion}"] + div`)
+  .join(', ');
+
+/**
+ * Texto de un valor del panel: el `span` más externo del valor (un solo
+ * filtro, que cubre también los emojis), nunca dentro de un botón.
+ */
+export const TEXTO_VALOR_INFO_CONTACTO = [
+  'span',
+  `:not(:is(${VALOR_INFO_CONTACTO}) span span)`,
+  `:not(:is(${VALOR_INFO_CONTACTO}) :is(button, [role="button"]), :is(${VALOR_INFO_CONTACTO}) :is(button, [role="button"]) *)`,
+].join('');
+
