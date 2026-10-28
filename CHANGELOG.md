@@ -12,7 +12,7 @@ Cada entrega de prueba con cambios en el código recibe una versión nueva. Volv
 
 ## [0.1.2] — 2026-10-28
 
-**Versión estable aprobada por el propietario para el primer lanzamiento público de Veilix** (28 de octubre de 2026). Todavía no está publicada en ninguna tienda y no tiene etiqueta de Git. Congelación de funcionalidades: no incluye ningún cambio de comportamiento respecto a `0.1.2-beta.13`.
+**Versión estable aprobada por el propietario para el primer lanzamiento público de Veilix** (28 de octubre de 2026). Está etiquetada como `v0.1.2` en `main` (commit `8672a99`, 28 de octubre de 2026). Todavía no está publicada en ninguna tienda. Congelación de funcionalidades: no incluye ningún cambio de comportamiento respecto a `0.1.2-beta.13`.
 
 Manifiesto: `0.1.2` en Chrome, Edge, Firefox y Safari (sin `version_name`). Panel: «Veilix 0.1.2». Paquetes: `veilix-0.1.2-{chrome,edge,firefox,safari}.zip`.
 
@@ -56,6 +56,7 @@ Todo lo entregado de `0.1.2-beta.0` a `0.1.2-beta.13`, consolidado. El detalle d
 ### Aprobación
 
 - **Primer lanzamiento público:** el 28 de octubre de 2026, el propietario aprobó `0.1.2` como la estable del primer lanzamiento público. La publicación todavía no se ha hecho.
+- **Etiqueta:** ese mismo día se creó la etiqueta anotada `v0.1.2` sobre el commit `8672a99` de `main` (fusión del Pull Request #2), con la autorización del propietario. Marca el código exacto de esta estable. No creó ninguna Release.
 - **Fase 2:** el mismo día, el propietario aprobó expresamente su cierre oficial. Sus entregables técnicos (RF-01 a RF-05, revelado temporal, panel, preferencias y aplicación en caliente) están consolidados en esta versión. El cierre no implica que se hayan validado todas las variantes de WhatsApp Web ni todos los navegadores; ver «Limitaciones conocidas».
 - **Siguiente versión prevista:** `0.1.3-beta.0`, todavía no iniciada.
 

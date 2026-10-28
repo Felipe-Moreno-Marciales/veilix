@@ -8,7 +8,7 @@ Extensión de privacidad para WhatsApp Web, desarrollada de forma independiente.
 
 ## Estado
 
-Versión actual: **0.1.2**, estable preparada el 28 de octubre de 2026 y **aprobada por el propietario para el primer lanzamiento público** de Veilix. Todavía no está publicada en ninguna tienda ni tiene etiqueta de Git.
+Versión actual: **0.1.2**, estable preparada el 28 de octubre de 2026 y **aprobada por el propietario para el primer lanzamiento público** de Veilix. Está etiquetada como `v0.1.2` en `main` (commit `8672a99`, 28 de octubre de 2026). Todavía no está publicada en ninguna tienda.
 - **Qué reúne:** las correcciones de `0.1.2-beta.0` a `0.1.2-beta.13`, sin cambios de comportamiento respecto a beta.13 (congelación de funcionalidades).
 - **Validación:** el propietario comunicó que terminó la validación funcional de la serie beta en Google Chrome.
 - **Detalle:** el contenido, la evidencia y las limitaciones conocidas están en [Versión 0.1.2](#versión-012-estable-aprobada-para-el-primer-lanzamiento-público), y el historial completo, en [CHANGELOG.md](../CHANGELOG.md).
@@ -26,7 +26,7 @@ Las secciones de cada corrección conservan el nombre de la beta en que se intro
 
 ## Versión 0.1.2 (estable, aprobada para el primer lanzamiento público)
 
-Preparada el 28 de octubre de 2026 a partir de `0.1.2-beta.13` con `npm run version:estable`, sin cambios de comportamiento. El propietario la aprobó ese mismo día para el primer lanzamiento público, todavía sin publicar. Manifiesto `0.1.2` en Chrome, Edge, Firefox y Safari, sin `version_name`. El panel muestra «Veilix 0.1.2».
+Preparada el 28 de octubre de 2026 a partir de `0.1.2-beta.13` con `npm run version:estable`, sin cambios de comportamiento. El propietario la aprobó ese mismo día para el primer lanzamiento público, todavía sin publicar. Su código está marcado con la etiqueta `v0.1.2` en `main` (commit `8672a99`). Manifiesto `0.1.2` en Chrome, Edge, Firefox y Safari, sin `version_name`. El panel muestra «Veilix 0.1.2».
 
 ### Contenido de 0.1.2
 

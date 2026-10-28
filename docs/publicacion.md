@@ -23,7 +23,7 @@ Los paquetes contienen el código compilado de la extensión, como cualquier ext
 
 ### Aislamiento
 
-- **Repositorio nuevo.** Créalo vacío, desde cero: sin bifurcar el repositorio de Veilix, sin importarlo ni reflejarlo y sin enviarle ramas o etiquetas de este clon. Su historial no puede contener ningún commit del repositorio privado.
+- **Repositorio nuevo.** Créalo vacío, desde cero: sin bifurcar el repositorio de Veilix, sin importarlo ni reflejarlo y sin enviarle ramas o etiquetas de este clon. La etiqueta `v0.1.2` del repositorio privado tampoco se envía: la Release del repositorio de distribución tiene su propia etiqueta `v0.1.2`, creada allí. Su historial no puede contener ningún commit del repositorio privado.
 - **Clon propio.** Trabaja en una carpeta nueva, **fuera** del clon privado, con su propio `git init` o `git clone` del repositorio de distribución. Nunca añadas el repositorio privado como remoto.
 - **Contenido versionado:** solo documentación pública. Es decir, el README para usuarios, las notas de la versión y los términos de la licencia.
 - **README público:** una copia de las secciones públicas del `README.md` principal, sin el apartado «Documentación», que enlaza a documentos internos. Si muestra el logotipo, copia también `public/icon/128.png`, que es la imagen pública de la extensión, o retira la imagen.
