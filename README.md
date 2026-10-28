@@ -78,37 +78,74 @@ Los desarrolladores con un Mac pueden cargarla de forma temporal; ver [Probar en
 
 Los paquetes contienen el código compilado de la extensión, como cualquier extensión de navegador. Ya se revisó que no incluyen diagnósticos, pruebas, mapas de código ni credenciales.
 
+**Aislamiento del repositorio público:**
+- **Repositorio nuevo.** Créalo vacío, desde cero: sin bifurcar este repositorio, sin importarlo ni reflejarlo y sin enviarle ramas o etiquetas de este clon. Su historial no puede contener ningún commit del repositorio privado.
+- **Clon propio.** Trabaja en una carpeta nueva, **fuera** del clon privado, con su propio `git init` o `git clone` del repositorio de distribución. Nunca añadas el repositorio privado como remoto.
+- **Contenido versionado:** solo documentación pública. Es decir, el README para usuarios, las notas de la versión y los términos de la licencia.
+- **Paquetes:** se suben únicamente como archivos adjuntos de la Release, no como commits.
+- **Archivos automáticos de GitHub:** cada Release incluye siempre «Source code (zip)» y «Source code (tar.gz)», con el contenido del repositorio de distribución en la etiqueta. Por eso ese repositorio solo puede contener lo autorizado.
+- **Lo que no puede estar en ningún commit ni en la Release:** el código fuente propietario, `veilix-0.1.2-sources.zip`, los diagnósticos, `CHANGELOG.md`, `AGENTS.md`, la documentación interna, `.env`, credenciales ni datos personales.
+
 **Pasos, cuando lo autorices:**
 
-1. **Crea el repositorio público de distribución.** Por ejemplo, con un nombre como `veilix-releases`; el nombre lo decides tú. Que no contenga nada más que lo indicado arriba.
-2. **Prepara la Release desde `.output/`** con una **lista explícita** de paquetes autorizados. No uses comodines: `veilix-0.1.2-*.zip` incluiría `veilix-0.1.2-sources.zip`.
+1. **Crea el repositorio público de distribución** según las reglas de aislamiento. Por ejemplo, con un nombre como `veilix-releases`; el nombre lo decides tú. Antes de etiquetar, comprueba en su clon que solo contiene lo autorizado y que el historial es solo suyo:
 
    ```bash
+   git ls-files                  # Solo la documentación pública autorizada.
+   git log --oneline             # Solo commits del repositorio de distribución.
+   git remote -v                 # Solo el repositorio de distribución.
+   ```
+2. **Prepara los paquetes desde la raíz de este proyecto.** El guion se ejecuta en un `bash` aparte, así que cualquier fallo lo detiene sin cerrar tu terminal. Antes de generar `SHA256SUMS.txt` comprueba:
+   - que la lista de paquetes es exactamente la autorizada;
+   - que cada paquete existe, se puede leer y es la versión `0.1.2`;
+   - que no contiene archivos internos.
+
+   Si algo falla, no deja ningún `SHA256SUMS.txt`.
+
+   ```bash
+   bash <<'GUION'
+   set -euo pipefail
    cd .output
+   detener() { echo "DETENER: $*" >&2; exit 1; }
+   # Si algo falla, no queda ningún SHA256SUMS.txt a medias.
+   trap 'estado=$?; if [ "$estado" -ne 0 ]; then rm -f SHA256SUMS.txt; fi' EXIT
+   rm -f SHA256SUMS.txt
 
-   # Paquetes autorizados para la primera publicación (lista explícita, sin comodines).
+   # Lista explícita de paquetes autorizados (sin comodines: veilix-0.1.2-*.zip incluiría el de fuentes).
    AUTORIZADOS=(veilix-0.1.2-chrome.zip veilix-0.1.2-edge.zip)
+   if [ "${AUTORIZADOS[*]}" != "veilix-0.1.2-chrome.zip veilix-0.1.2-edge.zip" ]; then
+     detener "la lista de paquetes no es la autorizada: ${AUTORIZADOS[*]}"
+   fi
 
-   # Ninguno puede ser el paquete de fuentes ni el de Firefox o Safari.
-   printf '%s\n' "${AUTORIZADOS[@]}" | grep -E 'sources|firefox|safari' && echo "DETENER: paquete no autorizado"
+   for paquete in "${AUTORIZADOS[@]}"; do
+     if [ ! -f "$paquete" ] || [ ! -s "$paquete" ]; then detener "falta $paquete o está vacío"; fi
+     if ! listado=$(unzip -Z1 "$paquete"); then detener "no se pudo leer el listado de $paquete"; fi
+     if ! grep -qx 'manifest.json' <<<"$listado"; then detener "$paquete no tiene manifest.json en la raíz"; fi
+     if ! manifiesto=$(unzip -p "$paquete" manifest.json); then detener "no se pudo leer el manifiesto de $paquete"; fi
+     if ! grep -q '"version": *"0\.1\.2"' <<<"$manifiesto"; then detener "$paquete no es la versión 0.1.2"; fi
+     if grep -Eq '(^|/)(src|scripts|tests|node_modules)/|diagnostico|sources|\.map$|(^|/)\.env|\.tsx?$' <<<"$listado"; then
+       detener "$paquete contiene archivos internos"
+     fi
+   done
 
-   # Solo la extensión compilada: sin código fuente, diagnósticos, pruebas ni mapas de código.
-   for paquete in "${AUTORIZADOS[@]}"; do unzip -Z1 "$paquete"; done \
-     | grep -E '(^|/)(src|scripts|tests)/|diagnostico|\.map$|\.env|\.ts$' && echo "DETENER: contenido interno"
-
-   # Huellas de solo los paquetes autorizados (en macOS: shasum -a 256).
-   sha256sum "${AUTORIZADOS[@]}" > SHA256SUMS.txt
-   cat SHA256SUMS.txt   # Deben aparecer exactamente dos líneas: chrome y edge.
+   # Huellas de solo los paquetes autorizados (sha256sum o, en macOS, shasum -a 256).
+   if command -v sha256sum >/dev/null; then sha256sum "${AUTORIZADOS[@]}" > SHA256SUMS.txt
+   elif command -v shasum >/dev/null; then shasum -a 256 "${AUTORIZADOS[@]}" > SHA256SUMS.txt
+   else detener "no se encontró sha256sum ni shasum"; fi
+   if [ "$(wc -l < SHA256SUMS.txt | tr -d ' ')" -ne 2 ]; then detener "SHA256SUMS.txt no tiene exactamente dos líneas"; fi
+   cat SHA256SUMS.txt
+   echo "LISTO: se pueden publicar ${AUTORIZADOS[*]} y SHA256SUMS.txt"
+   GUION
    ```
 
-   Si aparece «DETENER», no publiques: revisa la lista o el paquete.
-3. **Crea la Release `v0.1.2`** en el repositorio de distribución con la misma lista y nada más, desde la web de GitHub o con:
+   Sigue solo si termina con «LISTO». Si aparece «DETENER», no publiques: corrige la causa que indica y vuelve a ejecutarlo.
+3. **Crea la Release `v0.1.2`** en el repositorio de distribución con estos tres archivos de `.output/` y nada más: `veilix-0.1.2-chrome.zip`, `veilix-0.1.2-edge.zip` y `SHA256SUMS.txt`. Puedes hacerlo desde la web de GitHub o con:
 
    ```bash
-   gh release create v0.1.2 "${AUTORIZADOS[@]}" SHA256SUMS.txt \
+   gh release create v0.1.2 .output/veilix-0.1.2-chrome.zip .output/veilix-0.1.2-edge.zip .output/SHA256SUMS.txt \
      --repo <propietario>/<repositorio-de-distribución> --title "Veilix 0.1.2" --notes-file <notas-de-la-versión>.md
    ```
-4. **Comprueba lo publicado.** Deben aparecer exactamente `veilix-0.1.2-chrome.zip`, `veilix-0.1.2-edge.zip` y `SHA256SUMS.txt`:
+4. **Comprueba lo publicado.** Los archivos adjuntos deben ser exactamente `veilix-0.1.2-chrome.zip`, `veilix-0.1.2-edge.zip` y `SHA256SUMS.txt`. Descarga también «Source code (zip)» de la Release y comprueba que solo contiene la documentación pública autorizada.
 
    ```bash
    gh release view v0.1.2 --repo <propietario>/<repositorio-de-distribución> --json assets --jq '.assets[].name'
@@ -118,7 +155,7 @@ Los paquetes contienen el código compilado de la extensión, como cualquier ext
    - Actualiza el aviso de «Publicación pendiente» con el enlace a la página de la Release.
    - Firefox y Safari no cambian.
 6. **Más adelante:**
-   - **Firefox:** confirma el identificador provisional `veilix@veilix.app`, firma la extensión en addons.mozilla.org (pública o para distribución propia) y publica el `.xpi` firmado en una nueva Release o como archivo añadido.
+   - **Firefox:** confirma el identificador provisional `veilix@veilix.app`, firma la extensión en addons.mozilla.org (pública o para distribución propia) y publica el `.xpi` firmado.
    - **Safari:** confirma el identificador provisional `app.veilix.Veilix` y genera y firma la app de macOS con Xcode y una cuenta del Apple Developer Program.
 
 ## Estado
