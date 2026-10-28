@@ -5,8 +5,10 @@ import {
   crearMarcadorMensajes,
   esContenidoEmoji,
   esHora,
+  esDuracion,
+  esEncabezadoEstado,
 } from '@/nucleo/difuminado/marcador-mensajes';
-import { montarWhatsAppConMensajesObservados, type WhatsAppSimulado } from '../apoyo/whatsapp-simulado';
+import { MENSAJES_CITAS_MINIATURA, MENSAJES_ENCABEZADOS_CITA, montarWhatsAppConMensajesObservados, montarWhatsAppSimulado, type WhatsAppSimulado } from '../apoyo/whatsapp-simulado';
 
 const HORA = 'data-veilix-hora-mensaje';
 const REACCION = 'data-veilix-reaccion';
@@ -58,7 +60,7 @@ describe('esContenidoEmoji', () => {
 describe('marcador de hora y reacciones', () => {
   let wa: WhatsAppSimulado;
   let observador: MutationObserver;
-  const marcador = crearMarcadorMensajes({ hora: HORA, reaccion: REACCION, estado: ESTADO });
+  const marcador = crearMarcadorMensajes({ hora: HORA, reaccion: REACCION, estado: ESTADO, duracionCita: 'data-veilix-duracion-cita', encabezadoEstado: 'data-veilix-encabezado-estado' });
 
   beforeEach(() => {
     wa = montarWhatsAppConMensajesObservados();
@@ -136,5 +138,44 @@ describe('marcador de hora y reacciones', () => {
   it('desmarca todo sin alterar el contenido', () => {
     marcador.desmarcarTodo(document);
     expect(document.querySelectorAll(`[${HORA}], [${REACCION}], [${ESTADO}]`)).toHaveLength(0);
+  });
+});
+
+describe('duración de una cita', () => {
+  it('esDuracion reconoce duraciones de minutos y de horas, no horas con a. m. ni otros textos', () => {
+    for (const texto of ['0:18', '12:05', '1:02:07']) expect(esDuracion(texto), texto).toBe(true);
+    for (const texto of ['10:40 a. m.', '10.40', 'Foto', '', '0:1', '123:45']) expect(esDuracion(texto), texto).toBe(false);
+  });
+
+  it('marca el contenedor con chat-msg-symbol y la duración como texto directo, y nada de lo que contiene', () => {
+    const wa = montarWhatsAppSimulado();
+    wa.abrirConversacionObservada('Ana', MENSAJES_CITAS_MINIATURA);
+    const filas = [...document.querySelectorAll('#main [data-id]')];
+    const resultado = filas.map((fila) => clasificarMensaje(fila));
+    const duraciones = resultado.flatMap((r) => r.duracionesCita);
+    expect(duraciones.map((d) => d.getAttribute('data-prueba'))).toEqual(['duracion-cita', 'duracion-cita']);
+    const horas = resultado.flatMap((r) => r.horas);
+    // Las horas de msg-meta siguen siendo horas, y nada de las citas se clasifica como hora.
+    expect(horas.filter((h) => h.closest('[data-testid="msg-meta"]')).length).toBe(filas.length);
+    expect(horas.filter((h) => h.closest('[data-testid="quoted-message"]'))).toEqual([]);
+    for (const r of resultado) {
+      for (const elemento of [...r.horas, ...r.reacciones]) expect(r.duracionesCita.some((d) => d.contains(elemento))).toBe(false);
+    }
+    wa.desmontar();
+  });
+});
+
+describe('encabezado de un estado citado', () => {
+  it('esEncabezadoEstado exige un texto, un separador y la etiqueta de estado en español o inglés', () => {
+    for (const texto of ['Tú · Estados', 'Ana · Estado', 'You · Status', '\u200eTú • Estados']) expect(esEncabezadoEstado(texto), texto).toBe(true);
+    for (const texto of ['Tú', 'Estados', 'Ana', 'Mis estados', 'Tú · Estados de ánimo', '· Estados', 'Tú · Statut']) expect(esEncabezadoEstado(texto), texto).toBe(false);
+  });
+
+  it('marca solo los encabezados de estados citados, no los de las citas convencionales', () => {
+    const wa = montarWhatsAppSimulado();
+    wa.abrirConversacionObservada('Ana', MENSAJES_ENCABEZADOS_CITA);
+    const marcados = [...document.querySelectorAll('#main [data-id]')].flatMap((fila) => clasificarMensaje(fila).encabezadosEstado);
+    expect(marcados.map((e) => e.textContent)).toEqual(['Tú · Estados', 'Ana · Estado', 'You · Status']);
+    wa.desmontar();
   });
 });
