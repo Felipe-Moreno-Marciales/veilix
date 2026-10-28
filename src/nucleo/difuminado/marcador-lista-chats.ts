@@ -71,6 +71,15 @@ export function clasificarFila(fila: Element): ClasificacionFila {
   return { nombre, vistasPrevias };
 }
 
+/**
+ * Solo los elementos que no están dentro de otro de la lista. Un filtro en el
+ * antecesor ya difumina a sus descendientes; marcar también los interiores
+ * superpondría dos filtros sobre el mismo texto.
+ */
+export function soloExternos(elementos: readonly Element[]): Element[] {
+  return elementos.filter((elemento) => !elementos.some((otro) => otro !== elemento && otro.contains(elemento)));
+}
+
 /** Filas afectadas por un conjunto de mutaciones, sin repeticiones. */
 export function filasAfectadas(registros: readonly MutationRecord[]): Set<Element> {
   const filas = new Set<Element>();
@@ -101,7 +110,7 @@ export function filasAfectadas(registros: readonly MutationRecord[]): Set<Elemen
 export function marcarFilas(filas: Iterable<Element>, tipo: TipoTexto, atributo: string): void {
   for (const fila of filas) {
     const { nombre, vistasPrevias } = clasificarFila(fila);
-    const deseados = new Set<Element>(tipo === 'nombre' ? (nombre ? [nombre] : []) : vistasPrevias);
+    const deseados = new Set<Element>(tipo === 'nombre' ? (nombre ? [nombre] : []) : soloExternos(vistasPrevias));
 
     for (const marcado of fila.querySelectorAll(`[${atributo}]`)) {
       if (!deseados.has(marcado)) marcado.removeAttribute(atributo);
@@ -174,7 +183,12 @@ function sincronizarFila(fila: Element, atributo: string, deseados: readonly Ele
 /** Marcador de los indicadores de estado de la vista previa (RF-03). */
 export function crearMarcadorEstadoVistaPrevia(atributo: string): Marcador {
   const marcar = (filas: Iterable<Element>) => {
-    for (const fila of filas) sincronizarFila(fila, atributo, estadosDeVistaPrevia(fila));
+    for (const fila of filas) {
+      // Un indicador dentro de la propia vista previa ya queda difuminado con ella.
+      const { vistasPrevias } = clasificarFila(fila);
+      const estados = estadosDeVistaPrevia(fila).filter((icono) => !vistasPrevias.some((vista) => vista.contains(icono)));
+      sincronizarFila(fila, atributo, estados);
+    }
   };
   return {
     marcarTodo(documento) {
