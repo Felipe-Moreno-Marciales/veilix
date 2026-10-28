@@ -4,17 +4,123 @@ Todos los cambios relevantes de Veilix se registran en este archivo.
 
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el proyecto usa [versionado semántico](https://semver.org/lang/es/). Las versiones de prueba llevan el sufijo `-beta.N`. La correspondencia con `manifest.version` de cada navegador está en la sección [Versionado](README.md#versionado) del README.
 
-Las versiones publicables aparecen como `## [versión]`. El historial de desarrollo anterior a la primera versión definitiva (`0.1.0`) se conserva íntegro, sin cambios de contenido, en la sección [Historial de desarrollo anterior a 0.1.0](#historial-de-desarrollo-anterior-a-010). Del mismo modo, las compilaciones internas de cada estable posterior se conservan en su propia sección, como [Compilaciones internas de 0.1.1](#compilaciones-internas-de-011).
+Las versiones publicables aparecen como `## [versión]`. El historial de desarrollo anterior a la primera versión definitiva (`0.1.0`) se conserva íntegro, sin cambios de contenido, en la sección [Historial de desarrollo anterior a 0.1.0](#historial-de-desarrollo-anterior-a-010). Del mismo modo, las compilaciones internas de cada estable posterior se conservan en su propia sección, como [Compilaciones internas de 0.1.2](#compilaciones-internas-de-012) y [Compilaciones internas de 0.1.1](#compilaciones-internas-de-011).
 
 Cada entrega de prueba con cambios en el código recibe una versión nueva. Volver a compilar el mismo código no cambia la versión.
 
 ## [Sin publicar]
 
-## [0.1.2-beta.13] — 2026-10-27
+## [0.1.2] — 2026-10-28
+
+**Versión estable preparada y seleccionada para el primer lanzamiento público de Veilix.** Su publicación sigue pendiente de la aprobación definitiva del propietario: no está publicada en ninguna tienda y no tiene etiqueta de Git. Congelación de funcionalidades: no incluye ningún cambio de comportamiento respecto a `0.1.2-beta.13`.
+
+Manifiesto: `0.1.2` en Chrome, Edge, Firefox y Safari (sin `version_name`). Panel: «Veilix 0.1.2». Paquetes: `veilix-0.1.2-{chrome,edge,firefox,safari}.zip`.
+
+### Incluye
+
+Todo lo entregado de `0.1.2-beta.0` a `0.1.2-beta.13`, consolidado. El detalle de cada beta está en [Compilaciones internas de 0.1.2](#compilaciones-internas-de-012).
+
+- **RF-01, nombres e información personal:**
+  - Autores de los mensajes de grupo por su estructura `[data-testid="author"]`, también los participantes no guardados y la multimedia sin descripción (beta.1).
+  - Nombre, nombre de usuario, teléfono y descripción del panel «Info. del contacto», con los emojis de la descripción (beta.13). El texto del interruptor pasa a describir la protección de la identidad.
+- **RF-02, fotografías y avatares:**
+  - Avatares de «Nuevo chat», predeterminados y con foto, también el de «Tú» (beta.2).
+  - Avatares de participantes junto a los mensajes de grupo: foto e inicial (beta.3).
+- **RF-03, vista previa:** un solo filtro por vista previa; antes se superponían dos (beta.6).
+- **RF-04, contenido de los mensajes:**
+  - **Recuadro «Responder»:** el texto citado (beta.0).
+  - **«Info. del mensaje»:** el texto (beta.4) y los stickers (beta.5) de la copia del mensaje.
+  - **Vídeos:** miniaturas dibujadas como fondos CSS en `video-content` (beta.7).
+  - **Documentos adjuntos:** nombre, formato y tamaño (beta.8), y la etiqueta de la extensión del icono (beta.9).
+  - **Citas dentro de los mensajes:** miniatura (beta.10) y duración, con su icono `chat-msg-symbol` (beta.11).
+  - **Estados citados:** encabezado «Tú · Estados», reconocido por su estructura y por la etiqueta en español o inglés (beta.12).
+- **RF-05, campo de entrada:** sin cambios.
+- **Panel de Veilix:**
+  - Textos de los cinco interruptores contrastados con el código.
+  - Cada interruptor se describe con `aria-describedby` (beta.6).
+- **Diagnósticos anonimizados nuevos o ampliados** en `scripts/` (no se incluyen en los paquetes):
+  - `diagnostico-respuesta.js`, `diagnostico-remitentes.js`, `diagnostico-inicializacion.js` y `diagnostico-extension.js`;
+  - `diagnostico-avatares-grupo.js`, `diagnostico-info-mensaje.js` y `diagnostico-videos.js`;
+  - `diagnostico-adjuntos.js`, `diagnostico-respuestas-estado.js` y `diagnostico-info-contacto.js`;
+  - `diagnostico-paneles.js`, ampliado.
+- **Pruebas:**
+  - Independencia de los cinco interruptores, en `tests/navegador/interruptores.test.ts`.
+  - Tarjetas del panel, en `tests/navegador/tarjetas.test.ts`.
+  - Una prueba de navegador por cada corrección. Cada una se comprobó fallando antes de la corrección.
+- **Sin cambios en:**
+  - Los permisos (solo `storage`) y el almacenamiento (solo las preferencias en `local:preferencias`, con el mismo esquema).
+  - Las cuatro funcionalidades pendientes, que siguen sin interruptor.
+  - La identidad visual y el crédito.
+  - `version-renumeraciones.json`.
+
+### Cambiado (versionado)
+
+- Se pasa de `0.1.2-beta.13` a `0.1.2` con `npm run version:estable`.
+- Las compilaciones internas `0.1.2.2000` a `0.1.2.2013` quedan numéricamente por encima de `0.1.2`. Es la consecuencia aceptada en la renumeración de `0.1.0`: no afecta a las tiendas, porque las betas nunca se suben.
+- Cualquier corrección posterior empieza en `0.1.3-beta.0` (`npm run version:beta`) y no reutiliza `0.1.2`.
+
+### Validación
+
+- **Automatizada:** todas las verificaciones de `AGENTS.md` son correctas; los resultados están en el README.
+- **Real en Google Chrome**, comunicada por el propietario (sistema operativo sin indicar):
+  - **Confirmadas por elemento:**
+    - autores de grupo (beta.1);
+    - avatares de participantes en grupos, con ocho pruebas (beta.3);
+    - texto (beta.4) y stickers (beta.5) de «Info. del mensaje»;
+    - nombre, formato y tamaño de los documentos (beta.8) y la etiqueta de su icono (beta.9);
+    - miniatura de la cita de un estado (beta.10).
+  - **Cierre de la serie:** el 28 de octubre de 2026, el propietario comunicó que terminó la validación funcional de la serie `0.1.2-beta` y autorizó preparar esta estable. No consta el detalle por elemento del resto de correcciones (beta.0, beta.2, beta.6, beta.7 y de beta.11 a beta.13).
+- **Sin prueba real** en Edge, Firefox, Brave, Opera, Vivaldi ni Safari.
+
+### Limitaciones conocidas
+
+- **«Info. del contacto» (RF-01):**
+  - Las notas guardadas o en edición no se han observado: solo el marcador «Añade notas…», que sigue visible.
+  - Solo se ha observado un contacto guardado de una cuenta de empresa. Los números no guardados y otros diseños de empresa no se han observado.
+  - Siguen visibles otros textos no genéricos del panel cuyos contenedores no constan: uno de 968 caracteres con la forma de una descripción, otros de 20 y 16 caracteres, y textos interactivos de 7, 13, 15 y 76.
+  - Las repeticiones del nombre en las filas inferiores tampoco están cubiertas.
+- **Estados citados (RF-04):**
+  - El encabezado solo se reconoce con la interfaz en español o en inglés.
+  - Que la tarjeta observada sea una respuesta a un estado es muy probable, pero no está confirmado.
+  - No se ha observado una cita convencional dentro de un mensaje.
+  - Los estados de foto, texto o GIF no tienen evidencia.
+- **Citas:**
+  - La duración de una cita se difumina junto con su icono, y una cita convencional con la misma estructura también tendría su duración difuminada.
+  - Las miniaturas citadas del recuadro «Responder» no tienen selector.
+- **«Info. del mensaje»:** las fotos y los vídeos no tienen diagnóstico.
+- **Vídeos:**
+  - Está sin confirmar si las dos capas de la miniatura son hermanas o anidadas.
+  - Mientras RF-04 protege la miniatura, su filtro de 6 px sustituye al de 8 px de WhatsApp, y durante el revelado esa capa se ve sin filtro.
+  - La duración de un vídeo con forma de hora se difumina como una hora.
+- **Documentos:** PDF, DOCX y los demás formatos solo están probados con el DOM simulado, y las miniaturas de la tarjeta no se han observado.
+- **Indicadores:**
+  - RF-03: los de enviado, entregado y reloj no tienen evidencia.
+  - RF-04: el de reloj está pendiente.
+- **RF-02:** la silueta del avatar de un participante de grupo no está confirmada.
+- **Navegadores:** no hay pruebas reales fuera de Chrome, y Safari no se ha ejecutado nunca.
+- **Dependencias:** `npm audit` informa de alertas en dependencias de desarrollo (`web-ext → node-forge`), que no se incluyen en la extensión. En producción, 0 vulnerabilidades.
+- **Inicialización de los módulos** (investigación registrada en beta.1):
+  - Si algo elimina un `<style data-veilix-estilo>` de la página, el módulo no lo vuelve a insertar hasta que se desactiva y se reactiva su interruptor. Mientras tanto, el interruptor aparece activo y esa parte de la página queda sin protección.
+  - La causa del episodio de `0.1.2-beta.0`, con los interruptores activos y sin estilos en la página, no se ha confirmado.
+- **Detalles menores sin confirmar o sin cubrir:**
+  - El `title` del tamaño de un documento se sigue mostrando como descripción emergente, aunque solo aparece con el cursor encima, cuando el mensaje ya está revelado (beta.8).
+  - El orden entre el dibujo y la etiqueta del icono de los documentos (beta.9).
+  - Si el filtro de 8 px de las miniaturas de vídeo va en línea (beta.7).
+  - Las variantes de respuesta no observadas (beta.0).
+  - En «Info. del contacto», otros idiomas (beta.13).
+- **Regresión de beta.2 de `0.1.1`:** su causa sigue sin identificarse.
+- **Fase 2:** sus entregables técnicos están integrados y ampliados en esta versión. Su cierre formal requiere la aprobación explícita del propietario, que no consta, y no condiciona este lanzamiento.
+- **`0.1.1`:** se conserva como antecedente histórico. No consta su aprobación ni su publicación, y su aprobación no es requisito de este lanzamiento.
+
+## Compilaciones internas de 0.1.2
+
+Compilaciones internas de prueba de `0.1.2-beta.0` a `0.1.2-beta.13`, conservadas tal como se registraron. Ninguna se publicó. Su contenido está consolidado en [0.1.2]. Van con un nivel de encabezado menos porque su manifiesto (`0.1.2.2000` a `0.1.2.2013`) es mayor que el de la estable `0.1.2`: la lista de versiones `## [...]` solo recoge las estables, en orden creciente de manifiesto.
+
+### [0.1.2-beta.13] — 2026-10-27
 
 Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2013` en Chromium y Firefox (`version_name` `0.1.2-beta.13` en Chromium), y `0.1.2` en Safari.
 
-### Añadido
+#### Añadido
 
 - **RF-01, «Info. del contacto»** (ampliación aprobada por el propietario): RF-01 difumina el nombre, el nombre de usuario, el teléfono y la descripción del panel. No se crea un interruptor nuevo, y la foto sigue en RF-02.
   - **Estructura confirmada** por el diagnóstico real (`scripts/diagnostico-info-contacto.js`, Chrome, un contacto guardado de una cuenta de empresa):
@@ -40,11 +146,11 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2013` en Chromi
     Sus contenedores no constan en el árbol conservado, así que no se han inventado selectores.
   - Pendiente de validación real.
 
-### Cambiado
+#### Cambiado
 
 - **Texto de RF-01 en el panel de Veilix:** «Difumina la identidad de contactos y grupos: sus nombres en la lista de chats, el encabezado de la conversación, los remitentes de los mensajes de grupo, el autor citado al responder y «Nuevo chat», y el nombre, el usuario, el teléfono y la descripción en «Info. del contacto».»
 
-### Añadido (pruebas)
+#### Añadido (pruebas)
 
 - `tests/navegador/info-contacto.test.ts`, en Chromium, Firefox y WebKit (16 pruebas), sobre una réplica del árbol real:
   - Los cuatro datos difuminados con un único filtro, y los emojis bajo el de la descripción.
@@ -59,24 +165,24 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2013` en Chromi
 - `tests/navegador/interruptores.test.ts` y `npm run test:extension`: el panel forma parte de lo que protegen RF-01 y RF-02.
 - `tests/apoyo/whatsapp-simulado.ts`: `abrirInfoContacto` y `cerrarInfoContacto`, con la estructura observada.
 
-### En investigación (antes de `0.1.2-beta.13`)
+#### En investigación (antes de `0.1.2-beta.13`)
 
 - **RF-01 y RF-02, panel «Info. del contacto» (Chrome, `0.1.2-beta.12`):** el propietario comunicó que, con la foto difuminada, quedan visibles el nombre, el nombre de usuario, el teléfono, la descripción y las notas. Pide ampliar RF-01 a esa información personal; la foto sigue en RF-02.
   - No hay evidencia del DOM del panel, así que no se ha cambiado ningún selector.
   - Al implementarlo, habrá que actualizar el texto de RF-01 en el panel de Veilix, porque pasará a cubrir más que nombres.
 
-### Añadido (diagnóstico, antes de `0.1.2-beta.13`)
+#### Añadido (diagnóstico, antes de `0.1.2-beta.13`)
 
 - `scripts/diagnostico-info-contacto.js`: localiza el panel por su título genérico («Info. del contacto», «Contact info», «Info. de empresa») y toma como raíz `drawer-right` o, si no existe, su antecesor de al menos media ventana fuera de la conversación.
   - **Muestra:** el esqueleto anonimizado, los textos, las imágenes (con las reglas de RF-02 que las alcanzan) y los campos editables de las notas, con su marcador de posición y la longitud de su contenido.
   - **Clase de cada texto:** genérico de la interfaz (de una lista cerrada en español e inglés, tal cual) o anonimizado, con su forma: parece un teléfono, empieza por «~» o «@», contador, fecha, coincide con el nombre del chat.
   - Probado en Chromium con un DOM inventado y datos secretos: no se filtró ningún dato.
 
-## [0.1.2-beta.12] — 2026-10-27
+### [0.1.2-beta.12] — 2026-10-27
 
 Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2012` en Chromium y Firefox (`version_name` `0.1.2-beta.12` en Chromium), y `0.1.2` en Safari. Solo corrige el encabezado de los estados citados.
 
-### Corregido
+#### Corregido
 
 - **RF-04, encabezado «Tú · Estados» de los estados citados:** con `0.1.2-beta.11` seguía nítido. Era lo único sin proteger en esa tarjeta.
   - **Reconocimiento** (con la autorización del propietario de usar la etiqueta como criterio complementario):
@@ -88,7 +194,7 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2012` en Chromi
   - **RF-01:** no difumina este encabezado. Con RF-01 activo sigue habiendo un solo filtro.
   - Pendiente de validación real.
 
-### Añadido (pruebas)
+#### Añadido (pruebas)
 
 - `tests/navegador/encabezado-estado.test.ts`, en Chromium, Firefox y WebKit (11 pruebas):
   - El estado observado y dos variantes simuladas («Ana · Estado», «You · Status») se difuminan, solo el `span`, con un único filtro.
@@ -102,11 +208,11 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2012` en Chromi
 - `tests/apoyo/whatsapp-simulado.ts`: `citaConvencional` y `MENSAJES_ENCABEZADOS_CITA`.
 - `scripts/diagnostico-respuestas-estado.js`: comprueba también la marca nueva.
 
-## [0.1.2-beta.11] — 2026-10-27
+### [0.1.2-beta.11] — 2026-10-27
 
 Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2011` en Chromium y Firefox (`version_name` `0.1.2-beta.11` en Chromium), y `0.1.2` en Safari. Solo corrige la duración de las citas, con la autorización del propietario.
 
-### Corregido
+#### Corregido
 
 - **RF-04, duración de las citas («0:18» en una respuesta a un estado):** con `0.1.2-beta.10` seguía nítida.
   - **Causa confirmada** (diagnóstico real, réplica con `contains()` y reproducción en jsdom):
@@ -122,7 +228,7 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2011` en Chromi
   - **Límite:** una cita convencional con la misma estructura (por ejemplo, la de un vídeo, si la usa) también tendría su duración difuminada. No se ha observado ninguna.
   - Pendiente de validación real.
 
-### Añadido (pruebas)
+#### Añadido (pruebas)
 
 - `tests/navegador/citas-miniatura.test.ts` (18 pruebas por motor), con el simulador reproduciendo el árbol real:
   - Duración visible sin RF-04 y difuminada con un único filtro; icono y texto citado bajo ese filtro.
@@ -136,12 +242,12 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2011` en Chromi
 - `tests/navegador/interruptores.test.ts` y `npm run test:extension`: la duración de la cita, con un solo filtro.
 - `tests/apoyo/whatsapp-simulado.ts`: `citaConMiniatura` reproduce el árbol real. Se retira la variante supuesta con la duración dentro de la miniatura.
 
-### Validación (antes de `0.1.2-beta.11`)
+#### Validación (antes de `0.1.2-beta.11`)
 
 - **RF-04, documentos adjuntos (`0.1.2-beta.9`):** el propietario confirmó en Chrome que funcionan, incluida la etiqueta de extensión del icono.
 - **RF-04, respuesta a un estado (`0.1.2-beta.10`):** la miniatura se difumina, pero el encabezado «Tú · Estados» y la duración «0:18» siguen nítidos.
 
-### En investigación (antes de `0.1.2-beta.11`)
+#### En investigación (antes de `0.1.2-beta.11`)
 
 - **RF-04, encabezado y duración de los estados citados:** la evidencia real solo incluye una cita dentro de un mensaje, la del estado. Sin ver una cita convencional del DOM real, no se puede distinguir de forma fiable la tarjeta de un estado sin mirar su texto, así que no se ha cambiado ningún selector.
   - **Duración, causa confirmada** (diagnóstico real y código): «0:18» es un nodo de texto directo de un `div[role="button"]` que contiene también `chat-msg-symbol` y el texto citado (`selectable-text`); su `textContent` tiene 21 caracteres.
@@ -154,7 +260,7 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2011` en Chromi
       - Los 21 caracteres encajan con 4 + 5 más el `<title>` del SVG, de 11.
     - **Consecuencia de difuminar el `div`:** el texto citado recibiría dos filtros (comprobado: 2 en vez de 1), salvo que se le retire el suyo, y el icono de `chat-msg-symbol` también se difuminaría.
 
-### Cambiado (diagnóstico, antes de `0.1.2-beta.11`)
+#### Cambiado (diagnóstico, antes de `0.1.2-beta.11`)
 
 - `scripts/diagnostico-respuestas-estado.js`: tabla de **rasgos de cada cita**, para comparar una respuesta a un estado con una cita convencional sin mirar su texto.
   - **Rasgos:** sus `data-testid` y sus iconos; si tiene autor (`[data-testid="author"]`), texto citado y miniaturas; sus encabezados `span[dir="auto"]`; la duración, con sus hijos y la longitud de su texto completo; y sus elementos interactivos.
@@ -166,11 +272,11 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2011` en Chromi
   - Probado en Chromium con un DOM inventado y datos secretos: no se filtró ningún dato.
 - `scripts/diagnostico-respuestas-estado.js` comprueba también la marca `data-veilix-duracion-cita`.
 
-## [0.1.2-beta.10] — 2026-10-27
+### [0.1.2-beta.10] — 2026-10-27
 
 Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2010` en Chromium y Firefox (`version_name` `0.1.2-beta.10` en Chromium), y `0.1.2` en Safari.
 
-### Corregido
+#### Corregido
 
 - **RF-04, miniaturas de las citas dentro de los mensajes:** con `0.1.2-beta.9`, el propietario vio en Chrome, en una respuesta a un estado («Tú · Estados», «0:18»), la miniatura del estado sin difuminar.
   - **Causa confirmada** por el diagnóstico real (`scripts/diagnostico-respuestas-estado.js`, con RF-04 y RF-01 activas, sin cursor ni atajo):
@@ -192,7 +298,7 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2010` en Chromi
   - **Sin evidencia:** las respuestas a estados de foto, texto o GIF, y las citas de otros tipos de mensaje.
   - Pendiente de validación real.
 
-### Añadido (pruebas)
+#### Añadido (pruebas)
 
 - `tests/navegador/citas-miniatura.test.ts`, en Chromium, Firefox y WebKit (15 pruebas):
   - Miniatura de 58 × 58, visible sin RF-04 y difuminada con un único filtro con RF-04.
@@ -208,14 +314,14 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2010` en Chromi
 - `tests/navegador/interruptores.test.ts` y `npm run test:extension`: la miniatura de la cita forma parte de lo que protege RF-04, sin filtro en la cita ni en su encabezado.
 - `tests/apoyo/whatsapp-simulado.ts`: `citaConMiniatura` y `MENSAJES_CITAS_MINIATURA`.
 
-### Añadido (diagnóstico)
+#### Añadido (diagnóstico)
 
 - `scripts/diagnostico-respuestas-estado.js` (preparado con `0.1.2-beta.9`, sin cambiar la versión): esqueleto anonimizado de las respuestas a estados y de las citas visibles, con las reglas de RF-04 y de autores de RF-01 que alcanzan a cada elemento.
   - **Textos e imágenes:** tipo, tipo de origen, tamaño, si están en la cita o en un elemento interactivo, filtros y lo que se pinta encima.
   - **Revelado:** si el mensaje está revelado por el cursor, el foco o el atajo.
   - **Privacidad:** solo muestra tal cual las etiquetas genéricas.
 
-### Cambiado (diagnóstico)
+#### Cambiado (diagnóstico)
 
 - `scripts/diagnostico-respuestas-estado.js` clasifica ahora en cuatro grupos:
   - **Respuesta a un estado confirmada:** por un identificador inequívoco, como un `data-testid` de estado o el icono `wds-ic-status…`.
@@ -228,11 +334,11 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2010` en Chromi
   - Comprueba también la regla nueva.
   - Probado en Chromium con un DOM inventado y datos secretos: no se filtró ningún dato.
 
-## [0.1.2-beta.9] — 2026-10-27
+### [0.1.2-beta.9] — 2026-10-27
 
 Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2009` en Chromium y Firefox (`version_name` `0.1.2-beta.9` en Chromium), y `0.1.2` en Safari.
 
-### Corregido
+#### Corregido
 
 - **RF-04, etiqueta de extensión del icono de los documentos:** con `0.1.2-beta.8`, la etiqueta PNG o JPG del icono seguía visible.
   - **Estructura confirmada** por el diagnóstico real de `0.1.2-beta.7`: dentro de `document-thumb`, el icono es un elemento con `data-icon="document-PNG-icon"` (o `document-JPG-icon`) con su SVG, y la etiqueta, un `div` hermano suyo en el mismo contenedor.
@@ -243,7 +349,7 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2009` en Chromi
   - **Sin confirmar:** el orden del icono y la etiqueta (las pruebas cubren los dos) y otros formatos (PDF, DOCX…), probados solo con el DOM simulado.
   - Pendiente de validación real.
 
-### Añadido (pruebas)
+#### Añadido (pruebas)
 
 - `tests/navegador/documentos.test.ts`:
   - **Nueva:** etiqueta PNG, JPG, PDF y DOCX difuminada con un único filtro, con la etiqueta antes o después del dibujo, y el dibujo y su SVG nítidos.
@@ -255,11 +361,11 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2009` en Chromi
 - `tests/apoyo/whatsapp-simulado.ts`: el icono simulado sigue la estructura observada, con la opción `etiquetaAntes`.
 - `scripts/diagnostico-adjuntos.js`: comprueba también la regla nueva.
 
-## [0.1.2-beta.8] — 2026-10-27
+### [0.1.2-beta.8] — 2026-10-27
 
 Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2008` en Chromium y Firefox (`version_name` `0.1.2-beta.8` en Chromium), y `0.1.2` en Safari.
 
-### Corregido
+#### Corregido
 
 - **RF-04, datos de los documentos adjuntos:** con `0.1.2-beta.7`, el nombre, el formato y el tamaño de las tarjetas de archivo quedaban visibles.
   - **Causa confirmada** por el diagnóstico real (`scripts/diagnostico-adjuntos.js`, con RF-04 activa y sin revelado; dos imágenes enviadas como documento, PNG y JPG):
@@ -274,7 +380,7 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2008` en Chromi
   - **Pendiente de evidencia:** la etiqueta PNG/JPG del icono, cuya representación no consta en la evidencia recibida, y las miniaturas de la tarjeta. PDF, DOCX y otros formatos solo están probados con el DOM simulado.
   - Pendiente de validación real.
 
-### Añadido (pruebas)
+#### Añadido (pruebas)
 
 - `tests/navegador/documentos.test.ts`, en Chromium, Firefox y WebKit (15 pruebas): documentos PNG y JPG con la estructura observada, y PDF y DOCX simulados.
   - Nombre, formato y tamaño difuminados con un único filtro; nombre largo en varias líneas; descripción sin doble filtro.
@@ -288,7 +394,7 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2008` en Chromi
 - `tests/apoyo/whatsapp-simulado.ts`: tipo `documento` y `MENSAJES_DOCUMENTOS`.
 - `npm run test:extension`: nombre, formato y tamaño difuminados, sin filtro en la tarjeta ni en el botón de descarga.
 
-### Añadido (diagnóstico)
+#### Añadido (diagnóstico)
 
 - `scripts/diagnostico-adjuntos.js`: localiza los mensajes visibles con indicios de adjunto y muestra el esqueleto anonimizado de cada uno.
   - **Indicios:** un texto con forma de tamaño, de páginas o de nombre de archivo; un icono de documento, archivo o descarga; un `data-testid` de documento; un enlace con `download`.
@@ -297,11 +403,11 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2008` en Chromi
   - Comprueba también la regla nueva (`DATOS_DOCUMENTO`).
   - Probado en Chromium con un DOM inventado y datos secretos: no se filtró ningún dato.
 
-## [0.1.2-beta.7] — 2026-10-27
+### [0.1.2-beta.7] — 2026-10-27
 
 Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2007` en Chromium y Firefox (`version_name` `0.1.2-beta.7` en Chromium), y `0.1.2` en Safari.
 
-### Corregido
+#### Corregido
 
 - **RF-04, miniaturas de vídeo visibles en la conversación:** con `0.1.2-beta.6`, el propietario vio en Chrome la miniatura de un vídeo sin difuminar.
   - **Causa confirmada** por el diagnóstico real (`scripts/diagnostico-videos.js`, con RF-04 activa y sin ningún revelado):
@@ -320,7 +426,7 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2007` en Chromi
   - **Sin confirmar:** si las capas son hermanas o anidadas, y si el filtro de 8 px va en línea. Las pruebas cubren los dos casos.
   - Pendiente de validación real.
 
-### Añadido (pruebas)
+#### Añadido (pruebas)
 
 - `tests/navegador/videos.test.ts`, en Chromium, Firefox y WebKit (14 pruebas por cada relación de capas, hermanas y anidadas):
   - Vídeo vertical y horizontal; sin RF-04, la capa nítida deja ver la miniatura aunque la otra tenga el filtro de WhatsApp.
@@ -337,7 +443,7 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2007` en Chromi
 - `tests/apoyo/whatsapp-simulado.ts`: tipo `videoMiniatura` (vertical u horizontal, capas hermanas o anidadas) y `mensajesConVideos`.
 - `npm run test:extension`: las dos capas de una miniatura de vídeo difuminadas, sin filtro en `video-content`.
 
-### Añadido (diagnóstico)
+#### Añadido (diagnóstico)
 
 - `scripts/diagnostico-videos.js`: compara todo lo que pinta una imagen en la conversación y fuera de ella (salvo la lista de chats). Para cada elemento muestra:
   - Posición, tamaño y tipo (`img`, `video` y `poster`, `canvas`, fondos o máscaras CSS…), sin URL.
@@ -348,11 +454,11 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2007` en Chromi
 
   Probado en Chromium con un DOM inventado y datos secretos: no se filtró ningún dato.
 
-## [0.1.2-beta.6] — 2026-10-27
+### [0.1.2-beta.6] — 2026-10-27
 
 Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2006` en Chromium y Firefox (`version_name` `0.1.2-beta.6` en Chromium), y `0.1.2` en Safari. Auditoría de los cinco interruptores del panel (RF-01 a RF-05).
 
-### Cambiado
+#### Cambiado
 
 - **Textos del panel:** la descripción de cada interruptor enumera las zonas que protege su módulo, contrastadas con las reglas del código. No menciona las zonas sin selector (fotos y vídeos de «Info. del mensaje», miniaturas citadas) ni los indicadores sin evidencia (enviado, entregado, reloj).
   - **RF-01:** «Difumina los nombres de contactos y grupos en la lista de chats, el encabezado de la conversación, los remitentes de los mensajes de grupo, el autor citado al responder y «Nuevo chat», con la información de cada contacto.»
@@ -365,14 +471,14 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2006` en Chromi
     - RF-05: «Revelar: cursor encima o Ctrl + Mayús + Espacio.» El foco no revela el editor, porque el texto quedaría visible siempre mientras se escribe.
 - **Accesibilidad:** cada interruptor se describe (`aria-describedby`) con la descripción y la nota de su tarjeta. El diseño, el orden de tabulación y el manejo con Espacio e Intro no cambian.
 
-### Corregido
+#### Corregido
 
 - **RF-03, filtros superpuestos en la vista previa.**
   - **Detectado** por la prueba de independencia nueva, en el DOM simulado. Se marcaban a la vez el `span[title]` de la vista previa y el `span[dir]` que contiene, de modo que el texto recibía dos difuminados (más intensos que en el resto de zonas). Lo mismo ocurría con un indicador de leído situado dentro de la vista previa.
   - **Sin evidencia real** de que WhatsApp Web anide así esos elementos.
   - **Corrección:** solo se marca el elemento más externo de cada vista previa (`soloExternos`), y no se marca un indicador que ya está dentro de ella. La zona protegida y el revelado no cambian.
 
-### Añadido (pruebas)
+#### Añadido (pruebas)
 
 - `tests/navegador/interruptores.test.ts`, en Chromium, Firefox y WebKit (19 pruebas), sobre una página con todas las superficies: lista de chats, grupo con autores, avatares y multimedia, «Responder», «Info. del mensaje» y «Nuevo chat».
   - Cada interruptor solo, y cada uno desactivado con los otros cuatro activos.
@@ -387,15 +493,15 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2006` en Chromi
 - `tests/panel-configuracion.test.tsx`: `aria-describedby` de cada interruptor.
 - `tests/difuminado/marcador-lista-chats.test.ts`: solo el elemento más externo de la vista previa, `soloExternos` y el indicador dentro de la vista previa.
 
-### Validación
+#### Validación
 
 - **RF-04, stickers de «Info. del mensaje» (`0.1.2-beta.5`):** el propietario confirmó en Chrome que funcionan.
 
-## [0.1.2-beta.5] — 2026-10-27
+### [0.1.2-beta.5] — 2026-10-27
 
 Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2005` en Chromium y Firefox (`version_name` `0.1.2-beta.5` en Chromium), y `0.1.2` en Safari.
 
-### Corregido
+#### Corregido
 
 - **RF-04, stickers en «Info. del mensaje»:** con `0.1.2-beta.4`, el sticker quedaba visible.
   - **Causa confirmada** por el diagnóstico real:
@@ -408,7 +514,7 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2005` en Chromi
   - **Pendiente de evidencia:** las fotos y los vídeos de esta pantalla.
   - Pendiente de validación real.
 
-### Añadido (pruebas)
+#### Añadido (pruebas)
 
 - `tests/navegador/info-mensaje.test.ts`, en Chromium, Firefox y WebKit, 7 pruebas nuevas de stickers:
   - Sticker animado (`canvas` visible e `img` de 0 × 0) y estático (`img` visible).
@@ -422,11 +528,11 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2005` en Chromi
 - `tests/apoyo/whatsapp-simulado.ts`: `abrirInfoMensaje` admite un sticker `animado` o `estatico`, y el texto pasa a ser opcional.
 - `npm run test:extension`: sticker de «Info. del mensaje» (`canvas`) difuminado, sin filtro en su contenedor.
 
-### Validación
+#### Validación
 
 - **RF-04, texto de «Info. del mensaje» (`0.1.2-beta.4`):** el propietario confirmó en Chrome que el texto se difumina y se revela con el cursor. El título, el cierre, las horas, los indicadores, «Leído» y «Entregado» siguen visibles.
 
-### Añadido (diagnóstico)
+#### Añadido (diagnóstico)
 
 - `scripts/diagnostico-info-mensaje.js`: tabla de los elementos visuales de cada copia del mensaje y, para comparar, de los mensajes multimedia de la conversación.
   - **Muestra:** el tipo de origen, los atributos de vídeo, el canvas, el SVG, los fondos y máscaras CSS (también en pseudoelementos), la ruta, el tamaño, si es contenido o `msg-meta`, si está en un botón o puede recibir el foco, las reglas de RF-04 y el filtro.
@@ -435,11 +541,11 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2005` en Chromi
     - No se filtró ningún dato.
     - Distinguió el sticker de «Info. del mensaje» (sin regla y visible) del de la conversación (difuminado).
 
-## [0.1.2-beta.4] — 2026-10-26
+### [0.1.2-beta.4] — 2026-10-26
 
 Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2004` en Chromium y Firefox (`version_name` `0.1.2-beta.4` en Chromium), y `0.1.2` en Safari.
 
-### Corregido
+#### Corregido
 
 - **RF-04, «Info. del mensaje»:** con `0.1.2-beta.3`, la pantalla mostraba la copia del mensaje sin difuminar.
   - **Causa confirmada** por el diagnóstico real (mensaje de texto):
@@ -453,7 +559,7 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2004` en Chromi
   - **Pendiente de evidencia:** la multimedia de esta pantalla, que no tiene selector.
   - Pendiente de validación real.
 
-### Añadido (pruebas)
+#### Añadido (pruebas)
 
 - `tests/navegador/info-mensaje.test.ts`, en Chromium, Firefox y WebKit, con la estructura observada:
   - Texto y emojis difuminados, con un único filtro.
@@ -468,11 +574,11 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2004` en Chromi
 - `tests/apoyo/whatsapp-simulado.ts`: `abrirInfoMensaje`, `cerrarInfoMensaje` y `abrirOtroPanelDerecho`.
 - `npm run test:extension`: texto de «Info. del mensaje» difuminado, con la hora y el estado visibles.
 
-### Validación
+#### Validación
 
 - **RF-02, avatares de participantes en grupos (`0.1.2-beta.3`):** el propietario aprobó las ocho pruebas funcionales, incluida la conservación de la lista de chats, el encabezado y «Nuevo chat». La incidencia queda cerrada. No consta si la prueba incluyó un avatar con silueta.
 
-### Añadido (diagnóstico)
+#### Añadido (diagnóstico)
 
 - `scripts/diagnostico-info-mensaje.js`: diagnóstico anonimizado de «Info. del mensaje».
   - **Busca fuera de la conversación:** componentes de mensaje, multimedia, textos que coinciden con un mensaje visible (sin mostrarlos), el título y los estados.
@@ -481,17 +587,17 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2004` en Chromi
     - No se filtró ningún dato.
     - Localizó la raíz del panel y la copia del mensaje.
 
-### Pendiente para la estable `0.1.2`
+#### Pendiente para la estable `0.1.2`
 
 - **RF-04, recuadro «Responder» (`0.1.2-beta.0`) e «Info. del mensaje» (`0.1.2-beta.4`):** no consta validación real. La preparación de la estable queda detenida hasta que el propietario la confirme.
 - **Multimedia de «Info. del mensaje»:** sin diagnóstico ni selector.
 - **Miniaturas citadas en el recuadro «Responder»:** no hay selector ni diagnóstico; seguirían visibles. Es una limitación conocida, ya documentada.
 
-## [0.1.2-beta.3] — 2026-10-26
+### [0.1.2-beta.3] — 2026-10-26
 
 Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2003` en Chromium y Firefox (`version_name` `0.1.2-beta.3` en Chromium), y `0.1.2` en Safari.
 
-### Corregido
+#### Corregido
 
 - **RF-02, avatares de participantes en grupos:** con `0.1.2-beta.2`, los avatares junto a los mensajes de un grupo con una inicial en un círculo de color seguían visibles.
   - **Causa confirmada** por el diagnóstico real (RF-02 activa, atajo inactivo, cursor fuera):
@@ -507,7 +613,7 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2003` en Chromi
   - **Pendiente de evidencia:** que el avatar con silueta use el mismo contenedor.
   - Pendiente de validación real.
 
-### Añadido (pruebas)
+#### Añadido (pruebas)
 
 - `tests/navegador/avatares-grupo.test.ts`, en Chromium, Firefox y WebKit, con la estructura observada:
   - Foto, inicial con su círculo y silueta (supuesta).
@@ -522,11 +628,11 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2003` en Chromi
 - `tests/apoyo/whatsapp-simulado.ts`: avatares de grupo (`avatarGrupo`) en dos posiciones supuestas, y la lista de mensajes con `conversation-panel-messages`.
 - `npm run test:extension`: avatar con inicial difuminado con un solo filtro, y la fila del mensaje sin difuminar.
 
-### Restaurado
+#### Restaurado
 
 - `wxt.config.ts` apareció eliminado del árbol de trabajo durante la entrega anterior, sin que lo hiciera el agente. Se restauró con el contenido de `HEAD` (`git show HEAD:wxt.config.ts`), idéntico al confirmado, porque sin él no se puede compilar ni verificar.
 
-### Añadido (diagnóstico)
+#### Añadido (diagnóstico)
 
 - `scripts/diagnostico-avatares-grupo.js`: diagnóstico anonimizado de los avatares de participantes en un grupo.
   - **Recorre:** los elementos de cada fila de mensaje fuera de la burbuja, y lo pintado junto a ella (`elementsFromPoint`), dentro o fuera de la fila.
@@ -538,11 +644,11 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2003` en Chromi
     - No se filtró ningún dato: ni nombres, ni iniciales, ni teléfonos, ni `aria-label`, ni colores, ni direcciones.
     - Cada avatar quedó bien clasificado.
 
-## [0.1.2-beta.2] — 2026-10-26
+### [0.1.2-beta.2] — 2026-10-26
 
 Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2002` en Chromium y Firefox (`version_name` `0.1.2-beta.2` en Chromium), y `0.1.2` en Safari.
 
-### Corregido
+#### Corregido
 
 - **RF-02, avatares predeterminados de «Nuevo chat»:** con `0.1.2-beta.1`, las fotos personalizadas se difuminaban, pero no los avatares predeterminados (círculos de color con una silueta).
   - **Causa confirmada** por el diagnóstico real (17 contactos y la fila «Tú»; 11 fotos con `FOTO_PERFIL` y 6 avatares sin ninguna regla):
@@ -560,7 +666,7 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2002` en Chromi
     - No usa el `<title>` del SVG (no confirmado), ni clases, colores, tamaños o la profundidad interna.
   - Pendiente de validación real.
 
-### Añadido (pruebas)
+#### Añadido (pruebas)
 
 - `tests/navegador/avatares-nuevo-chat.test.ts`, en Chromium, Firefox y WebKit, con la estructura observada:
   - 12 fotos y 6 avatares predeterminados de colores distintos.
@@ -576,11 +682,11 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2002` en Chromi
 - `tests/apoyo/whatsapp-simulado.ts`: «Nuevo chat» con las dos columnas observadas, avatares con foto o predeterminados (`avatarObservado`) y la fila «Tú» (`message-yourself-row`).
 - `npm run test:extension`: avatares de «Nuevo chat» difuminados (un filtro por columna) y el icono de «Nuevo grupo» sin difuminar.
 
-### Validación
+#### Validación
 
 - **RF-01, autores de grupo por su estructura (`0.1.2-beta.1`):** el propietario confirmó en Chrome que los nombres de los participantes no guardados quedan protegidos.
 
-### Añadido (diagnóstico)
+#### Añadido (diagnóstico)
 
 - `scripts/diagnostico-paneles.js`: tablas nuevas para RF-02 en «Nuevo chat», que se muestran primero y usan como raíz la fila completa `[role="listitem"]`.
   - **Por qué:** la tabla general que revisó el propietario toma el elemento con rol más interno, la celda de texto, y por eso no encontraba el avatar.
@@ -593,11 +699,11 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2002` en Chromi
     - No se filtró ningún dato: ni nombres, ni números, ni colores, ni el contenido de las URL `data:`.
     - Localizó cada avatar fuera de `cell-frame-container`.
 
-## [0.1.2-beta.1] — 2026-10-26
+### [0.1.2-beta.1] — 2026-10-26
 
 Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2001` en Chromium y Firefox (`version_name` `0.1.2-beta.1` en Chromium), y `0.1.2` en Safari.
 
-### Corregido
+#### Corregido
 
 - **RF-01, autores de mensajes en grupos (participantes no guardados):** con `0.1.2-beta.0` quedaban visibles algunos nombres, en color, con «~», emojis, símbolos o texto con forma de etiqueta HTML.
   - **Causa confirmada** por el diagnóstico anonimizado real (`rf01Activa: true`, 7 remitentes marcados en 15 mensajes, 4 remitentes distintos):
@@ -610,7 +716,7 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2001` en Chromi
   - **Sin cambios en:** RF-04, RF-05 y los demás selectores.
   - Pendiente de validación real.
 
-### Añadido (pruebas)
+#### Añadido (pruebas)
 
 - `tests/navegador/remitentes-autor.test.ts`, en Chromium, Firefox y WebKit, con los casos del diagnóstico real:
   - Remitente guardado y no guardados con un teléfono en el metadato.
@@ -628,7 +734,7 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2001` en Chromi
 - `tests/apoyo/whatsapp-simulado.ts`: opción `autor` con las estructuras observadas y el grupo `MENSAJES_AUTORES`.
 - `npm run test:extension`: autor no guardado, con un nombre distinto del metadato, difuminado en la extensión compilada.
 
-### Investigación
+#### Investigación
 
 - **Inicialización de los módulos:** en Chrome real, con `0.1.2-beta.0`, los cinco interruptores estaban activados, pero la página no tenía estilos ni marcas de Veilix.
   - **Comprobado en local:** el manifiesto compilado es correcto y la carga normal protege la página.
@@ -640,7 +746,7 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2001` en Chromi
     - Falta confirmarlo con el diagnóstico de la instalación.
   - **Estado posterior:** el diagnóstico de remitentes muestra RF-01 cargada (`rf01Activa: true`), así que el script vuelve a ejecutarse. La causa exacta del episodio no se ha comunicado.
 
-### Añadido (diagnóstico)
+#### Añadido (diagnóstico)
 
 - `scripts/diagnostico-extension.js`: diagnóstico anonimizado de la instalación, ejecutado desde una página de la propia extensión.
   - **Muestra:**
@@ -665,11 +771,11 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2001` en Chromi
   - Probado en Chromium con un DOM inventado lleno de datos ficticios: no se filtró ninguno, y clasificó correctamente los seis casos supuestos.
 - `scripts/diagnostico-respuesta.js`: los caracteres invisibles de sus expresiones regulares se escriben ahora como secuencias `\uXXXX`, sin cambiar su comportamiento.
 
-## [0.1.2-beta.0] — 2026-10-22
+### [0.1.2-beta.0] — 2026-10-22
 
 Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2000` en Chromium y Firefox (`version_name` `0.1.2-beta.0` en Chromium), y `0.1.2` en Safari.
 
-### Corregido
+#### Corregido
 
 - **RF-04, texto citado en el recuadro «Responder»:** con `0.1.1`, al pulsar «Responder» el texto del mensaje citado, encima del editor, quedaba visible con RF-04 activa.
   - **Causa confirmada:** el diagnóstico anonimizado en WhatsApp Web real (Chrome, respuesta a un mensaje de texto) mostró que el recuadro está en `#main footer` › `[data-testid="popup_panel"]` › `[data-testid="quoted-message"]`, fuera de las filas de mensaje. RF-04 solo actúa dentro de esas filas.
@@ -685,7 +791,7 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2000` en Chromi
   - **Pendiente de evidencia:** las fotos y los vídeos citados y otras variantes de respuesta. No se han añadido selectores para multimedia.
   - Pendiente de validación real.
 
-### Añadido (pruebas)
+#### Añadido (pruebas)
 
 - `tests/navegador/respuesta.test.ts`, en Chromium, Firefox y WebKit, con la estructura observada:
   - Texto citado difuminado solo con RF-04.
@@ -701,7 +807,7 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2000` en Chromi
 - `tests/difuminado/selectores-mensaje.test.ts`: los selectores nuevos alcanzan solo el texto del recuadro del pie, no el autor, la X, las citas dentro de los mensajes ni el editor.
 - `npm run test:extension`: texto citado difuminado y X visible en la extensión compilada.
 
-### Añadido (diagnóstico)
+#### Añadido (diagnóstico)
 
 - `scripts/diagnostico-respuesta.js`: diagnóstico anonimizado del recuadro «Responder».
   - **Muestra:**
@@ -717,6 +823,8 @@ Compilación interna de prueba sobre `0.1.1`. Manifiesto: `0.1.2.2000` en Chromi
 ## [0.1.1] — 2026-10-21
 
 **Versión estable preparada para la aprobación final del propietario.** No está publicada en ninguna tienda, no tiene etiqueta de Git y la Fase 2 sigue abierta.
+
+> **Nota (28 de octubre de 2026):** el párrafo anterior describe el estado al preparar esta versión. `0.1.1` queda como antecedente histórico. No consta su aprobación ni su publicación, y su aprobación ya no es un requisito: la estable seleccionada para el primer lanzamiento público es [0.1.2].
 
 Manifiesto: `0.1.1` en Chrome, Edge, Firefox y Safari (sin `version_name`). Panel: «Veilix 0.1.1». Paquetes: `veilix-0.1.1-{chrome,edge,firefox,safari}.zip`.
 
@@ -1181,6 +1289,7 @@ Manifiesto: `0.2.0.2002` en Chromium y Firefox, y `0.2.0` en Safari.
 - ESLint, Vitest e integración continua.
 
 [Sin publicar]: #sin-publicar
+[0.1.2]: #012--2026-10-28
 [0.1.2-beta.5]: #012-beta5--2026-10-27
 [0.1.2-beta.4]: #012-beta4--2026-10-26
 [0.1.2-beta.3]: #012-beta3--2026-10-26
