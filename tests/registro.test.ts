@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest';
-import { IDS_FUNCIONALIDADES } from '@/funcionalidades/catalogo';
+import { IDS_FUNCIONALIDADES, estaDisponible } from '@/funcionalidades/catalogo';
 import { MODULOS_FUNCIONALIDADES } from '@/funcionalidades/registro';
 
 describe('registro de módulos', () => {
@@ -12,7 +12,7 @@ describe('registro de módulos', () => {
 
   it('impide activar módulos pendientes', () => {
     const contexto = { documento: document, senal: new AbortController().signal };
-    for (const modulo of MODULOS_FUNCIONALIDADES) {
+    for (const modulo of MODULOS_FUNCIONALIDADES.filter((m) => !estaDisponible(m.id))) {
       expect(() => {
         modulo.activar(contexto);
       }).toThrow(/pendiente/);

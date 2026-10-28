@@ -30,14 +30,46 @@ describe('almacén de preferencias', () => {
   });
 
   it('rechaza activar funcionalidades pendientes', async () => {
-    await expect(cambiarFuncionalidad('difuminarNombres', true)).rejects.toThrow(/pendiente/);
+    await expect(cambiarFuncionalidad('ocultarEnLinea', true)).rejects.toThrow(/pendiente/);
     const preferencias = await leerPreferencias();
+    expect(preferencias.funcionalidades.ocultarEnLinea).toBe(false);
+  });
+
+  it('persiste una funcionalidad disponible sin alterar las demás', async () => {
+    await cambiarTema('oscuro');
+    await cambiarFuncionalidad('difuminarFotos', true);
+    const preferencias = await leerPreferencias();
+    expect(preferencias.tema).toBe('oscuro');
+    expect(preferencias.funcionalidades.difuminarFotos).toBe(true);
     expect(preferencias.funcionalidades.difuminarNombres).toBe(false);
+  });
+
+  it('no pierde cambios simultáneos', async () => {
+    await Promise.all([
+      cambiarFuncionalidad('difuminarNombres', true),
+      cambiarFuncionalidad('difuminarFotos', true),
+      cambiarFuncionalidad('difuminarCampoEntrada', true),
+      cambiarTema('claro'),
+    ]);
+    const preferencias = await leerPreferencias();
+    expect(preferencias.funcionalidades).toMatchObject({
+      difuminarNombres: true,
+      difuminarFotos: true,
+      difuminarCampoEntrada: true,
+    });
+    expect(preferencias.tema).toBe('claro');
+  });
+
+  it('una escritura fallida no bloquea las siguientes', async () => {
+    await expect(cambiarFuncionalidad('ocultarEscritura', true)).rejects.toThrow();
+    await expect(cambiarFuncionalidad('difuminarNombres', true)).resolves.toMatchObject({
+      funcionalidades: { difuminarNombres: true },
+    });
   });
 
   it('normaliza datos manipulados en el almacenamiento', async () => {
     await fakeBrowser.storage.local.set({
-      preferencias: { tema: '<script>', funcionalidades: { ocultarEnLinea: true } },
+      preferencias: { tema: '<script>', funcionalidades: { ocultarEnLinea: true, extra: true } },
     });
     await expect(leerPreferencias()).resolves.toEqual(PREFERENCIAS_PREDETERMINADAS);
   });

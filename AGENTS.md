@@ -4,7 +4,14 @@ Instrucciones para cualquier agente (Codex, Claude u otros) o persona que trabaj
 
 ## Contexto
 
-Veilix es una extensión de privacidad para WhatsApp Web, construida con WXT, React y TypeScript. Funciona en Chrome, Edge y Firefox con Manifest V3. La fase 1 (infraestructura) está completada. Las nueve funcionalidades aprobadas siguen pendientes.
+Veilix es una extensión de privacidad para WhatsApp Web, construida con WXT, React y TypeScript sobre Manifest V3. Está dirigida a Chrome, Edge, Firefox, Brave, Opera y Vivaldi (en Windows, Linux y macOS) y a Safari en macOS. El estado de cada combinación está en la matriz de compatibilidad del README.
+
+- **Fase 1 (infraestructura):** completada y aprobada.
+- **Fase 2 (motor de difuminado, RF-01 a RF-05):** **cerrada oficialmente el 28 de octubre de 2026**, con la aprobación expresa del propietario. Sus entregables técnicos están consolidados en la estable `0.1.2`. Historial: implementada y **validada funcionalmente en Google Chrome** por el propietario con `0.2.0-beta.8`, y publicada internamente como **`0.1.0`** (renumeración aprobada, sin publicar en tiendas). Las pruebas reales posteriores detectaron nombres y avatares sin proteger fuera de la lista de chats; `0.1.1-beta.0` lo corrige. Esas correcciones y la identidad visual del candado forman la estable **`0.1.1`**, preparada durante el desarrollo y conservada como antecedente histórico (no consta su aprobación ni su publicación, y su aprobación ya no es un requisito del lanzamiento). El propietario validó en Chrome `0.1.1-beta.3` (información secundaria de «Nuevo chat» y remitentes en grupos, sin regresiones); la regresión de remitentes comunicada con `0.1.1-beta.2` no volvió a manifestarse, aunque su causa sigue sin conocerse. El 22 de octubre de 2026, el propietario detectó en Chrome que el texto citado del recuadro «Responder» quedaba visible con `0.1.1`. `0.1.2-beta.0` lo corrige en RF-04 con la estructura confirmada por `scripts/diagnostico-respuesta.js` (`#main footer [data-testid="quoted-message"]`); la corrección está pendiente de validación real, y las miniaturas citadas, de diagnóstico. El 26 de octubre de 2026, el propietario comunicó en Chrome que RF-01 deja visibles algunos nombres de participantes no guardados en grupos con `0.1.2-beta.0`. El diagnóstico real confirmó la estructura `[data-testid="author"]`, y `0.1.2-beta.1` difumina el autor más externo por esa estructura, sin comparar textos, y el propietario la validó en Chrome. Con `0.1.2-beta.1`, los avatares predeterminados de «Nuevo chat» seguían visibles con RF-02. El diagnóstico de paneles confirmó su estructura, y `0.1.2-beta.2` difumina la columna del avatar de cada contacto y de «Tú» (`AVATAR_NUEVO_CHAT`); está pendiente de validación real. Con `0.1.2-beta.2`, algunos avatares de participantes junto a los mensajes de grupo seguían visibles con RF-02. El diagnóstico confirmó `[data-testid="group-chat-profile-picture"]` en `conversation-panel-messages`, y `0.1.2-beta.3` lo difumina como unidad (`AVATAR_PARTICIPANTE`); el propietario aprobó sus ocho pruebas funcionales (no consta si incluyeron una silueta). Con `0.1.2-beta.3`, «Info. del mensaje» mostraba el contenido del mensaje sin difuminar con RF-04. El diagnóstico confirmó la copia en `[data-testid="drawer-right"]` (fuera de `#main`), y `0.1.2-beta.4` difumina su texto (`TEXTO_MENSAJE_INFO`) en el panel con `kept-by-info`, y el propietario lo validó en Chrome. Con `0.1.2-beta.4`, los stickers de esa pantalla seguían visibles; el diagnóstico confirmó `[data-testid="sticker-container"]` con un `canvas` y un `img` de `blob:`, y `0.1.2-beta.5` difumina esos nodos (`VISUAL_STICKER_INFO`), y el propietario confirmó en Chrome que funcionan. Las fotos y los vídeos de esa pantalla siguen sin diagnóstico. `0.1.2-beta.6` audita los cinco interruptores: actualiza sus textos y su `aria-describedby`, añade pruebas de independencia (`tests/navegador/interruptores.test.ts`, `tests/navegador/tarjetas.test.ts`) y corrige el doble filtro de la vista previa de RF-03 detectado en el DOM simulado (solo se marca el elemento más externo); está pendiente de validación real. El 27 de octubre de 2026, con `0.1.2-beta.6`, el propietario vio en Chrome la miniatura de un vídeo sin difuminar junto a otro vídeo difuminado en la misma conversación; el diagnóstico (`scripts/diagnostico-videos.js`) confirmó que cada miniatura son dos capas `div` con fondo en línea `data:image/jpeg` dentro de `[data-testid="video-content"]` (una con `blur(8px)` de WhatsApp), fuera del alcance de `MULTIMEDIA_MENSAJE`. `0.1.2-beta.7` difumina la capa más externa de cada `video-content` (`MINIATURA_VIDEO`); está pendiente de validación real, y la relación entre las capas (hermanas o anidadas), sin confirmar. Con `0.1.2-beta.7`, el propietario comunicó que las tarjetas de archivos adjuntos (nombre, tipo, tamaño, miniatura e icono) quedan visibles con RF-04; el diagnóstico (`scripts/diagnostico-adjuntos.js`) confirmó `[data-testid="document-thumb"][role="button"]` con el nombre en `span[dir="auto"]`, el formato en `[data-testid="type"]` y el tamaño en `span[title]`, y `0.1.2-beta.8` difumina esos tres datos sin la tarjeta (`DATOS_DOCUMENTO`), y el propietario lo validó en Chrome. La etiqueta PNG/JPG del icono seguía visible: es un `div` hermano del elemento `data-icon="document-…-icon"`, y `0.1.2-beta.9` la difumina sin el dibujo (`ETIQUETA_ICONO_DOCUMENTO`); está pendiente de validación real. Con `0.1.2-beta.9`, el propietario comunicó que la tarjeta «Tú · Estados» de las respuestas a estados deja ver la miniatura del estado con RF-04; el diagnóstico (`scripts/diagnostico-respuestas-estado.js`) confirmó una miniatura de 58 × 58 como fondo en línea `data:image/jpeg` dentro de `[data-testid="quoted-message"]` del mensaje (que sea una respuesta a un estado es muy probable, no confirmado), y `0.1.2-beta.10` difumina esa capa sin la cita (`MINIATURA_CITA`). El propietario confirmó en Chrome que los documentos de `0.1.2-beta.9` funcionan, etiqueta del icono incluida, y que la miniatura de la cita se difumina. El encabezado «Tú · Estados» y la duración «0:18» siguen nítidos. Sin una cita convencional real con la que compararla, la tarjeta del estado no puede distinguirse aún de forma fiable: el diagnóstico añade una tabla de rasgos por cita, y no se ha cambiado ningún selector. La duración es un nodo de texto directo de un `div[role="button"]` con `chat-msg-symbol` y el texto citado, y el marcador de horas, que compara el `textContent` completo, no la reconoce. Causa confirmada. Ese `div` contiene solo `chat-msg-symbol`, la duración y el texto citado; el encabezado y la miniatura están fuera (comprobado con `contains()`; el «contiene: encabezado» del diagnóstico era un error, ya corregido). Con la autorización del propietario, `0.1.2-beta.11` marca ese contenedor (`CANDIDATO_DURACION_CITA`, `data-veilix-duracion-cita`) y lo difumina entero con un solo filtro, icono incluido; está pendiente de validación real. Para el encabezado «Tú · Estados», el propietario autorizó usar la etiqueta como criterio complementario de la estructura. `0.1.2-beta.12` marca el `span[dir="auto"]` de `div[role=""]` en una cita sin autor (`CANDIDATO_ENCABEZADO_ESTADO`, `data-veilix-encabezado-estado`) solo si su texto tiene la forma «… · Estados/Estado/Status» (español e inglés), y lo difumina; está pendiente de validación real. Cualquier reconocimiento que dependa del idioma se limita a los idiomas soportados. Con `0.1.2-beta.12`, el propietario pidió ampliar RF-01 a la información personal del panel «Info. del contacto» (nombre, usuario, teléfono, descripción y notas; la foto ya la difumina RF-02). El diagnóstico (`scripts/diagnostico-info-contacto.js`) confirmó `drawer-right` › `chat-info-drawer`, el nombre en `contact-info-subtitle selectable-text`, el usuario en el `div` hermano y el teléfono y la descripción en el `div` hermano de `section-phone-number` y `section-about`. `0.1.2-beta.13` difumina esos cuatro datos con RF-01 (solo CSS) y actualiza el texto de RF-01; está pendiente de validación real. Las notas guardadas, los números no guardados, las repeticiones inferiores del nombre y otros textos no atribuidos del panel (entre ellos un `selectable-text` de 968 caracteres) siguen sin evidencia. Los estados de foto, texto o GIF siguen sin evidencia. El 28 de octubre de 2026, el propietario comunicó que terminó la validación funcional de la serie `0.1.2-beta` y autorizó preparar la estable, con congelación de funcionalidades. La estable **`0.1.2`** está preparada con `npm run version:estable`, sin cambios de comportamiento respecto a `0.1.2-beta.13`, y el propietario la **aprobó el 28 de octubre de 2026 para el primer lanzamiento público** de Veilix. Todavía no está publicada ni etiquetada. Sus limitaciones conocidas están en la entrada `0.1.2` de `CHANGELOG.md`. El desarrollo posterior empezará en `0.1.3-beta.0`, todavía no iniciada. Ese mismo día el propietario aprobó el cierre oficial de la Fase 2.
+- **Fase 3:** no iniciada. No se empieza sin aprobación explícita.
+- **Ampliación tras el cierre:** las tareas técnicas abiertas (otros navegadores, variantes de WhatsApp Web sin evidencia, indicador de reloj) se recogen en el README, en «Pendiente técnico tras el cierre» y en las limitaciones de `0.1.2`. No son requisitos de la Fase 2.
+- **Ampliación multiplataforma:** paquetes y pruebas automatizadas preparados. Ninguna combinación de navegador y sistema operativo se ha probado aún con WhatsApp Web real, y Safari no se ha ejecutado nunca.
+- Las otras cuatro funcionalidades siguen pendientes.
 
 ## Reglas obligatorias
 
@@ -18,6 +25,9 @@ Veilix es una extensión de privacidad para WhatsApp Web, construida con WXT, Re
 5. **Honestidad en la interfaz.** Una funcionalidad con `estado: 'pendiente'` no puede mostrar interruptores ni controles que aparenten funcionar.
 6. **Idioma.** La documentación, los comentarios, los mensajes de interfaz y los identificadores propios se escriben en español. Se conservan los identificadores que imponen las herramientas, como `defineConfig`, `main`, los hooks `use*` o las claves del manifiesto.
 7. **Seguridad del código.** No se usa `eval`, `new Function`, `innerHTML` ni `dangerouslySetInnerHTML`, y no se carga código remoto. Todo dato leído del almacenamiento o del DOM se considera no confiable.
+8. **Compatibilidad honesta.** Nunca se declara compatible con WhatsApp Web una funcionalidad que solo se ha probado con el DOM simulado. Tampoco se inventan selectores sin indicarlo. Los selectores sin verificar se documentan como hipótesis en `selectores.ts` y en el README.
+9. **Protecciones solo visuales.** Las funciones de difuminado no modifican, eliminan ni reemplazan el texto o los nodos de WhatsApp. Solo añaden elementos `<style>` propios y atributos `data-veilix-*`, y lo eliminan todo al desactivarse.
+10. **Compatibilidad entre navegadores.** Se aplican las reglas de la sección [Compatibilidad multiplataforma](#compatibilidad-multiplataforma).
 
 ## Control de versiones (reglas permanentes)
 
@@ -47,26 +57,91 @@ Estas reglas se aplican a Codex y a cualquier otro agente que trabaje en el repo
 
 7. **Rama de trabajo.** La rama de desarrollo es `development`. La rama `main` permanece protegida frente a modificaciones no autorizadas.
 
+## Versionado
+
+1. **Fuente única.** La versión vive solo en `package.json` (SemVer, con `-beta.N` durante el desarrollo). No se escribe a mano en el manifiesto, el código ni la interfaz: se obtiene de `src/version.ts`.
+2. **Una versión por entrega.** Cada entrega con cambios en `src/`, `public/` o `wxt.config.ts` recibe una versión nueva. Normalmente es `npm run version:beta`; los scripts `version:*` no ejecutan operaciones de Git. Además, la entrega se registra en `CHANGELOG.md`, bajo una sección `## [versión] — fecha` en español. Si solo cambian documentación o pruebas, la versión puede mantenerse.
+3. **Sin incrementos automáticos.** Compilar, empaquetar o probar nunca cambia la versión. Volver a compilar el mismo código produce la misma versión.
+4. **Comprobación.** `npm run version:comprobar` debe pasar antes de entregar. El informe de cada entrega indica la versión.
+5. **Sin reutilizar versiones.** Un número de versión no se reasigna a un código distinto, ni la versión retrocede respecto a versiones ya entregadas, sin una decisión explícita del propietario que lo documente. Nunca se desactiva `version:comprobar` ni las pruebas de versionado para lograrlo.
+6. **Renumeraciones.** La única excepción vigente es la de `0.1.0`, registrada en `version-renumeraciones.json` y limitada a los commits base `a283fda` (`development`) y `9ba34bf` (`main`). Un agente nunca añade, amplía ni modifica entradas de ese archivo sin aprobación expresa del propietario. La prueba `tests/version.test.ts` falla si el registro cambia.
+7. **Manifiesto.** Una estable se compila como `X.Y.Z` exacto en todos los navegadores. Las versiones previas (`-alpha`, `-beta`, `-rc`) usan un cuarto componente y son solo compilaciones internas: nunca se suben a una tienda.
+8. **Después de `0.1.0`.** La siguiente entrega con cambios de código empieza con `npm run version:beta` (`0.1.0` → `0.1.1-beta.0`) o con `npm run version:menor-beta` (`0.2.0-beta.0`). Antes de elegir, hay que tener en cuenta que el historial ya contiene compilaciones internas `0.2.0-beta.1` a `0.2.0-beta.8`. La siguiente versión menor debe elegirse de modo que no repita esos números.
+9. **Después de una estable.** La siguiente entrega con cambios de código empieza con `npm run version:beta`: `0.1.1` → `0.1.2-beta.0` y, desde la estable `0.1.2`, `0.1.2` → `0.1.3-beta.0`. El número de una estable no se reutiliza para otro código.
+10. **Estables en `CHANGELOG.md`.** Al preparar una estable, sus compilaciones internas (`## [X.Y.Z-beta.N]`) pasan, con su contenido íntegro, a una sección `## Compilaciones internas de X.Y.Z` con un nivel de encabezado menos (`###`, y `####` para sus subsecciones). El motivo es que el manifiesto de una beta (`X.Y.Z.200N`) es mayor que el de su estable (`X.Y.Z`), y `tests/version.test.ts` exige que las entradas `## [...]` crezcan en orden de manifiesto. Es lo mismo que se hizo con el historial anterior a `0.1.0`. Esa prueba no se modifica para evitarlo.
+
+## Compatibilidad multiplataforma
+
+1. **Una sola base de código.** No se crean ramas ni copias del código por navegador. Las diferencias de manifiesto se concentran en `ajustesPorNavegador` (`wxt.config.ts`).
+2. **Paquetes.**
+   - `chrome-mv3` sirve para Chrome, Brave, Opera y Vivaldi.
+   - `edge-mv3` es para Edge.
+   - `firefox-mv3` es para Firefox.
+   - `safari-mv3` es para Safari en macOS.
+3. **Sin APIs exclusivas.** Los módulos solo usan CSS y APIs DOM estándar. Antes de usar una API nueva hay que comprobar que la admiten las versiones mínimas declaradas: Chromium 116, Firefox 140 y Safari 17.4. Si no, se suben las versiones mínimas, se documenta y se actualiza `tests/manifiesto.test.ts`.
+4. **Sin suposiciones de sistema operativo.** Los atajos usan `KeyboardEvent.code` y una combinación válida en Windows, Linux y macOS. No se asume la tecla Comando ni la distribución del teclado.
+5. **Tipos de evidencia.** Hay tres, y no se mezclan:
+   - **Compilación:** se genera un paquete válido.
+   - **Pruebas simuladas:** Playwright con el DOM simulado.
+   - **Prueba real:** la extensión instalada en ese navegador y sistema, usada con WhatsApp Web real.
+
+   **WebKit de Playwright no es Safari**, y el motor Chromium de Playwright no es Edge, Brave, Opera ni Vivaldi.
+6. **Matriz.** Cualquier cambio de compatibilidad actualiza la matriz del README. Solo el propietario marca una prueba real como superada.
+7. **Safari.** Solo se compila en Linux. Para empaquetar hace falta macOS con Xcode (`xcrun safari-web-extension-packager`) o el empaquetador de App Store Connect. El trabajo `safari-macos` de la integración continua es manual y experimental.
+
 ## Mapa del código
 
 | Ruta | Responsabilidad |
 | --- | --- |
-| `wxt.config.ts` | Manifiesto y diferencias entre navegadores |
+| `wxt.config.ts` | Manifiesto y diferencias entre navegadores (`ajustesPorNavegador`) |
+| `src/version.ts` | Versión (desde `package.json`) y su traducción a `manifest.version`, `version_name` y texto del panel |
+| `CHANGELOG.md` | Historial de versiones |
+| `version-renumeraciones.json` | Registro de renumeraciones aprobadas por el propietario (solo `0.1.0`) |
+| `scripts/comprobar-cambio-version.mjs` | Comprueba que una entrega con cambios de código tiene versión nueva |
 | `src/funcionalidades/catalogo.ts` | Identificadores, textos, categorías y estado de cada funcionalidad |
 | `src/funcionalidades/modulos/*.ts` | Un módulo por funcionalidad (contrato `ModuloFuncionalidad`) |
 | `src/funcionalidades/registro.ts` | Registro de módulos que usa el gestor |
 | `src/nucleo/gestor-modulos.ts` | Activación y desactivación según las preferencias, con aislamiento de errores |
+| `src/nucleo/difuminado/selectores.ts` | **Único** lugar con selectores de WhatsApp Web (hipótesis pendientes de validar) |
+| `src/nucleo/difuminado/` | Motor de difuminado: generación de CSS, fábrica de módulos, marcadores (lista de chats y su indicador de estado; hora, reacciones e indicador de estado de los mensajes), reconocimiento de iconos por `<title>` (`iconos-estado.ts`), observador compartido y atajo de revelado |
 | `src/almacenamiento/` | Modelo, normalización y persistencia de las preferencias (`storage.local`) |
 | `src/ui/` | Panel de configuración (emergente y página de opciones) |
 | `src/entrypoints/` | Puntos de entrada de WXT: `popup`, `options` y `whatsapp.content` |
-| `tests/` | Pruebas con Vitest, que usa `fakeBrowser` mediante `WxtVitest` |
+| `tests/` | Pruebas unitarias con Vitest, que usa `fakeBrowser` mediante `WxtVitest` |
+| `tests/navegador/` | Pruebas en Chromium, Firefox y WebKit (Vitest Browser + Playwright) |
+| `tests/apoyo/whatsapp-simulado.ts` | DOM simulado de WhatsApp Web (hipótesis, no la interfaz real) |
+| `scripts/generar-iconos.mjs` | Fuente original de los iconos (candado): genera `public/icon/*.png` sin dependencias. Su geometría coincide con `src/ui/componentes/Logotipo.tsx`; si cambia una, se cambia la otra y se regeneran los iconos (lo vigila `tests/iconos.test.ts`) |
+| `scripts/verificar-extension.mjs` | Verificación de extremo a extremo de la extensión compilada, con la red bloqueada |
+| `src/nucleo/difuminado/marcador-nombres.ts` | Marcadores de RF-01 fuera de la lista: remitentes en la conversación (por `data-pre-plain-text`; desde `0.1.2-beta.1`, los autores con `[data-testid="author"]` se difuminan por CSS, y el marcador queda para los nombres sin ese atributo), filas de «Nuevo chat» (estructura confirmada `new-chat-drawer`: nombre e información secundaria de `cell-frame-container`) y otras filas de contacto con avatar SVG (hipótesis), este último también usado por RF-02 con su propio atributo |
+| `scripts/diagnostico-paneles.js` | Fragmento de consola con un diagnóstico **anonimizado** de las filas de contacto fuera de la lista de chats («Nuevo chat», participantes…), y, con «Nuevo chat» abierto, tablas de RF-02 sobre la fila completa: estructura, candidatos a avatar (imagen, SVG, fondo o máscara CSS, lo pintado en la zona del avatar), reglas que los alcanzan y categoría de fila |
+| `scripts/diagnostico-lista-chats.js` | Fragmento de consola con un diagnóstico **anonimizado** de las filas de la lista de chats (RF-01 y RF-03): marcas de Veilix y textos que quedan sin proteger |
+| `scripts/diagnostico-mensajes.js` | Fragmento de consola con un diagnóstico **anonimizado** de la estructura de los mensajes (RF-04) y de la posición del nombre del remitente en grupos (RF-01) |
+| `scripts/diagnostico-extension.js` | Fragmento para la consola de una página de la extensión («Opciones»): manifiesto cargado (producción o desarrollo), script de contenido declarado y presente, acceso efectivo a `web.whatsapp.com` y preferencias leídas. Es el primer paso si en WhatsApp Web no aparece el contexto «Veilix» |
+| `scripts/diagnostico-inicializacion.js` | Fragmento de consola con un diagnóstico **anonimizado** del arranque de Veilix en la pestaña: en el contexto de la página, estilos y su alta o baja al alternar un interruptor; en el contexto «Veilix», validez del contexto, versión inyectada y preferencias leídas |
+| `scripts/diagnostico-remitentes.js` | Fragmento de consola con un diagnóstico **anonimizado** de los nombres de remitentes en grupos (RF-01): relación entre el nombre visible y `data-pre-plain-text`, estructura, marcas y difuminado |
+| `scripts/diagnostico-avatares-grupo.js` | Fragmento de consola con un diagnóstico **anonimizado** de los avatares de participantes junto a los mensajes de un grupo (RF-02): elementos fuera de la burbuja y lo pintado en la zona del avatar, con su tipo (foto, silueta, inicial, CSS) y las reglas que los alcanzan |
+| `scripts/diagnostico-info-mensaje.js` | Fragmento de consola con un diagnóstico **anonimizado** de la pantalla «Info. del mensaje» (RF-04): raíz del panel fuera de `#main`, copia del mensaje, multimedia, título y estados, con las reglas de RF-04 que los alcanzan |
+| `scripts/diagnostico-respuesta.js` | Fragmento de consola con un diagnóstico **anonimizado** del recuadro «Responder» (vista previa del mensaje citado encima del editor), para RF-01 y RF-04 |
+| `scripts/diagnostico-videos.js` | Fragmento de consola con un diagnóstico **anonimizado** de todo lo que pinta una imagen en la conversación (RF-04), para comparar un vídeo visible con otro difuminado: tipo y origen, zona respecto a `#main` y `msg-container`, reglas de RF-04 (también `MINIATURA_VIDEO`), filtros (y si van en línea), relación entre las capas de un vídeo, estados de revelado y capas superpuestas |
+| `scripts/diagnostico-adjuntos.js` | Fragmento de consola con un diagnóstico **anonimizado** de los mensajes con archivos o documentos adjuntos (RF-04): esqueleto de cada mensaje con indicios de adjunto, clase de cada texto (tamaño, páginas, nombre de archivo, extensión común), iconos, imágenes y reglas de RF-04 que los alcanzan (también `DATOS_DOCUMENTO`) |
+| `scripts/diagnostico-respuestas-estado.js` | Fragmento de consola con un diagnóstico **anonimizado** de las respuestas a estados (RF-04): clasificación en respuesta confirmada, posible respuesta (encabezado «… · Estados»), cita con miniatura y cita convencional, con su esqueleto, sus textos e imágenes (tipo y origen, filtros, capas), las reglas de RF-04 y RF-01 que los alcanzan y los estados de revelado |
+| `scripts/diagnostico-info-contacto.js` | Fragmento de consola con un diagnóstico **anonimizado** del panel «Info. del contacto» (RF-01 y RF-02): raíz del panel, esqueleto, textos (genéricos de una lista cerrada o anonimizados con su forma: teléfono, usuario, nombre del chat), imágenes con las reglas de RF-02 y campos de notas |
+| `scripts/diagnostico-avatares.js` | Fragmento de consola que extrae un diagnóstico **anonimizado** de los avatares del DOM real, para validar los selectores de RF-02 |
 
 ## Cómo implementar una funcionalidad
 
 1. Implementar el módulo en `src/funcionalidades/modulos/<nombre>.ts`:
    - `activar(contexto)` aplica los cambios y usa `contexto.senal` para registrar escuchas (`{ signal }`) y cancelar observadores.
    - `desactivar()` revierte **todos** los cambios en la página.
-   - Para el difuminado conviene usar clases o atributos y CSS inyectado, no reescribir el contenido.
+   - Para el difuminado se usa `crearModuloDifuminado` (`src/nucleo/difuminado/modulo-difuminado.ts`), que se encarga de los estilos, el revelado, el observador y la limpieza.
+   - Los selectores nuevos se añaden solo en `selectores.ts`. Se prefieren identificadores estables y atributos semánticos o de accesibilidad, y nunca clases generadas dinámicamente.
+   - Cuando haga falta conocer el DOM real, se piden al propietario ejemplos **anonimizados** (por ejemplo, con `scripts/diagnostico-avatares.js`, `scripts/diagnostico-lista-chats.js`, `scripts/diagnostico-mensajes.js`, `scripts/diagnostico-paneles.js`, `scripts/diagnostico-remitentes.js` o `scripts/diagnostico-respuesta.js`). Nunca se piden ni se registran nombres, mensajes, fotos ni direcciones completas.
+   - WhatsApp Web indica el nombre de muchos iconos en el `<title>` del SVG (por ejemplo, `wds-ic-read`), no con `data-icon`. Para difuminar un tipo de icono concreto se usa la lista de nombres confirmados (`TITULOS_ICONO_ESTADO` en `selectores.ts`) y las funciones de `iconos-estado.ts`, a través de un marcador limitado a la zona correspondiente. Solo se añaden nombres que aparezcan en un diagnóstico real. Nunca se difuminan en general `[data-icon]` ni `svg`.
+   - Un módulo que necesite varios marcadores los combina con `combinarMarcadores`.
+   - Los diagnósticos anonimizan los valores de `data-testid` (números como «#», nada tras «@»), porque algunos sufijos pueden contener identificadores.
+   - Los marcadores pueden leer el texto de la página solo para clasificar elementos, en el navegador. Nunca lo guardan, lo registran ni lo transmiten.
+   - Las búsquedas dentro de un subárbol añadido (`elemento.querySelectorAll`) usan selectores sin prefijos de antecesores, como `#main`, y después se filtran con `matches()`. jsdom no resuelve esos prefijos cuando el antecesor está fuera del subárbol.
+   - Solo se usa `MutationObserver` cuando el CSS no basta, y siempre a través de `suscribirMutaciones` (un observador por documento). No se observan atributos.
 2. Cambiar `estado` a `'disponible'` en el catálogo.
 3. Añadir pruebas que cubran la activación, la desactivación completa y la ausencia de efectos secundarios.
 4. Si hace falta el contexto `MAIN` de la página u otro permiso, justificarlo en el *pull request* y en el README.
@@ -78,8 +153,14 @@ Estas reglas se aplican a Codex y a cualquier otro agente que trabaje en el repo
 npm run compile
 npm run lint
 npm test
-npm run build
+npm run test:navegador     # requiere `npm run navegador:instalar` la primera vez
+npm run build:chrome
+npm run build:edge
+npm run build:firefox
+npm run build:safari
 npm run lint:firefox
+npm run test:extension     # después de build:chrome
+npm run version:comprobar
 ```
 
 Todo debe terminar sin errores. Los avisos `UNSAFE_VAR_ASSIGNMENT` de `web-ext lint` vienen de `react-dom` y ya están documentados en el README.

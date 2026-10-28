@@ -24,7 +24,7 @@ function disponibles(...ids: IdFuncionalidad[]) {
 
 describe('calcularFuncionalidadesActivas', () => {
   it('ignora las funcionalidades pendientes aunque estén habilitadas', () => {
-    const activas = calcularFuncionalidadesActivas(preferenciasCon({ difuminarNombres: true }));
+    const activas = calcularFuncionalidadesActivas(preferenciasCon({ ocultarEnLinea: true }));
     expect(activas.size).toBe(0);
   });
 
@@ -38,7 +38,7 @@ describe('calcularFuncionalidadesActivas', () => {
 });
 
 describe('GestorModulos', () => {
-  it('no activa ningún módulo real durante la fase 1', () => {
+  it('activa solo los módulos reales disponibles', () => {
     const gestor = new GestorModulos({
       modulos: MODULOS_FUNCIONALIDADES,
       documento: document,
@@ -46,7 +46,9 @@ describe('GestorModulos', () => {
     });
     const todas = Object.fromEntries(IDS_FUNCIONALIDADES.map((id) => [id, true]));
     gestor.aplicar(preferenciasCon(todas));
-    expect(gestor.activos.size).toBe(0);
+    expect(gestor.activos.size).toBe(5);
+    expect(gestor.activos.has('ocultarEnLinea')).toBe(false);
+    gestor.detenerTodo();
   });
 
   it('activa y desactiva módulos disponibles según las preferencias', () => {

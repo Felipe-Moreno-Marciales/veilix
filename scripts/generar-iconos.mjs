@@ -1,16 +1,21 @@
 /**
  * Genera los iconos PNG de la extensión sin dependencias externas.
  *
- * Uso: node scripts/generar-iconos.mjs
- * Salida: public/icon/{16,32,48,96,128}.png
+ * El dibujo es el logotipo de Veilix: un candado cerrado blanco sobre un
+ * cuadrado redondeado verde. Es la fuente original de los iconos, y su
+ * geometría coincide con la de `src/ui/componentes/Logotipo.tsx`.
+ *
+ * Uso: node scripts/generar-iconos.mjs [carpeta]
+ * Salida: public/icon/{16,32,48,96,128}.png, o la carpeta indicada.
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { deflateSync } from 'node:zlib';
 
-const TAMANOS = [16, 32, 48, 96, 128];
-const ACENTO = [91, 75, 219];
+export const TAMANOS = [16, 32, 48, 96, 128];
+// Verde de interfaz de WhatsApp Web (#00A884), el mismo acento que el panel.
+const ACENTO = [0, 168, 132];
 const BLANCO = [255, 255, 255];
 const SUBMUESTRAS = 4;
 const DESTINO = join(dirname(fileURLToPath(import.meta.url)), '..', 'public', 'icon');
@@ -36,26 +41,43 @@ function bloque(tipo, datos) {
   return Buffer.concat([longitud, cuerpo, crc]);
 }
 
-/** Color del icono en coordenadas normalizadas [0, 1] o `null` si es transparente. */
-function muestrear(x, y) {
-  const radio = 0.25;
-  const cx = Math.min(Math.max(x, radio), 1 - radio);
-  const cy = Math.min(Math.max(y, radio), 1 - radio);
-  if ((x - cx) ** 2 + (y - cy) ** 2 > radio ** 2) return null;
+/**
+ * Geometría en una cuadrícula de 32 × 32, la misma que el `viewBox` de `Logotipo.tsx`.
+ * Los bordes rectos caen en múltiplos de 2 para que coincidan con píxeles enteros
+ * a 16 × 16 y el candado se vea nítido en la barra de herramientas.
+ */
+const FONDO = { x: 0, y: 0, ancho: 32, alto: 32, radio: 8 };
+const CUERPO = { x: 8, y: 14, ancho: 16, alto: 12, radio: 3 };
+/** Arco: semicírculo de centro (cx, cy) y patas verticales hasta `finY`, dentro del cuerpo. */
+const ARCO = { cx: 16, cy: 12, radio: 4, grosor: 4, finY: 15 };
+const BOCALLAVE = { cx: 16, cy: 19, radio: 2 };
+const TALLO = { x: 15, y: 19, ancho: 2, alto: 4, radio: 1 };
 
-  // Ojo: intersección de dos círculos (forma de lente) con pupila central.
-  const dx = x - 0.5;
-  const dy = y - 0.5;
-  const rLente = 0.46;
-  const desplazamiento = 0.28;
-  const enLente =
-    dx ** 2 + (dy - desplazamiento) ** 2 < rLente ** 2 &&
-    dx ** 2 + (dy + desplazamiento) ** 2 < rLente ** 2;
-  if (enLente && dx ** 2 + dy ** 2 > 0.13 ** 2) return BLANCO;
-  return ACENTO;
+function enRectanguloRedondeado(x, y, { x: izquierda, y: arriba, ancho, alto, radio }) {
+  const cx = Math.min(Math.max(x, izquierda + radio), izquierda + ancho - radio);
+  const cy = Math.min(Math.max(y, arriba + radio), arriba + alto - radio);
+  return (x - cx) ** 2 + (y - cy) ** 2 <= radio ** 2;
 }
 
-function generarPng(tamano) {
+function enArco(x, y) {
+  const mitad = ARCO.grosor / 2;
+  if (y <= ARCO.cy) return Math.abs(Math.hypot(x - ARCO.cx, y - ARCO.cy) - ARCO.radio) <= mitad;
+  if (y > ARCO.finY) return false;
+  return Math.abs(Math.abs(x - ARCO.cx) - ARCO.radio) <= mitad;
+}
+
+/** Color del icono en coordenadas normalizadas [0, 1] o `null` si es transparente. */
+export function muestrear(xNormalizada, yNormalizada) {
+  const x = xNormalizada * 32;
+  const y = yNormalizada * 32;
+  if (!enRectanguloRedondeado(x, y, FONDO)) return null;
+  const enBocallave =
+    (x - BOCALLAVE.cx) ** 2 + (y - BOCALLAVE.cy) ** 2 <= BOCALLAVE.radio ** 2 || enRectanguloRedondeado(x, y, TALLO);
+  if (enRectanguloRedondeado(x, y, CUERPO)) return enBocallave ? ACENTO : BLANCO;
+  return enArco(x, y) ? BLANCO : ACENTO;
+}
+
+export function generarPng(tamano) {
   const filas = [];
   for (let y = 0; y < tamano; y++) {
     const fila = Buffer.alloc(1 + tamano * 4);
@@ -99,8 +121,16 @@ function generarPng(tamano) {
   ]);
 }
 
-mkdirSync(DESTINO, { recursive: true });
-for (const tamano of TAMANOS) {
-  writeFileSync(join(DESTINO, `${tamano}.png`), generarPng(tamano));
+export function generarIconos(destino = DESTINO) {
+  mkdirSync(destino, { recursive: true });
+  for (const tamano of TAMANOS) {
+    writeFileSync(join(destino, `${tamano}.png`), generarPng(tamano));
+  }
+  return destino;
 }
-console.log(`Iconos generados en ${DESTINO}`);
+
+// Solo escribe los archivos al ejecutarse directamente, no al importarse desde las pruebas.
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const destino = generarIconos(process.argv[2] ? resolve(process.argv[2]) : DESTINO);
+  console.log(`Iconos generados en ${destino}`);
+}

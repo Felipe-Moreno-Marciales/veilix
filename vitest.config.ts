@@ -1,12 +1,52 @@
+import { fileURLToPath } from 'node:url';
+import { playwright } from '@vitest/browser-playwright';
 import { defineConfig } from 'vitest/config';
 import { WxtVitest } from 'wxt/testing/vitest-plugin';
 
-// WxtVitest aplica la configuración de WXT y sustituye la API `browser`
-// por `fakeBrowser`, una implementación en memoria. https://wxt.dev/guide/essentials/unit-testing
+const src = fileURLToPath(new URL('./src', import.meta.url));
+
+/**
+ * Dos proyectos de pruebas:
+ * - `unidad`: Node y jsdom con WxtVitest, que sustituye la API `browser` por
+ *   `fakeBrowser`. https://wxt.dev/guide/essentials/unit-testing
+ * - `navegador`: Chromium, Firefox y WebKit sin interfaz (Playwright) para
+ *   comprobar el CSS real del motor de difuminado (`filter`, `:hover`, foco y
+ *   escritura) en los tres motores de renderizado. WebKit de Playwright NO es
+ *   Safari: comparte motor, pero no la integración de extensiones de Safari.
+ *   https://vitest.dev/guide/browser/
+ */
 export default defineConfig({
-  plugins: [WxtVitest()],
   test: {
-    include: ['tests/**/*.test.{ts,tsx}'],
-    restoreMocks: true,
+    projects: [
+      {
+        plugins: [WxtVitest()],
+        test: {
+          name: 'unidad',
+          include: ['tests/**/*.test.{ts,tsx}'],
+          exclude: ['tests/navegador/**'],
+          restoreMocks: true,
+        },
+      },
+      {
+        resolve: { alias: { '@': src } },
+        // React se preoptimiza para que Vite no recargue la prueba del crédito la primera vez.
+        optimizeDeps: { include: ['react', 'react-dom', 'react-dom/client', 'react/jsx-dev-runtime'] },
+        test: {
+          name: 'navegador',
+          include: ['tests/navegador/**/*.test.ts'],
+          restoreMocks: true,
+          // Con los tres motores en paralelo, WebKit puede tardar más de 1 s en
+          // aplicar :hover y la transición de revelado bajo carga de CPU.
+          expect: { poll: { timeout: 5000 } },
+          browser: {
+            enabled: true,
+            headless: true,
+            provider: playwright(),
+            instances: [{ browser: 'chromium' }, { browser: 'firefox' }, { browser: 'webkit' }],
+            screenshotFailures: false,
+          },
+        },
+      },
+    ],
   },
 });

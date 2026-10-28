@@ -25,10 +25,19 @@ describe('catálogo de funcionalidades', () => {
     }
   });
 
-  it('marca todas las funcionalidades como pendientes en la fase 1', () => {
-    for (const id of IDS_FUNCIONALIDADES) {
+  it('tiene disponibles solo las cinco funcionalidades de difuminado (fase 2)', () => {
+    const disponibles = IDS_FUNCIONALIDADES.filter((id) => estaDisponible(id));
+    expect(disponibles.sort()).toEqual(
+      [
+        'difuminarCampoEntrada',
+        'difuminarFotos',
+        'difuminarMensajesConversacion',
+        'difuminarMensajesRecientes',
+        'difuminarNombres',
+      ].sort(),
+    );
+    for (const id of ['ocultarEscritura', 'verEstadosPrivado', 'ocultarEnLinea', 'restaurarMensajesEliminados'] as const) {
       expect(obtenerDefinicion(id).estado).toBe('pendiente');
-      expect(estaDisponible(id)).toBe(false);
     }
   });
 

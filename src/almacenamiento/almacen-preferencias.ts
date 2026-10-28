@@ -17,39 +17,49 @@ export const CLAVE_PREFERENCIAS = 'local:preferencias';
 export const elementoPreferencias = storage.defineItem<Preferencias>(CLAVE_PREFERENCIAS, {
   fallback: PREFERENCIAS_PREDETERMINADAS,
   version: 1,
-});
+});     
 
 export async function leerPreferencias(): Promise<Preferencias> {
   return normalizarPreferencias(await elementoPreferencias.getValue());
 }
 
-async function guardarPreferencias(preferencias: Preferencias): Promise<Preferencias> {
-  const normalizadas = normalizarPreferencias(preferencias);
-  await elementoPreferencias.setValue(normalizadas);
-  return normalizadas;
+/** Cola que serializa las escrituras para que dos cambios seguidos no se pisen. */
+let colaEscrituras: Promise<unknown> = Promise.resolve();
+
+/**
+ * Lee, transforma y guarda las preferencias de forma atómica respecto a las
+ * demás escrituras de este contexto. Solo cambia lo que devuelve `transformar`.
+ */
+function modificarPreferencias(
+  transformar: (actuales: Preferencias) => Preferencias,
+): Promise<Preferencias> {
+  const operacion = colaEscrituras.then(async () => {
+    const normalizadas = normalizarPreferencias(transformar(await leerPreferencias()));
+    await elementoPreferencias.setValue(normalizadas);
+    return normalizadas;
+  });
+  colaEscrituras = operacion.catch(() => undefined);
+  return operacion;
 }
 
-export async function cambiarTema(tema: Tema): Promise<Preferencias> {
-  const actuales = await leerPreferencias();
-  return guardarPreferencias({ ...actuales, tema });
+export function cambiarTema(tema: Tema): Promise<Preferencias> {
+  return modificarPreferencias((actuales) => ({ ...actuales, tema }));
 }
 
 /**
  * Activa o desactiva una funcionalidad. Rechaza la operación si la
  * funcionalidad aún no está implementada.
  */
-export async function cambiarFuncionalidad(
-  id: IdFuncionalidad,
-  activa: boolean,
-): Promise<Preferencias> {
+export function cambiarFuncionalidad(id: IdFuncionalidad, activa: boolean): Promise<Preferencias> {
   if (!estaDisponible(id)) {
-    throw new Error(`La funcionalidad «${id}» está pendiente de implementación.`);
+    return Promise.reject(
+      new Error(`La funcionalidad «${id}» está pendiente de implementación.`),
+    );
   }
-  const actuales = await leerPreferencias();
-  return guardarPreferencias({
+  return modificarPreferencias((actuales) => ({
     ...actuales,
     funcionalidades: { ...actuales.funcionalidades, [id]: activa },
-  });
+  }));
 }
 
 /** Observa cambios de preferencias. Devuelve la función para dejar de observar. */
