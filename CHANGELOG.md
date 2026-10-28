@@ -2,7 +2,7 @@
 
 Todos los cambios relevantes de Veilix se registran en este archivo.
 
-El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el proyecto usa [versionado semántico](https://semver.org/lang/es/). Las versiones de prueba llevan el sufijo `-beta.N`. La correspondencia con `manifest.version` de cada navegador está en la sección [Versionado](README.md#versionado) del README.
+El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el proyecto usa [versionado semántico](https://semver.org/lang/es/). Las versiones de prueba llevan el sufijo `-beta.N`. La correspondencia con `manifest.version` de cada navegador está en la sección [Versionado](docs/desarrollo.md#versionado) de la documentación técnica. Desde el 28 de octubre de 2026, la documentación técnica que antes estaba en el `README.md` está en [`docs/desarrollo.md`](docs/desarrollo.md): las menciones al README de las entradas anteriores se refieren a ese contenido.
 
 Las versiones publicables aparecen como `## [versión]`. El historial de desarrollo anterior a la primera versión definitiva (`0.1.0`) se conserva íntegro, sin cambios de contenido, en la sección [Historial de desarrollo anterior a 0.1.0](#historial-de-desarrollo-anterior-a-010). Del mismo modo, las compilaciones internas de cada estable posterior se conservan en su propia sección, como [Compilaciones internas de 0.1.2](#compilaciones-internas-de-012) y [Compilaciones internas de 0.1.1](#compilaciones-internas-de-011).
 
@@ -67,7 +67,7 @@ Todo lo entregado de `0.1.2-beta.0` a `0.1.2-beta.13`, consolidado. El detalle d
 
 ### Validación
 
-- **Automatizada:** todas las verificaciones de `AGENTS.md` son correctas; los resultados están en el README.
+- **Automatizada:** todas las verificaciones de `AGENTS.md` son correctas; los resultados están en la documentación técnica ([`docs/desarrollo.md`](docs/desarrollo.md), «Versión 0.1.2»).
 - **Real en Google Chrome**, comunicada por el propietario (sistema operativo sin indicar):
   - **Confirmadas por elemento:**
     - autores de grupo (beta.1);
@@ -1077,7 +1077,7 @@ Todo lo desarrollado hasta `0.2.0-beta.8`, sin cambios de comportamiento:
   - Dependencias de producción: `react` y `react-dom`.
   - Todas las verificaciones automatizadas correctas.
 
-  El detalle está en la sección [Cierre de la Fase 2](README.md#cierre-de-la-fase-2) del README.
+  El detalle está en la sección [Cierre de la Fase 2](docs/desarrollo.md#cierre-de-la-fase-2) del README.
 
 ### Cambiado (versionado)
 
