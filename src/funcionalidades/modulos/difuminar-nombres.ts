@@ -29,6 +29,9 @@
  *   emojis), cada uno con un solo filtro y revelado por separado. Las
  *   etiquetas, los botones, el marcador de las notas y la foto (RF-02) quedan
  *   fuera. Solo CSS.
+ * - Panel flotante de una llamada (estructura confirmada, desde 0.1.3-beta.0):
+ *   el nombre del participante (`NOMBRE_LLAMADA`), nunca el panel entero ni sus
+ *   controles. Solo CSS.
  *
  * Revelado temporal: cursor sobre la fila, el mensaje, el encabezado o el dato
  * del panel, foco de teclado en ellos, o Ctrl + Mayús + Espacio.
@@ -48,8 +51,10 @@ import {
   FILA_MENSAJE,
   MENSAJE,
   NOMBRE_INFO_CONTACTO,
+  NOMBRE_LLAMADA,
   PANEL_CONVERSACION,
   TEXTO_ENCABEZADO,
+  TEXTO_NOMBRE_LLAMADA,
   TEXTO_VALOR_INFO_CONTACTO,
   USUARIO_INFO_CONTACTO,
   VALOR_INFO_CONTACTO,
@@ -90,6 +95,9 @@ export const moduloDifuminarNombres = crearModuloDifuminado({
     { contenedor: `${NOMBRE_INFO_CONTACTO}, ${USUARIO_INFO_CONTACTO}`, objetivo: null, revelarConFoco: true },
     // Teléfono y descripción: se difumina el texto del valor (con sus emojis) y se revela con el cursor sobre el valor.
     { contenedor: VALOR_INFO_CONTACTO, objetivo: TEXTO_VALOR_INFO_CONTACTO, revelarConFoco: true },
+    // Panel flotante de una llamada (desde 0.1.3-beta.0): el nombre (su span[dir="auto"] o, si no lo tiene, el propio contenedor).
+    { contenedor: NOMBRE_LLAMADA, objetivo: TEXTO_NOMBRE_LLAMADA, revelarConFoco: true },
+    { contenedor: `${NOMBRE_LLAMADA}:not(:has(span[dir="auto"]))`, objetivo: null, revelarConFoco: true },
   ],
   marcador: combinarMarcadores(
     crearMarcadorListaChats('nombre', ATRIBUTO_NOMBRE),
