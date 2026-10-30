@@ -175,7 +175,16 @@ const URL_EMOJI = FOTO;
  * `blob:` para la multimedia.
  */
 export interface MensajeObservado {
-  readonly tipo: 'texto' | 'foto' | 'fotoConDescripcion' | 'fotoSinDescargar' | 'video' | 'videoMiniatura' | 'documento';
+  readonly tipo: 'texto' | 'foto' | 'fotoConDescripcion' | 'fotoSinDescargar' | 'video' | 'videoMiniatura' | 'documento' | 'llamada';
+  /**
+   * Tarjeta de llamada (`tipo: 'llamada'`). OBSERVADA en WhatsApp Web real
+   * (diagnóstico sobre 0.1.2): una tarjeta interactiva con
+   * `[data-testid="call-log-system-message"]`, que contiene el icono
+   * (`call-log-icon-chip`), un `div` con el título, un `span` con el estado o
+   * la duración y `msg-meta`. SUPUESTOS: el anidamiento intermedio y que la
+   * tarjeta interactiva sea un `div[role="button"]`.
+   */
+  readonly llamada?: { readonly titulo: string; readonly detalle: string };
   /**
    * Documento adjunto (`tipo: 'documento'`). OBSERVADO en WhatsApp Web real
    * (diagnóstico sobre 0.1.2-beta.7, imágenes PNG y JPG enviadas como
@@ -786,6 +795,21 @@ export class WhatsAppSimulado {
         );
         break;
       }
+      case 'llamada': {
+        const { titulo, detalle } = mensaje.llamada ?? { titulo: 'Llamada de voz', detalle: 'Sin respuesta' };
+        const tarjeta = el(d, 'div', { role: 'button', tabindex: '0', 'data-prueba': 'tarjeta-llamada' },
+          el(d, 'div', { 'data-testid': 'call-log-system-message' },
+            el(d, 'div', { 'data-testid': 'call-log-icon-chip', 'data-prueba': 'icono-llamada' }, iconoSvg(d, 'wds-ic-call')),
+            el(d, 'div', {},
+              el(d, 'div', { 'data-prueba': 'titulo-llamada' }, titulo),
+              el(d, 'span', { 'data-prueba': 'detalle-llamada' }, detalle)),
+            el(d, 'div', { 'data-testid': 'msg-meta' }, el(d, 'span', { 'data-prueba': 'hora' }, hora))));
+        tarjeta.addEventListener('click', () => {
+          this.clics.set('Volver a llamar', (this.clics.get('Volver a llamar') ?? 0) + 1);
+        });
+        partes.push(tarjeta);
+        break;
+      }
       case 'video': {
         const video = el(d, 'video', { width: '200', height: '120', 'data-prueba': 'video' });
         partes.push(el(d, 'div', { 'data-prueba': 'multimedia' }, video, this.#botonContado('Reproducir', 'media-play')));
@@ -794,9 +818,10 @@ export class WhatsAppSimulado {
     }
 
     partes.push(
-      el(d, 'div', { 'data-testid': 'msg-meta' },
+      // En una tarjeta de llamada, msg-meta está dentro de la propia tarjeta.
+      ...(tipo === 'llamada' ? [] : [el(d, 'div', { 'data-testid': 'msg-meta' },
         el(d, 'span', { 'data-prueba': 'hora' }, hora),
-        ...(saliente ? [iconoLeido(d)] : [])),
+        ...(saliente ? [iconoLeido(d)] : []))]),
       this.#botonContado(`Reaccionar ${numero}`, 'react'),
       this.#botonContado(`Responder ${numero}`, 'reply'),
     );
@@ -1082,6 +1107,45 @@ export class WhatsAppSimulado {
         el(d, 'div', { class: 'copyable-area', 'data-testid': 'chat-info-drawer' }, cabecera, cuerpo))))));
     this.app.append(panel);
     return panel;
+  }
+
+  /**
+   * Panel flotante de una llamada en curso con la estructura OBSERVADA en
+   * WhatsApp Web real (diagnóstico sobre 0.1.2, llamada de voz): fuera de
+   * `#main`, `move_resize_component` › `voip-container-audio-call`, con el
+   * avatar, el nombre (`voip-call-participant-info-name` › `span[dir="auto"]`), el
+   * estado (`voip-call-participant-info-call-state-text`), la duración
+   * (`voip-call-timer`, `role="timer"`) y una barra de controles aparte.
+   * SUPUESTOS: el anidamiento intermedio, que el estado sea un `span`, el
+   * `role="toolbar"` de la barra y sus botones.
+   */
+  abrirPanelLlamada(datos: { readonly nombre: string; readonly estado?: string; readonly duracion?: string }): HTMLElement {
+    const d = this.documento;
+    this.cerrarPanelLlamada();
+    const boton = (etiqueta: string, nombreIcono: string) => {
+      const elemento = el(d, 'button', { type: 'button', 'aria-label': etiqueta, 'data-prueba': `control-${etiqueta}` }, iconoSvg(d, nombreIcono));
+      elemento.addEventListener('click', () => {
+        this.clics.set(etiqueta, (this.clics.get(etiqueta) ?? 0) + 1);
+        if (etiqueta === 'Colgar') this.cerrarPanelLlamada();
+      });
+      return elemento;
+    };
+    const panel = el(d, 'div', { 'data-testid': 'move_resize_component', 'data-prueba': 'panel-llamada', style: 'position: fixed; right: 16px; bottom: 16px; width: 320px' },
+      el(d, 'div', { 'data-testid': 'voip-container-audio-call' },
+        el(d, 'div', {}, el(d, 'img', { src: URL_FOTO_PERFIL, alt: '', width: '64', height: '64', 'data-prueba': 'avatar-llamada' })),
+        el(d, 'div', { 'data-testid': 'voip-call-participant-info-name', 'data-prueba': 'contenedor-nombre-llamada' },
+          el(d, 'span', { dir: 'auto', 'data-prueba': 'nombre-llamada' }, datos.nombre)),
+        el(d, 'div', { 'data-testid': 'voip-call-participant-info-call-state-text', 'data-prueba': 'estado-llamada' },
+          el(d, 'span', {}, datos.estado ?? 'Cifrada de extremo a extremo')),
+        el(d, 'span', { 'data-testid': 'voip-call-timer', role: 'timer', 'data-prueba': 'duracion-llamada' }, datos.duracion ?? '00:42')),
+      el(d, 'div', { role: 'toolbar', 'data-prueba': 'controles-llamada' },
+        boton('Silenciar', 'wds-ic-mic'), boton('Cámara', 'wds-ic-videocam'), boton('Colgar', 'wds-ic-call-end')));
+    this.app.append(panel);
+    return panel;
+  }
+
+  cerrarPanelLlamada(): void {
+    this.documento.querySelector('[data-prueba="panel-llamada"]')?.remove();
   }
 
   cerrarInfoContacto(): void {
@@ -1562,6 +1626,16 @@ export const MENSAJES_ENCABEZADOS_CITA: readonly MensajeObservado[] = [
   { tipo: 'texto', direccion: 'entrante', texto: 'Respuesta 3', citaConvencional: { encabezado: 'Luis', texto: 'Viaje · Estados', conAutor: false } },
   { tipo: 'texto', direccion: 'saliente', texto: 'Respuesta 4', citaConvencional: { encabezado: 'Ana · Estados', texto: 'Hola', conAutor: true } },
   { tipo: 'texto', direccion: 'entrante', texto: 'Respuesta 5', citaConvencional: { encabezado: 'Estados', texto: 'Hola', conAutor: false } },
+];
+
+/** Conversación con tarjetas de llamada (estados y duración) y, para comparar, un texto, una foto y un vídeo. */
+export const MENSAJES_LLAMADAS: readonly MensajeObservado[] = [
+  { tipo: 'llamada', direccion: 'entrante', llamada: { titulo: 'Llamada de voz perdida', detalle: 'Toca para volver a llamar' } },
+  { tipo: 'llamada', direccion: 'saliente', llamada: { titulo: 'Llamada de voz', detalle: 'Sin respuesta' } },
+  { tipo: 'llamada', direccion: 'saliente', llamada: { titulo: 'Llamada', detalle: 'Llamando…' } },
+  { tipo: 'llamada', direccion: 'entrante', llamada: { titulo: 'Videollamada', detalle: '12:05' } },
+  { tipo: 'texto', direccion: 'entrante', texto: 'Mensaje secreto' },
+  { tipo: 'foto', direccion: 'saliente' },
 ];
 
 export function montarWhatsAppConMensajesObservados(documento: Document = document): WhatsAppSimulado {
