@@ -554,3 +554,39 @@ export const TEXTO_VALOR_INFO_CONTACTO = [
   `:not(:is(${VALOR_INFO_CONTACTO}) :is(button, [role="button"]), :is(${VALOR_INFO_CONTACTO}) :is(button, [role="button"]) *)`,
 ].join('');
 
+/**
+ * Panel flotante de una llamada en curso (CONFIRMADO, Chrome, diagnóstico real
+ * sobre 0.1.2, llamada de voz): en la ventana principal, fuera de `#main`, en
+ * `[data-testid="move_resize_component"]` › `[data-testid="voip-container-audio-call"]`.
+ * Contiene el nombre (`voip-call-participant-info-name`, con un `span[dir="auto"]`),
+ * el estado (`voip-call-participant-info-call-state-text`) y la duración
+ * (`[data-testid="voip-call-timer"][role="timer"]`). Los controles están en una
+ * barra aparte, y el avatar ya lo difumina RF-02. Los `data-testid` son propios
+ * de las llamadas; no se acotan a `voip-container-audio-call` para no excluir
+ * variantes no observadas (vídeo, entrante). Nunca se difumina el panel entero.
+ */
+export const NOMBRE_LLAMADA = '[data-testid="voip-call-participant-info-name"]';
+/** Texto del nombre: el `span[dir="auto"]` más externo o, si no lo hay, el propio contenedor. */
+export const TEXTO_NOMBRE_LLAMADA = 'span[dir="auto"]:not(span[dir="auto"] span[dir="auto"])';
+const SIN_CONTROLES = ':not(:has(button, [role="button"]))';
+/** Estado y duración de la llamada (RF-04), salvo que contengan algún control. */
+export const DATOS_PANEL_LLAMADA = `:is([data-testid="voip-call-participant-info-call-state-text"], [data-testid="voip-call-timer"])${SIN_CONTROLES}`;
+
+/**
+ * Tarjeta de una llamada en la conversación (CONFIRMADO, Chrome, diagnóstico
+ * real sobre 0.1.2): dentro de `msg-container`, una tarjeta interactiva con
+ * `[data-testid="call-log-system-message"]`, que contiene el icono
+ * (`call-log-icon-chip`), un `div` con el título («Llamada»), un `span` con el
+ * estado o la duración y `msg-meta`. Se difuminan sus elementos de texto finales
+ * (sin hijos), en cualquier idioma, sin el icono, sin `msg-meta` (su hora ya
+ * tiene su propio filtro) y sin controles. La tarjeta no se difumina entera.
+ */
+const REGISTRO_LLAMADA = '[data-testid="call-log-system-message"]';
+export const TEXTO_REGISTRO_LLAMADA = [
+  `[data-testid="msg-container"] ${REGISTRO_LLAMADA} :is(div, span)`,
+  ':not(:has(*))',
+  ':not(button, [role="button"])',
+  `:not(:where(${REGISTRO_LLAMADA} :is([data-testid="call-log-icon-chip"], [data-testid="msg-meta"])) *)`,
+  ':not([data-testid="call-log-icon-chip"], [data-testid="msg-meta"])',
+].join('');
+
