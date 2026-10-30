@@ -61,6 +61,13 @@ const PAGINA_SIMULADA = `<!doctype html>
           el('div', { 'data-testid': 'sticker-container' }, el('div', { role: 'button', tabindex: '0' }, el('canvas', { width: '190', height: '190' }))),
           el('div', { 'data-testid': 'msg-meta' }, el('span', { 'data-prueba': 'hora-info' }, '10:40'))),
         el('div', { 'data-testid': 'kept-by-info' }, el('span', { 'data-prueba': 'estado-info' }, 'Leído')))));
+    // Panel flotante de una llamada con la estructura observada: nombre (RF-01), estado y duración (RF-04), y los controles aparte.
+    app.append(el('div', { 'data-testid': 'move_resize_component', style: 'position:fixed;right:0;bottom:0' },
+      el('div', { 'data-testid': 'voip-container-audio-call' },
+        el('div', { 'data-testid': 'voip-call-participant-info-name' }, el('span', { dir: 'auto', 'data-prueba': 'nombre-llamada' }, 'Marta Secreta')),
+        el('div', { 'data-testid': 'voip-call-participant-info-call-state-text', 'data-prueba': 'dato-llamada' }, 'Cifrada de extremo a extremo'),
+        el('span', { 'data-testid': 'voip-call-timer', role: 'timer', 'data-prueba': 'dato-llamada' }, '02:15')),
+      el('div', { role: 'toolbar', 'data-prueba': 'controles-llamada' }, el('button', { type: 'button', 'aria-label': 'Colgar' }, icono('wds-ic-call-end')))));
     // «Info. del contacto» con la estructura observada: nombre, usuario, teléfono (valor en el div hermano de la sección) y su etiqueta.
     app.append(el('div', { 'data-testid': 'drawer-right' },
       el('div', { 'data-testid': 'chat-info-drawer' },
@@ -88,6 +95,11 @@ const PAGINA_SIMULADA = `<!doctype html>
           el('div', { 'data-testid': 'video-content', style: 'position:relative;width:200px;height:120px' },
             el('div', { 'data-prueba': 'capa-video', style: 'position:absolute;inset:0;background-image:url(data:image/jpeg;base64,AAAA);filter:blur(8px)' }),
             el('div', { 'data-prueba': 'capa-video', style: 'position:absolute;inset:0;background-image:url(data:image/jpeg;base64,AAAA)' })),
+          // Tarjeta de llamada con la estructura observada: título y estado (RF-04), sin el icono.
+          el('div', { role: 'button', tabindex: '0', 'data-prueba': 'tarjeta-llamada' },
+            el('div', { 'data-testid': 'call-log-system-message' },
+              el('div', { 'data-testid': 'call-log-icon-chip', 'data-prueba': 'icono-llamada' }, icono('wds-ic-call')),
+              el('div', {}, el('div', { 'data-prueba': 'texto-llamada' }, 'Llamada de voz'), el('span', { 'data-prueba': 'texto-llamada' }, 'Sin respuesta')))),
           // Cita con miniatura con la estructura observada (respuesta a un estado, muy probablemente): fondo data:image/jpeg en quoted-message.
           el('div', { 'data-testid': 'quoted-message' },
             el('div', { role: 'button', tabindex: '0', 'data-prueba': 'boton-cita' },
@@ -312,6 +324,14 @@ try {
     (await whatsapp.$$eval('[data-prueba="dato-contacto"]', (datos) => datos.map((d) => getComputedStyle(d).filter).join())) === 'blur(6px),blur(6px),blur(6px)' &&
       (await filtro('[data-prueba="etiqueta-contacto"]')) === 'none',
     'difuminado en caliente: nombre, usuario y teléfono de «Info. del contacto», sin la etiqueta',
+  );
+  comprobar(
+    (await whatsapp.evaluate(() => getComputedStyle(document.querySelector('[data-prueba="nombre-llamada"]')).filter)) === 'blur(6px)' &&
+      (await whatsapp.$$eval('[data-prueba="dato-llamada"], [data-prueba="texto-llamada"]', (datos) => datos.map((d) => getComputedStyle(d).filter).join())) === 'blur(6px),blur(6px),blur(6px),blur(6px)' &&
+      (await filtro('[data-prueba="controles-llamada"] button')) === 'none' &&
+      (await filtro('[data-prueba="icono-llamada"]')) === 'none' &&
+      (await filtro('[data-prueba="tarjeta-llamada"]')) === 'none',
+    'difuminado en caliente: nombre, estado y duración de la llamada y textos de su tarjeta, sin controles, icono ni tarjeta',
   );
   comprobar((await filtro('[data-testid="drawer-right"] [data-testid="selectable-text"]')) === 'blur', 'difuminado en caliente: texto de «Info. del mensaje»');
   comprobar(
