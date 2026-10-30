@@ -46,6 +46,7 @@ import {
   MINIATURA_VIDEO,
   MULTIMEDIA_MENSAJE,
   TEXTO_MENSAJE,
+  TEXTO_REGISTRO_LLAMADA,
 } from './selectores';
 
 const EXPRESION_HORA = /^\d{1,2}[:.]\d{2}(?: ?[ap]\.? ?m\.?)?$/i;
@@ -86,7 +87,25 @@ export function ambitoDe(elemento: Element): Element | null {
   return elemento.closest(FILA_MENSAJE) ?? elemento.closest(MENSAJE);
 }
 
-const CONTENIDO_YA_DIFUMINADO = `:is(${TEXTO_MENSAJE}, ${MULTIMEDIA_MENSAJE}, ${MINIATURA_VIDEO}, ${DATOS_DOCUMENTO}, ${ETIQUETA_ICONO_DOCUMENTO}, ${MINIATURA_CITA})`;
+/**
+ * Contenido que ya se difumina por CSS. Se comprueba selector a selector, sin
+ * unirlos en un solo `:is()`: el selector combinado superaría el límite de
+ * longitud de algunos motores de selectores (el de jsdom admite 2048 caracteres).
+ */
+const CONTENIDO_YA_DIFUMINADO = [
+  TEXTO_MENSAJE,
+  MULTIMEDIA_MENSAJE,
+  MINIATURA_VIDEO,
+  DATOS_DOCUMENTO,
+  ETIQUETA_ICONO_DOCUMENTO,
+  MINIATURA_CITA,
+  TEXTO_REGISTRO_LLAMADA,
+];
+
+/** Si el elemento ya se difumina por CSS, por sí mismo o por estar dentro de un contenido difuminado. */
+function yaDifuminado(elemento: Element): boolean {
+  return CONTENIDO_YA_DIFUMINADO.some((selector) => elemento.closest(selector) !== null);
+}
 
 export interface ClasificacionMensaje {
   readonly horas: readonly Element[];
@@ -130,8 +149,7 @@ export function clasificarMensaje(ambito: Element): ClasificacionMensaje {
     (elemento) =>
       !dentroDeDuracion(elemento) &&
       !elemento.matches(MENSAJE) &&
-      !elemento.matches(CONTENIDO_YA_DIFUMINADO) &&
-      !elemento.closest(CONTENIDO_YA_DIFUMINADO) &&
+      !yaDifuminado(elemento) &&
       !(elemento instanceof SVGElement),
   );
 

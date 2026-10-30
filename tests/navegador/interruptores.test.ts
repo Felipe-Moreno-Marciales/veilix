@@ -34,6 +34,7 @@ const PROPIOS: Readonly<Record<Interruptor, readonly string[]>> = {
     '[data-prueba="nombre-observado"]',
     '[data-prueba="info-observada"]',
     '[data-prueba="nombre-info-contacto"], [data-prueba="usuario-info-contacto"], [data-prueba="telefono-info-contacto"], [data-prueba="descripcion-info-contacto"]',
+    '[data-prueba="nombre-llamada"]',
   ],
   difuminarFotos: [
     '#pane-side [data-prueba="avatar"] img',
@@ -41,6 +42,7 @@ const PROPIOS: Readonly<Record<Interruptor, readonly string[]>> = {
     '[data-prueba="avatar-grupo"]',
     '[data-prueba="avatar-columna"]',
     '[data-prueba="foto-info-contacto"]',
+    '[data-prueba="avatar-llamada"]',
   ],
   difuminarMensajesRecientes: ['#pane-side span[title] > span[dir="ltr"]'],
   difuminarMensajesConversacion: [
@@ -56,6 +58,7 @@ const PROPIOS: Readonly<Record<Interruptor, readonly string[]>> = {
     '#main [data-prueba="miniatura-cita"]',
     '#main [data-prueba="duracion-cita"]',
     '#main [data-prueba="encabezado-cita"]',
+    '[data-prueba="estado-llamada"], [data-prueba="duracion-llamada"], #main [data-prueba="titulo-llamada"], #main [data-prueba="detalle-llamada"]',
   ],
   difuminarCampoEntrada: ['#main footer [contenteditable="true"]'],
 };
@@ -113,6 +116,8 @@ describe('independencia de los cinco interruptores', () => {
     wa.abrirInfoMensaje({ sticker: 'animado' });
     wa.abrirNuevoChatObservado(['Ana', 'Luis', 'Eva', 'Sara']);
     wa.abrirInfoContacto({ nombre: 'Marta Secreta', usuario: '@marta', telefono: '+57 300 1234567', descripcion: 'Privado', emojis: 1 });
+    wa.abrirPanelLlamada({ nombre: 'Marta Secreta', duracion: '02:15' });
+    wa.agregarMensajeObservado({ tipo: 'llamada', direccion: 'entrante', llamada: { titulo: 'Llamada de voz', detalle: 'Sin respuesta' } });
     wa.agregarMensajeObservado({ tipo: 'videoMiniatura', direccion: 'entrante', miniaturaVideo: { orientacion: 'horizontal' } });
     wa.agregarMensajeObservado({ tipo: 'documento', direccion: 'entrante', documento: { nombre: 'captura-secreta.png', formato: 'PNG', tamano: '245 kB' } });
     wa.agregarMensajeObservado({ tipo: 'texto', direccion: 'entrante', texto: 'Respuesta secreta', citaConMiniatura: { encabezado: 'Tú · Estados', duracion: '0:18', texto: 'Hola!' } });

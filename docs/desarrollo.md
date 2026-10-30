@@ -8,14 +8,13 @@ Extensión de privacidad para WhatsApp Web, desarrollada de forma independiente.
 
 ## Estado
 
-Versión actual: **0.1.2**, estable preparada el 28 de octubre de 2026 y **aprobada por el propietario para el primer lanzamiento público** de Veilix. Está etiquetada como `v0.1.2` en `main` (commit `8672a99`, 28 de octubre de 2026). Todavía no está publicada en ninguna tienda.
-- **Qué reúne:** las correcciones de `0.1.2-beta.0` a `0.1.2-beta.13`, sin cambios de comportamiento respecto a beta.13 (congelación de funcionalidades).
-- **Validación:** el propietario comunicó que terminó la validación funcional de la serie beta en Google Chrome.
-- **Detalle:** el contenido, la evidencia y las limitaciones conocidas están en [Versión 0.1.2](#versión-012-estable-aprobada-para-el-primer-lanzamiento-público), y el historial completo, en [CHANGELOG.md](../CHANGELOG.md).
-- **Antecedente:** `0.1.1` es una estable preparada el 21 de octubre de 2026 durante el desarrollo.
-  - No consta que se aprobara ni que se publicara, y su aprobación no es un requisito para publicar `0.1.2`.
-  - Se conserva como antecedente; ver [Versión 0.1.1](#versión-011-estable-anterior-antecedente).
-- **Siguiente versión:** el desarrollo posterior al lanzamiento empezará en `0.1.3-beta.0` (`npm run version:beta`).
+Versión actual: **0.1.3**, estable preparada el 30 de octubre de 2026 a partir de `0.1.3-beta.0`, **aprobada por el propietario y elegida como primera versión del lanzamiento público** (solo Chrome y Edge). No está publicada ni etiquetada. No inicia la Fase 3.
+- **Qué añade:** la protección visual de las llamadas: el panel flotante de una llamada en curso y las tarjetas de llamada de la conversación. No cambia el comportamiento respecto a beta.0. Detalle en [Versión 0.1.3](#versión-013-estable-elegida-para-el-primer-lanzamiento-público).
+- **Validación:** el propietario confirmó en Google Chrome que las correcciones de las llamadas funcionan en las variantes observadas.
+- **Estable anterior:** `0.1.2`, aprobada el 28 de octubre para el primer lanzamiento y etiquetada como `v0.1.2` en `main` (commit `8672a99`). El 30 de octubre la sustituyó `0.1.3` para ese lanzamiento. Sus paquetes se conservan sin cambios y no se publican. Ver [Versión 0.1.2](#versión-012-estable-aprobada-para-el-primer-lanzamiento-público).
+- **Antecedente:** `0.1.1`, estable preparada el 21 de octubre de 2026 durante el desarrollo. No consta que se aprobara ni que se publicara; ver [Versión 0.1.1](#versión-011-estable-anterior-antecedente).
+- **Siguiente versión:** cualquier corrección posterior empezará en `0.1.4-beta.0` (`npm run version:beta`).
+- **Historial:** el completo está en [CHANGELOG.md](../CHANGELOG.md).
 
 Las secciones de cada corrección conservan el nombre de la beta en que se introdujo, por ejemplo [«Info. del contacto»](#panel-info-del-contacto-rf-01-desde-012-beta13) o [Miniaturas de vídeo](#miniaturas-de-vídeo-corrección-en-012-beta7).
 
@@ -23,6 +22,54 @@ Las secciones de cada corrección conservan el nombre de la beta en que se intro
 - **Fase 2: motor de difuminado.** **cerrada oficialmente el 28 de octubre de 2026**, con la aprobación expresa del propietario. Sus entregables técnicos están consolidados en la estable `0.1.2`. Historial: implementada y **validada funcionalmente en Google Chrome** por el propietario con `0.2.0-beta.8` (sistema operativo sin indicar). La versión final es `0.1.0` (renumeración aprobada), con el mismo comportamiento que `0.2.0-beta.8`. Después, en pruebas reales se detectaron nombres de remitentes de grupo y elementos de «Nuevo chat» sin proteger; `0.1.1-beta.0` los corrige, y `0.1.1` reúne esas correcciones como estable. Con `0.1.1-beta.3`, el propietario validó en Chrome la información secundaria de «Nuevo chat» y los remitentes en grupos, sin regresiones. Los entregables técnicos (RF-01 a RF-05, con el revelado temporal, el panel y las preferencias) se integraron y ampliaron en `0.1.2`. Ver [Cierre de la Fase 2](#cierre-de-la-fase-2).
 - **Ampliación multiplataforma.** Una sola base de código genera los paquetes de Chromium (Chrome, Brave, Opera y Vivaldi), Edge, Firefox y Safari. El motor de difuminado se prueba de forma automatizada en Chromium, Firefox y WebKit. **Fuera de Google Chrome no se ha hecho ninguna prueba real, y Safari no se ha ejecutado nunca** (requiere macOS).
 - **Fase 3:** no iniciada.
+
+## Versión 0.1.3 (estable, elegida para el primer lanzamiento público)
+
+Preparada el 30 de octubre de 2026 a partir de `0.1.3-beta.0` con `npm run version:estable`, sin cambios de comportamiento. Ese mismo día el propietario la aprobó y la eligió como primera versión del lanzamiento público. Manifiesto `0.1.3` en Chrome, Edge, Firefox y Safari, sin `version_name`. El panel muestra «Veilix 0.1.3». No está publicada ni etiquetada.
+
+### Contenido de 0.1.3
+
+| Interruptor | Novedades respecto a `0.1.2` |
+| --- | --- |
+| RF-01 · nombres e información personal | Nombre del participante en el panel flotante de una llamada |
+| RF-02 · fotografías y avatares | Sin cambios: el avatar de la llamada ya lo difuminaba la regla general de fotos de perfil |
+| RF-04 · contenido de los mensajes | Estado y duración del panel de la llamada, y textos de las tarjetas de llamada (título, estado y duración) |
+| RF-03 y RF-05 | Sin cambios |
+
+El panel entero, la barra de controles, la tarjeta interactiva y su icono nunca se difuminan. El detalle está en [Llamadas](#llamadas-rf-01-rf-02-y-rf-04-corrección-en-013-beta0).
+
+### Evidencia de 0.1.3, por tipo
+
+| Tipo | Alcance | Resultado |
+| --- | --- | --- |
+| Compilación | Chrome, Edge, Firefox y Safari | ✅ |
+| Pruebas simuladas | Chromium, Firefox y WebKit de Playwright | ✅ 897 de 897 (299 por motor) |
+| Extensión cargada (simulado) | Paquete de Chrome con la red bloqueada | ✅ |
+| Real en Google Chrome (propietario) | Llamada de voz en curso y tarjetas de llamada | ✅ Las correcciones funcionan en las variantes observadas (sin detalle por caso) |
+| Real en Edge, Firefox, Brave, Opera, Vivaldi y Safari | — | ⏳ Ninguna prueba real ([matriz](#matriz-de-compatibilidad)) |
+
+### Resultados automatizados (`0.1.3`)
+
+| Verificación | Resultado |
+| --- | --- |
+| `compile`, `lint` | Sin errores |
+| `npm test` | 236 de 236 (22 archivos) |
+| `test:navegador` | 897 de 897 (299 por motor en Chromium, Firefox y WebKit) |
+| `npm run build` (Chrome, Edge, Firefox y Safari) | Correcto; manifiesto `0.1.3` en los cuatro, sin `version_name`, solo `storage` |
+| `lint:firefox` | 0 errores; los 2 avisos conocidos `UNSAFE_VAR_ASSIGNMENT` de `react-dom` |
+| `test:extension` | Todas las comprobaciones correctas, también las de las llamadas, sin peticiones de red externas |
+| `version:comprobar` | Correcta: `0.1.2` → `0.1.3` |
+| `zip:*` (solo en local) | `veilix-0.1.3-{chrome,edge,firefox,safari}.zip` y `veilix-0.1.3-sources.zip` |
+
+- **Sin cambios funcionales:** el código de `src/`, `public/` y `wxt.config.ts` es byte a byte el de `0.1.3-beta.0`; solo cambia la versión de `package.json`.
+- **Distribución:** la prevista son solo los paquetes de Chrome y Edge, siguiendo [Publicación de Veilix](publicacion.md). Los de Firefox y Safari son técnicos, y el de fuentes es privado. La huella SHA-256 de los paquetes de Chrome y Edge, que son idénticos, es `97cabb6c68582812a110d169eab8ae54bd347e5b1fc65adea5883f278ba6165a`. `SHA256SUMS.txt` se genera al publicar, con el guion de ese procedimiento, que comprueba esa huella.
+- **Paquetes de `0.1.2`:** se conservan con las mismas huellas.
+
+### Limitaciones conocidas de 0.1.3
+
+- **Llamadas sin evidencia:** las entrantes (sonando), rechazadas, de vídeo y de grupo.
+- **Réplica de las pruebas:** el anidamiento intermedio del panel y de las tarjetas es una suposición.
+- **Resto:** siguen vigentes las [limitaciones de 0.1.2](#limitaciones-conocidas-de-012), salvo las llamadas.
 
 ## Versión 0.1.2 (estable, aprobada para el primer lanzamiento público)
 
@@ -354,10 +401,10 @@ npm run dev:firefox  # desarrollo en Firefox
 | `npm run build` | Compila para Chrome, Edge, Firefox y Safari. |
 | `npm run build:chrome` / `build:edge` / `build:firefox` / `build:safari` | Compila para un solo navegador. `build:chrome` sirve también para Brave, Opera y Vivaldi. |
 | `npm run lint:firefox` | Valida `.output/firefox-mv3` con `web-ext lint`. |
-| `npm run zip:<navegador>` | Genera el paquete `.zip` (`chrome`, `edge`, `firefox` o `safari`) con la versión en el nombre, por ejemplo `veilix-0.1.2-chrome.zip`. |
+| `npm run zip:<navegador>` | Genera el paquete `.zip` (`chrome`, `edge`, `firefox` o `safari`) con la versión en el nombre, por ejemplo `veilix-0.1.3-chrome.zip`. |
 | `npm run version:beta` | Siguiente versión previa: desde una estable inicia la beta del siguiente parche (`0.1.0` → `0.1.1-beta.0`), y desde una beta la incrementa (`0.1.1-beta.0` → `0.1.1-beta.1`). |
 | `npm run version:parche-beta` / `version:menor-beta` | Primera beta del siguiente parche (`0.2.1-beta.0`) o de la siguiente versión menor (`0.3.0-beta.0`). |
-| `npm run version:estable` | Convierte en estable la beta actual (`0.1.2-beta.13` → `0.1.2`). Ejecutar solo sobre una versión beta. |
+| `npm run version:estable` | Convierte en estable la beta actual (`0.1.3-beta.0` → `0.1.3`). Ejecutar solo sobre una versión beta. |
 | `npm run version:comprobar` | Falla si el código cambió respecto a `HEAD` (o a la referencia indicada) y la versión no, salvo una renumeración aprobada en `version-renumeraciones.json` para ese commit base. |
 
 Los resultados se generan en `.output/<navegador>-mv3/`.
@@ -1158,6 +1205,70 @@ El esquema solo indica qué hay dentro de la tarjeta. El orden y el anidamiento 
 - No se filtró ningún dato.
 - Distinguió cada dato personal de los textos genéricos y de los controles.
 
+### Llamadas (RF-01, RF-02 y RF-04, corrección en 0.1.3-beta.0)
+
+**Incidencia (Chrome, `0.1.2`):**
+- **Panel flotante de una llamada en curso:** el nombre del contacto, el avatar y la duración quedan visibles.
+- **Tarjetas de llamada de la conversación:** «Llamada», «Sin respuesta», «Llamando…», la duración y otros estados también.
+
+**Diagnóstico real** (Chrome, llamada de voz; ventana principal, sin marcos, con Veilix cargado):
+
+```text
+[data-testid="move_resize_component"]   (fuera de #main)
+  › [data-testid="voip-container-audio-call"]
+      ├── avatar                                         (ya difuminado por RF-02)
+      ├── [data-testid="voip-call-participant-info-name"] › span[dir="auto"]   (nombre)
+      ├── [data-testid="voip-call-participant-info-call-state-text"]           (estado)
+      └── [data-testid="voip-call-timer"][role="timer"]                        (duración)
+  barra de controles aparte (micrófono, cámara, colgar)
+
+[data-testid="msg-container"] › tarjeta interactiva
+  › [data-testid="call-log-system-message"]
+      ├── [data-testid="call-log-icon-chip"]   (icono)
+      ├── div   (título, como «Llamada»)
+      ├── span  (estado o duración)
+      └── [data-testid="msg-meta"]              (hora, ya difuminada por RF-04)
+```
+
+**Corrección** (`0.1.3-beta.0`):
+- **RF-01** (`NOMBRE_LLAMADA`): el nombre del panel.
+- **RF-04** (`DATOS_PANEL_LLAMADA`): el estado y la duración del panel.
+- **RF-04** (`TEXTO_REGISTRO_LLAMADA`): los textos finales de cada tarjeta (título, estado y duración), en cualquier idioma, sin el icono ni `msg-meta`.
+- **Lo que nunca se difumina:** el panel entero, la barra de controles, la tarjeta ni su icono.
+- **Cómo funciona:** solo CSS, cada interruptor por separado, con revelado por cursor y atajo.
+- **Sin evidencia:** las llamadas entrantes, rechazadas, de vídeo y de grupo.
+- **Validación real:** el propietario confirmó en Google Chrome que la corrección funciona en las variantes observadas, que son una llamada de voz en curso y tarjetas de llamada. Está incluida en la estable `0.1.3`.
+
+**Antes del diagnóstico** (`0.1.2`):
+- **Avatar:** si es una foto de `pps.whatsapp.net`, quizá ya lo difumine la regla general de RF-02.
+- **Dónde se ejecuta Veilix:** el script de contenido solo se inyecta en el marco principal de `https://web.whatsapp.com/*` (sin `all_frames` ni `match_about_blank`). Si WhatsApp muestra la llamada en un `iframe` o en otra ventana, Veilix no se ejecuta allí. El diagnóstico lo indica.
+- **Tarjetas de la conversación:** RF-04 solo difumina en los mensajes el texto `[data-pre-plain-text]` o `.selectable-text`, la multimedia y la hora de `msg-meta`. Si la tarjeta usa `span` propios, no la alcanza ninguna regla.
+
+**Pasos:**
+1. Con RF-01, RF-02 y RF-04 activadas, durante una llamada en curso con el panel flotante a la vista, abre la consola (F12), pega [`scripts/diagnostico-llamadas.js`](../scripts/diagnostico-llamadas.js) y pulsa Intro. Deja el cursor fuera del panel y no pulses ninguna tecla.
+2. Si la llamada se abre en una ventana aparte, repite en la consola de esa ventana.
+3. Repite con una conversación que tenga tarjetas de llamada a la vista: perdida, sin respuesta y finalizada con duración.
+4. Comparte el resumen, la tabla, el JSON y la estructura anonimizada de cada ejecución.
+
+**Qué muestra:**
+- **El contexto:** ventana principal, emergente o marco; si Veilix está cargado en ese documento; y los marcos de la página.
+- **El panel flotante:** lo localiza fuera de `#main` por indicios genéricos (textos de llamada de una lista cerrada, duraciones, iconos y `data-testid` de llamada) y por su posición fija o `role="dialog"`.
+- **Las tarjetas de llamada:** los mensajes de `#main` con esos indicios.
+- **El detalle:** el esqueleto anonimizado y una tabla de textos, imágenes y controles, con las reglas de RF-01, RF-02 y RF-04 que los alcanzan, las marcas de Veilix y el filtro.
+
+**Privacidad:**
+- Solo lee el DOM. No interactúa con la llamada.
+- No muestra nombres, teléfonos, duraciones, horas, `aria-label` ni la ruta completa de la página.
+- Solo muestra tal cual los textos genéricos de la interfaz de llamadas («Colgar», «Llamada de voz perdida»…).
+
+**Probado en Chromium** con un DOM inventado y datos secretos: un panel flotante con foto, nombre, duración y controles, dos tarjetas de llamada y un marco. Distinguió los datos personales de los textos genéricos y de los controles, y no filtró ningún dato.
+
+**Pruebas manuales en Chrome de `0.1.3-beta.0`** (solo el propietario puede marcarlas como superadas):
+- **Llamadas:** entrante, saliente, perdida, rechazada, sin respuesta, finalizada con duración y en curso; de voz y de vídeo.
+- **Controles:** contestar, rechazar, colgar, silenciar, cámara y opciones siguen funcionando, también con el teclado.
+- **Revelado:** el revelado temporal funciona y la protección se restaura después.
+- **Aparición:** el panel queda protegido al aparecer, sin recargar.
+
 ### Diagnóstico anonimizado de vídeos visibles
 
 **Qué cubre RF-04** (`MULTIMEDIA_MENSAJE` y `MINIATURA_VIDEO`):
@@ -1228,7 +1339,7 @@ WhatsApp Web solo muestra la interfaz de chats con una sesión iniciada, y desde
 
 ## Matriz de compatibilidad
 
-Estado de la versión `0.1.2`. Las columnas distinguen tres tipos de evidencia:
+Estado de la versión `0.1.3`. Las columnas distinguen tres tipos de evidencia:
 
 - **Compilación:** se genera un paquete válido para ese navegador.
 - **Pruebas simuladas:** pruebas automatizadas sobre un DOM que imita WhatsApp Web, ejecutadas en Linux (Codespaces y GitHub Actions).
@@ -1246,7 +1357,7 @@ Estado de la versión `0.1.2`. Las columnas distinguen tres tipos de evidencia:
 
 Leyenda: ✅ comprobado · ◐ evidencia indirecta (mismo motor de renderizado, otro navegador) · ❌ no realizado · ⏳ pendiente de prueba real · — no aplica.
 
-- **Motor de difuminado (simulado):** las 281 pruebas de `tests/navegador` en cada motor:
+- **Motor de difuminado (simulado):** las 299 pruebas de `tests/navegador` en cada motor:
 
   | Archivo | Pruebas |
   | --- | --- |
@@ -1269,6 +1380,7 @@ Leyenda: ✅ comprobado · ◐ evidencia indirecta (mismo motor de renderizado, 
   | Miniaturas y duraciones de citas (RF-04) | 18 |
   | Encabezado de los estados citados (RF-04) | 11 |
   | «Info. del contacto» (RF-01 y RF-02) | 16 |
+  | Llamadas (RF-01, RF-02 y RF-04) | 18 |
  Comprueban el CSS calculado, el revelado con cursor, Tab y atajo, la escritura, los clics y los cambios dinámicos.
 - **Extensión cargada (simulado):** `npm run test:extension`. Carga el paquete compilado, lo usa desde su panel real, bloquea la red y sirve una página simulada en `web.whatsapp.com`. Playwright solo puede cargar extensiones en Chromium.
 - **WebKit de Playwright no es Safari:** comparte el motor de renderizado, pero no la integración de extensiones de Safari (permisos por sitio, almacenamiento, ventana emergente), ni el sistema macOS ni la versión exacta de Safari.

@@ -4,11 +4,135 @@ Todos los cambios relevantes de Veilix se registran en este archivo.
 
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el proyecto usa [versionado semántico](https://semver.org/lang/es/). Las versiones de prueba llevan el sufijo `-beta.N`. La correspondencia con `manifest.version` de cada navegador está en la sección [Versionado](docs/desarrollo.md#versionado) de la documentación técnica. Desde el 28 de octubre de 2026, la documentación técnica que antes estaba en el `README.md` está en [`docs/desarrollo.md`](docs/desarrollo.md): las menciones al README de las entradas anteriores se refieren a ese contenido.
 
-Las versiones publicables aparecen como `## [versión]`. El historial de desarrollo anterior a la primera versión definitiva (`0.1.0`) se conserva íntegro, sin cambios de contenido, en la sección [Historial de desarrollo anterior a 0.1.0](#historial-de-desarrollo-anterior-a-010). Del mismo modo, las compilaciones internas de cada estable posterior se conservan en su propia sección, como [Compilaciones internas de 0.1.2](#compilaciones-internas-de-012) y [Compilaciones internas de 0.1.1](#compilaciones-internas-de-011).
+Las versiones publicables aparecen como `## [versión]`. El historial de desarrollo anterior a la primera versión definitiva (`0.1.0`) se conserva íntegro, sin cambios de contenido, en la sección [Historial de desarrollo anterior a 0.1.0](#historial-de-desarrollo-anterior-a-010). Del mismo modo, las compilaciones internas de cada estable posterior se conservan en su propia sección, como [Compilaciones internas de 0.1.3](#compilaciones-internas-de-013), [Compilaciones internas de 0.1.2](#compilaciones-internas-de-012) y [Compilaciones internas de 0.1.1](#compilaciones-internas-de-011).
 
 Cada entrega de prueba con cambios en el código recibe una versión nueva. Volver a compilar el mismo código no cambia la versión.
 
 ## [Sin publicar]
+
+## [0.1.3] — 2026-10-30
+
+**Versión estable aprobada por el propietario y seleccionada como primera versión del lanzamiento público de Veilix** (30 de octubre de 2026), preparada a partir de `0.1.3-beta.0`. No está publicada ni etiquetada. Congelación de funcionalidades: no incluye ningún cambio de comportamiento respecto a `0.1.3-beta.0`. No inicia la Fase 3.
+
+Manifiesto: `0.1.3` en Chrome, Edge, Firefox y Safari (sin `version_name`). Panel: «Veilix 0.1.3». Paquetes: `veilix-0.1.3-{chrome,edge,firefox,safari}.zip` y `veilix-0.1.3-sources.zip`.
+
+### Incluye
+
+Lo entregado en `0.1.3-beta.0`; el detalle está en [Compilaciones internas de 0.1.3](#compilaciones-internas-de-013).
+
+- **Llamadas:** protección visual del panel flotante de una llamada en curso y de las tarjetas de llamada de la conversación.
+  - **RF-01:** el nombre del participante del panel (`voip-call-participant-info-name`).
+  - **RF-02:** el avatar del panel, ya cubierto por la regla general de fotos de perfil, con un único filtro.
+  - **RF-04:** el estado y la duración del panel (`voip-call-participant-info-call-state-text`, `voip-call-timer`) y los textos de las tarjetas (`call-log-system-message`: título, estado y duración, en cualquier idioma).
+  - **Lo que nunca se difumina:** el panel entero, la barra de controles, la tarjeta interactiva y su icono.
+- **Interno:** el marcador de mensajes comprueba el contenido ya difuminado selector a selector, por el límite de longitud de selectores de jsdom. El resultado es el mismo.
+- **Diagnóstico:** `scripts/diagnostico-llamadas.js`, que no se incluye en los paquetes.
+- **Sin cambios en:** RF-03, RF-05, el resto de RF-01, RF-02 y RF-04, los permisos (solo `storage`), el almacenamiento, el panel de Veilix y la identidad visual.
+
+### Cambiado (versionado)
+
+- Se pasa de `0.1.3-beta.0` a `0.1.3` con `npm run version:estable`.
+- La compilación interna `0.1.3.2000` queda numéricamente por encima de `0.1.3`. Es la consecuencia aceptada en la renumeración de `0.1.0`: no afecta a las tiendas, porque las betas nunca se suben.
+- **Commit de la beta:** `0.1.3-beta.0` no llegó a confirmarse en Git por separado, así que su código entra con esta estable.
+- Cualquier corrección posterior empieza en `0.1.4-beta.0` (`npm run version:beta`) y no reutiliza `0.1.3`.
+
+### Validación
+
+- **Real en Google Chrome**, comunicada por el propietario (sistema operativo sin indicar): las correcciones de las llamadas funcionan en las variantes observadas.
+  - Las variantes observadas son una llamada de voz en curso y tarjetas de llamada de la conversación.
+  - No consta el detalle por caso.
+- **Automatizada:** todas las verificaciones de `AGENTS.md` son correctas; los resultados están en la documentación técnica ([`docs/desarrollo.md`](docs/desarrollo.md), «Versión 0.1.3»).
+- **Sin prueba real** en Edge, Firefox, Brave, Opera, Vivaldi ni Safari.
+
+### Aprobación
+
+- **Primer lanzamiento público:** el 30 de octubre de 2026, el propietario aprobó técnicamente `0.1.3` y la eligió como primera versión del lanzamiento público, en lugar de `0.1.2`. La publicación todavía no se ha hecho.
+
+### Distribución
+
+- **Prevista:** solo los paquetes de Chrome y Edge, siguiendo [`docs/publicacion.md`](docs/publicacion.md).
+- **Huella SHA-256 de los paquetes de Chrome y Edge**, que son idénticos: `97cabb6c68582812a110d169eab8ae54bd347e5b1fc65adea5883f278ba6165a`.
+- **No autorizados para publicar:** los de Firefox y Safari, que son técnicos.
+- **Privado:** el de fuentes. Nunca se publica.
+
+### Limitaciones conocidas
+
+- **Llamadas:**
+  - Las entrantes (sonando), rechazadas, de vídeo y de grupo no tienen evidencia.
+  - El anidamiento intermedio del panel y de las tarjetas es una suposición de las pruebas.
+- **Resto:** las limitaciones de [0.1.2] siguen vigentes, salvo las llamadas, que se corrigen aquí.
+
+## Compilaciones internas de 0.1.3
+
+Compilación interna de prueba `0.1.3-beta.0`, conservada tal como se registró. No se publicó. Su contenido está consolidado en [0.1.3]. Va con un nivel de encabezado menos porque su manifiesto (`0.1.3.2000`) es mayor que el de la estable `0.1.3`: la lista de versiones `## [...]` solo recoge las estables, en orden creciente de manifiesto.
+
+### [0.1.3-beta.0] — 2026-10-30
+
+Compilación interna de prueba sobre la estable `0.1.2`. Manifiesto: `0.1.3.2000` en Chromium y Firefox (`version_name` `0.1.3-beta.0` en Chromium), y `0.1.3` en Safari. Corrección de privacidad de las llamadas, autorizada por el propietario. No inicia administrativamente la Fase 3, y los paquetes de `0.1.2` no cambian.
+
+#### Corregido
+
+- **Llamadas (RF-01 y RF-04):** con `0.1.2` quedaban visibles el nombre y la duración del panel flotante de una llamada en curso, y el contenido de las tarjetas de llamada de la conversación.
+  - **Estructura confirmada** por el diagnóstico real (`scripts/diagnostico-llamadas.js`, Chrome, llamada de voz):
+    - **Dónde está el panel:** en la ventana principal, sin marcos, con Veilix cargado y fuera de `#main`.
+    - **Qué contiene el panel:** `[data-testid="move_resize_component"]` › `[data-testid="voip-container-audio-call"]`, con el nombre (`voip-call-participant-info-name` › `span[dir="auto"]`), el estado (`voip-call-participant-info-call-state-text`) y la duración (`[data-testid="voip-call-timer"][role="timer"]`). Los controles están en una barra aparte.
+    - **Tarjetas:** dentro de `msg-container`, una tarjeta interactiva con `[data-testid="call-log-system-message"]`, que contiene el icono (`call-log-icon-chip`), un `div` con el título, un `span` con el estado o la duración y `msg-meta`.
+    - **Ya protegidos:** el avatar (RF-02) y la hora de las tarjetas (RF-04).
+  - **Corrección:**
+    - **RF-01** (`NOMBRE_LLAMADA`, `TEXTO_NOMBRE_LLAMADA`): el nombre del panel, es decir, su `span[dir="auto"]` o, si no lo tiene, el propio contenedor.
+    - **RF-04, panel** (`DATOS_PANEL_LLAMADA`): el estado y la duración, cada uno con su revelado, salvo que contengan algún control.
+    - **RF-04, tarjetas** (`TEXTO_REGISTRO_LLAMADA`): sus elementos de texto finales (título, estado y duración), reconocidos por la estructura y no por el texto, así que sirve en cualquier idioma. Se excluyen el icono, `msg-meta` (su hora mantiene su único filtro) y los controles.
+    - **Sin cambios en RF-02:** el avatar ya se difuminaba con un único filtro.
+  - **Lo que nunca se difumina:** el panel entero, la barra de controles, sus botones, la tarjeta interactiva ni su icono. Colgar, silenciar, la cámara y volver a llamar siguen funcionando.
+  - **Revelado:** el cursor sobre un dato del panel lo revela solo a él, el cursor sobre una tarjeta revela sus textos, y el atajo los revela todos.
+  - **Implementación:** solo CSS. Sin observadores nuevos y sin cambios de permisos ni del manifiesto.
+  - **Sin evidencia:** las llamadas entrantes (sonando), rechazadas, de vídeo y de grupo.
+  - Pendiente de validación real.
+
+#### Cambiado (interno)
+
+- **Marcador de mensajes:** comprueba el contenido ya difuminado selector a selector (`yaDifuminado`), en lugar de unir todos los selectores en un solo `:is()`.
+  - **Por qué:** con el selector de las tarjetas de llamada, el combinado superaba los 2048 caracteres que admite el motor de selectores de jsdom, y fallaban 12 pruebas unitarias.
+  - **Resultado:** el mismo que antes; los navegadores no tienen ese límite.
+
+#### Añadido (pruebas)
+
+- `tests/navegador/llamadas.test.ts`, en Chromium, Firefox y WebKit (18 pruebas por motor):
+  - **Qué difumina cada interruptor:**
+    - RF-01, solo el nombre (también sin `span[dir="auto"]`);
+    - RF-02, solo el avatar, con un único filtro;
+    - RF-04, el estado y la duración del panel y los textos de las tarjetas, en cualquier idioma.
+  - **Lo que no cambia:** la hora de las tarjetas, con su único filtro, y el icono, sin difuminar.
+  - **Controles:** el panel, la barra de controles, los botones y la tarjeta no se difuminan. Silenciar, cámara, volver a llamar y colgar siguen funcionando.
+  - **Interruptores:** un único filtro por dato con los cinco activos, y cada uno se desactiva sin afectar a los otros.
+  - **Revelado:** con el cursor y con el atajo.
+  - **Cambios dinámicos y limpieza:** el panel aparece, se cierra y se vuelve a abrir, y la duración avanza. Al desactivar todo se restaura sin estilos ni marcas, sin regresiones en los demás mensajes.
+
+  Sin las reglas nuevas fallan 10 de las 18.
+- `tests/difuminado/selectores-llamadas.test.ts`: cada selector elige exactamente su elemento. Nunca elige un contenedor con controles ni nada fuera de una tarjeta de un mensaje.
+- `tests/navegador/interruptores.test.ts` y `npm run test:extension`: las llamadas forman parte de lo que protegen RF-01, RF-02 y RF-04.
+- `tests/apoyo/whatsapp-simulado.ts`: tipo `llamada`, `abrirPanelLlamada`, `cerrarPanelLlamada` y `MENSAJES_LLAMADAS`.
+
+#### En investigación (antes de `0.1.3-beta.0`)
+
+- **Llamadas (RF-01, RF-02 y RF-04):** el propietario comunicó que, con `0.1.2`, siguen visibles dos cosas:
+  - en el panel flotante de una llamada en curso, el nombre del contacto, el avatar y la duración;
+  - en las tarjetas de llamada de la conversación, «Llamada», «Sin respuesta», «Llamando…», la duración y otros estados.
+
+  No hay evidencia del DOM de las llamadas, así que no se ha cambiado ningún selector.
+  - **Dato relevante:** el script de contenido solo se inyecta en el marco principal de `https://web.whatsapp.com/*`, sin `all_frames` ni `match_about_blank`. Si la llamada está en un `iframe` o en otra ventana, Veilix no se ejecuta allí.
+  - **Versión:** la corrección empezará en `0.1.3-beta.0`, sin cambiar los paquetes congelados de `0.1.2`.
+
+#### Añadido (diagnóstico)
+
+- `scripts/diagnostico-llamadas.js`:
+  - **Contexto:** ventana principal, emergente o marco; si Veilix está cargado en ese documento; y los marcos de la página.
+  - **Panel flotante:** lo localiza fuera de `#main` por indicios genéricos (textos de llamada de una lista cerrada, duraciones, iconos y `data-testid` de llamada) y por su posición fija o `role="dialog"`.
+  - **Tarjetas de llamada:** las localiza en los mensajes de `#main` con los mismos indicios.
+  - **Salida:** el esqueleto anonimizado y una tabla de textos, imágenes y controles, con las reglas de RF-01, RF-02 y RF-04 que los alcanzan y el filtro.
+  - **Privacidad:** no muestra nombres, teléfonos, duraciones, horas, `aria-label` ni la ruta completa de la página.
+  - Probado en Chromium con un DOM inventado y datos secretos: no se filtró ningún dato.
+- `scripts/diagnostico-llamadas.js` comprueba también las reglas nuevas.
 
 ## [0.1.2] — 2026-10-28
 
@@ -56,6 +180,7 @@ Todo lo entregado de `0.1.2-beta.0` a `0.1.2-beta.13`, consolidado. El detalle d
 ### Aprobación
 
 - **Primer lanzamiento público:** el 28 de octubre de 2026, el propietario aprobó `0.1.2` como la estable del primer lanzamiento público. La publicación todavía no se ha hecho.
+  - **Nota (30 de octubre de 2026):** el propietario eligió después [0.1.3] como primera versión del lanzamiento público. `0.1.2` se conserva como estable etiquetada, con sus paquetes, y no se publica.
 - **Etiqueta:** ese mismo día se creó la etiqueta anotada `v0.1.2` sobre el commit `8672a99` de `main` (fusión del Pull Request #2), con la autorización del propietario. Marca el código exacto de esta estable. No creó ninguna Release.
 - **Fase 2:** el mismo día, el propietario aprobó expresamente su cierre oficial. Sus entregables técnicos (RF-01 a RF-05, revelado temporal, panel, preferencias y aplicación en caliente) están consolidados en esta versión. El cierre no implica que se hayan validado todas las variantes de WhatsApp Web ni todos los navegadores; ver «Limitaciones conocidas».
 - **Siguiente versión prevista:** `0.1.3-beta.0`, todavía no iniciada.
@@ -1295,6 +1420,7 @@ Manifiesto: `0.2.0.2002` en Chromium y Firefox, y `0.2.0` en Safari.
 - ESLint, Vitest e integración continua.
 
 [Sin publicar]: #sin-publicar
+[0.1.3]: #013--2026-10-30
 [0.1.2]: #012--2026-10-28
 [0.1.2-beta.5]: #012-beta5--2026-10-27
 [0.1.2-beta.4]: #012-beta4--2026-10-26
