@@ -22,6 +22,11 @@
  *   («Tú · Estados»), reconocido por su estructura confirmada y, como
  *   criterio complementario, por la forma de su texto (español e inglés).
  *   Solo el `span`: la barra de color y la cita no cambian.
+ * - Con CSS (desde 0.1.3-beta.0, estructura confirmada): en las tarjetas de
+ *   llamada (`call-log-system-message`), sus textos (título, estado y
+ *   duración), sin el icono ni `msg-meta`; y en el panel flotante de una
+ *   llamada, el estado y la duración (`DATOS_PANEL_LLAMADA`), nunca la barra de
+ *   controles. El nombre del panel es de RF-01 y el avatar, de RF-02.
  * - Con un marcador (`marcador-mensajes.ts`): la hora y las reacciones, que no
  *   pueden seleccionarse solo con CSS.
  * - Con el mismo marcador: el indicador de estado de los mensajes enviados
@@ -50,11 +55,13 @@ import { crearModuloDifuminado } from '@/nucleo/difuminado/modulo-difuminado';
 import {
   CITA_RESPUESTA,
   CONTENIDO_MENSAJE,
+  DATOS_PANEL_LLAMADA,
   FILA_MENSAJE,
   MENSAJE,
   MENSAJE_INFO,
   TEXTO_CITA_RESPUESTA,
   TEXTO_MENSAJE_INFO,
+  TEXTO_REGISTRO_LLAMADA,
   VISUAL_STICKER_INFO,
 } from '@/nucleo/difuminado/selectores';
 
@@ -73,6 +80,8 @@ export const moduloDifuminarMensajesConversacion = crearModuloDifuminado({
       objetivo: [
         // Lo que está dentro de la duración de una cita se difumina con ella, con un solo filtro.
         `:is(${CONTENIDO_MENSAJE}):not([${ATRIBUTO_DURACION_CITA}] *)`,
+        // Tarjetas de llamada (desde 0.1.3-beta.0): título, estado y duración, sin el icono ni msg-meta.
+        TEXTO_REGISTRO_LLAMADA,
         `[${ATRIBUTO_DURACION_CITA}]`,
         `[${ATRIBUTO_ENCABEZADO_ESTADO}]`,
         `[${ATRIBUTO_HORA_MENSAJE}]`,
@@ -84,6 +93,8 @@ export const moduloDifuminarMensajesConversacion = crearModuloDifuminado({
     { contenedor: CITA_RESPUESTA, objetivo: TEXTO_CITA_RESPUESTA, revelarConFoco: true },
     // «Info. del mensaje» (fuera de `#main`): solo el texto de la copia del mensaje.
     { contenedor: MENSAJE_INFO, objetivo: TEXTO_MENSAJE_INFO, revelarConFoco: true },
+    // Panel flotante de una llamada (desde 0.1.3-beta.0): estado y duración, cada uno con su revelado; nunca los controles.
+    { contenedor: DATOS_PANEL_LLAMADA, objetivo: null, revelarConFoco: true },
     // «Info. del mensaje»: stickers de la copia del mensaje (canvas e img de blob:), con el mismo revelado.
     { contenedor: MENSAJE_INFO, objetivo: VISUAL_STICKER_INFO, revelarConFoco: true },
   ],
