@@ -10,6 +10,115 @@ Cada entrega de prueba con cambios en el código recibe una versión nueva. Volv
 
 ## [Sin publicar]
 
+## [0.1.4-beta.1] — 2026-11-09
+
+Compilación interna de prueba sobre `0.1.4-beta.0`. Manifiesto: `0.1.4.2001` en Chromium y Firefox (`version_name` `0.1.4-beta.1` en Chromium), y `0.1.4` en Safari. Corrección de privacidad de las etiquetas de miembro, autorizada por el propietario. No inicia formalmente la Fase 3, y los paquetes de `0.1.3` no cambian.
+
+### Corregido
+
+- **Etiquetas de miembro (RF-01):** en los grupos, la etiqueta de miembro («Member Tag»: apodo, rol o descripción que el grupo asigna a un participante) quedaba visible junto al autor de sus mensajes con `0.1.4-beta.0`, aunque el nombre y el mensaje se difuminaban.
+  - **Estructura confirmada** por tres ejecuciones reales en Chrome:
+    - `scripts/diagnostico-etiquetas-miembro.js` y su sección focalizada;
+    - `scripts/inspeccion-etiqueta-miembro.js`, sobre la etiqueta elegida en DevTools. El propietario comprobó visualmente que el único elemento de la variante V5 (`V5-1`) era el apodo.
+
+    La etiqueta es un `span` con texto, sin hijos, único hijo de un `div[role="button"][tabindex="0"]` sin `data-testid`, imágenes ni iconos. Está en la rama hermana inmediatamente posterior a la que contiene al autor, separada del autor, la cita, la hora y el cuerpo.
+  - **Causa:** RF-01 difumina el nombre por `[data-testid="author"]`, y RF-04, el cuerpo. La etiqueta es un elemento aparte, en su propio control, y ninguna regla la alcanzaba.
+  - **Corrección** (`ETIQUETA_MIEMBRO`): la variante V5 con una restricción añadida, coherente con la evidencia: la rama de la etiqueta no puede contener el autor, el cuerpo, una cita ni la hora.
+    - No usa la longitud, el texto, el idioma, las clases ni el `style` en línea.
+    - Se difumina solo el `span`, con un único filtro, en la misma regla que el autor. Se revela con el mensaje (cursor o foco de teclado dentro) y con el atajo.
+  - **Lo que nunca se difumina:** el control de la etiqueta (sigue recibiendo clics y foco), la cabecera, el autor (mantiene su propio filtro) y los controles de forma parecida que no siguen inmediatamente a la rama del autor o que comparten rama con el cuerpo, como «Leer más».
+  - **Implementación:** solo CSS, en RF-01. Sin observadores, marcas, permisos ni cambios del manifiesto. Sin cambios en RF-02 ni RF-04.
+  - **Sin evidencia:** las etiquetas en citas, en «Info. del grupo», en la lista de participantes, en mensajes propios y en el recuadro «Responder»; y una etiqueta formada solo por emojis, que RF-04 podría reconocer además como reacción. Pendiente de validación real.
+
+### Cambiado
+
+- **Descripción de RF-01 en el panel:** menciona las etiquetas de miembro de los remitentes de grupo.
+
+### Añadido (diagnóstico)
+
+- `scripts/diagnostico-etiquetas-miembro.js`: diagnóstico anonimizado de las etiquetas de miembro.
+  - **Qué hace:** clasifica cada texto de los mensajes por zona (autor, cuerpo, hora, cita u OTRO) y da la relación de los textos OTRO con el autor y el cuerpo, las reglas de Veilix que los alcanzan y los filtros dobles.
+  - **Otras zonas:** revisa también el recuadro «Responder» y el panel derecho.
+  - **Revelado:** lo mide con una segunda pasada, con el cursor sobre el mensaje.
+  - **Sección focalizada:** la cadena de antecesores de cada candidato, su control, su firma, la unidad mínima, el selector exacto de las hojas de Veilix y el detalle de los filtros dobles. Incluye una marca temporal en pantalla (`data-veilix-diagnostico-candidato`), que se retira sola a los 60 segundos.
+- `scripts/inspeccion-etiqueta-miembro.js`: inspección puntual con DevTools de la etiqueta elegida a mano (`$0`).
+  - **Qué muestra:** la cadena hasta `msg-container`, con sus hermanos, y la relación con las ramas del autor y del cuerpo.
+  - **Colisiones:** las mide en la conversación real para cada variante de selector (V1 a V5) y las marca en pantalla durante 60 segundos.
+  - En un DOM inventado, V1 a V4 también alcanzan un «Leer más» y una reacción; V5, solo etiquetas.
+- Ninguno de los dos se incluye en los paquetes.
+
+### Registrado (hallazgo independiente)
+
+- **Filtro doble en el autor de una cita:** lo producen RF-01, sobre el autor, y RF-04, sobre un antecesor. No se corrige porque no se ha demostrado que cause una regresión. Pendiente: en qué tipo de cita ocurre, y si con RF-01 desactivado el autor de la cita sigue difuminado por RF-04.
+
+### Añadido (pruebas)
+
+- `tests/navegador/etiquetas-miembro.test.ts`, en Chromium, Firefox y WebKit (15 pruebas por motor):
+  - **Casos:** tres etiquetas tras autores de distinto tipo (botón, `span`, no guardado) y un mensaje consecutivo sin autor.
+  - **Casos negativos:** un «Leer más» de la misma forma en la rama del cuerpo, una reacción de la misma forma tras el cuerpo y una cita.
+  - **Filtros:** un único filtro en el `span` de cada etiqueta. El autor, el cuerpo y el avatar mantienen el suyo, y no se difuminan el control, la cabecera ni los controles parecidos. La reacción parecida solo la difumina RF-04, como reacción.
+  - **Independencia:** de RF-02 y RF-04, y desactivación sin recargar.
+  - **Revelado:** con el cursor sobre el mensaje (solo el suyo), el atajo y el foco de teclado en el control, que sigue recibiendo clics.
+  - **Cambios dinámicos:** mensajes nuevos y cambio de grupo sin marcas. Al desactivar todo se restaura sin estilos ni marcas.
+
+  Sin la regla nueva fallan 7 de las 15.
+- `tests/difuminado/selectores-etiqueta-miembro.test.ts` (8 pruebas):
+  - **Qué elige:** solo el `span` de cada etiqueta, nunca el control, la cabecera ni el autor.
+  - **Qué rechaza:** controles parecidos en la rama del cuerpo, fuera de la rama inmediata, con icono, imagen, `data-testid`, dos textos u otro elemento dentro, o dentro de una cita; y ramas que contienen el cuerpo o la hora.
+  - **Sin coincidencias** en ningún conjunto de mensajes ya simulado: citas, documentos, llamadas, autores y avatares.
+- `tests/navegador/interruptores.test.ts` y `npm run test:extension`: la etiqueta forma parte de lo que protege RF-01. La verificación de extremo a extremo la comprueba en un mensaje que aparece después, junto a un «Leer más» de la misma forma.
+- `tests/apoyo/whatsapp-simulado.ts`: `etiquetaMiembro` en `MensajeObservado`.
+
+## [0.1.4-beta.0] — 2026-11-09
+
+Compilación interna de prueba sobre la estable `0.1.3`. Manifiesto: `0.1.4.2000` en Chromium y Firefox (`version_name` `0.1.4-beta.0` en Chromium), y `0.1.4` en Safari. Corrección de privacidad de las sugerencias de menciones, autorizada por el propietario. No inicia formalmente la Fase 3, y los paquetes de `0.1.3` no cambian.
+
+### Corregido
+
+- **Sugerencias de menciones (RF-01):** al escribir `@` en un grupo con `0.1.3`, los nombres de los participantes de la lista quedaban visibles. Los avatares sí se difuminaban con RF-02.
+  - **Estructura confirmada** por el diagnóstico real (`scripts/diagnostico-menciones.js`, Chrome, cuatro filas: «todos» y tres participantes):
+    - **Dónde está:** fuera de `#main`, con Veilix cargado, sin filtros dobles ni controles difuminados.
+    - **Cada participante:** `button` › `[data-testid="contact-mention-list-item"]`, con el avatar (`img`), el nombre en `[data-testid="mention-primary"]` › `span[dir="auto"]` y `[data-testid="mention-secondary"]`, sin texto observado.
+    - **La opción «todos»:** `[data-testid="mention-all-list-item"]`, con «todos» y una descripción genérica.
+    - **El editor:** usa `aria-autocomplete`, `aria-owns` y `aria-activedescendant`.
+  - **Causa:** RF-01 solo difumina nombres en zonas concretas, y ninguna de sus reglas alcanzaba esta lista. La regla genérica de filas de contacto, que es una hipótesis, exige un rol de fila y un avatar SVG, y aquí la fila es un `button` con un avatar `img`.
+  - **Corrección:**
+    - **Fila** (`FILA_MENCION_CONTACTO`): `button:has(> [data-testid="contact-mention-list-item"])`.
+    - **Nombre** (`NOMBRE_MENCION_CONTACTO`): `[data-testid="contact-mention-list-item"] [data-testid="mention-primary"]`. Se difumina el contenedor del nombre con un único filtro; el `span` interior no recibe otro.
+  - **Lo que nunca se difumina:** el botón, la lista, la opción «todos» (aunque tuviera su propio `mention-primary`), su icono, `mention-secondary`, el avatar (sigue en RF-02, sin cambios) y el editor.
+  - **Revelado:** el cursor sobre una sugerencia revela solo su nombre, y el atajo los revela todos.
+    - Con el foco de teclado, el nombre solo se revela si el foco real llega al botón.
+    - Al recorrer la lista con las flechas, el foco se queda en el editor (`aria-activedescendant`), así que los nombres siguen difuminados. No se ha cambiado la interacción de WhatsApp para evitarlo.
+  - **Implementación:** solo CSS, en RF-01. Sin observadores, marcas, permisos ni cambios del manifiesto.
+  - **Sin evidencia:** el contenido de `mention-secondary` cuando no está vacío, que no se protege, y la estructura interior de «todos».
+  - Pendiente de validación real.
+
+### Cambiado
+
+- **Descripción de RF-01 en el panel:** menciona las sugerencias de menciones (@) y las llamadas. RF-01 protege el nombre de las llamadas desde `0.1.3`, pero el texto no lo decía.
+
+### Añadido (diagnóstico)
+
+- `scripts/diagnostico-menciones.js`: diagnóstico anonimizado de la lista de sugerencias de menciones.
+  - **Cómo localiza la lista:** por los atributos ARIA del editor, `role="listbox"`, `data-testid`, los avatares y el texto genérico «todos».
+  - **Qué muestra:** sus filas, la opción «todos», las reglas de Veilix que alcanzan cada elemento y los filtros dobles.
+  - **Si la lista se cierra** al pasar a la consola, se repite una vez a los 8 segundos.
+  - No se incluye en los paquetes.
+
+### Añadido (pruebas)
+
+- `tests/navegador/menciones.test.ts`, en Chromium, Firefox y WebKit (17 pruebas por motor):
+  - **Qué se difumina:** los nombres de tres participantes, cada uno con un único filtro, y no el botón, «todos», su icono, la información secundaria, el avatar ni el editor.
+  - **Independencia:** RF-01 y RF-02 funcionan por separado, y con RF-01 desactivada los nombres se ven.
+  - **Revelado:** con el cursor, con el atajo y, en una variante sin evidencia, con el foco real del teclado. Las flechas no mueven el foco ni revelan los nombres.
+  - **Interacción del DOM simulado:** elegir con Intro y con el ratón (también sobre el nombre difuminado o sobre «todos»), insertar la mención sin alterar su texto y enviar el mensaje.
+  - **Cambios dinámicos:** la lista aparece, se cierra y se reabre varias veces, y al cambiar de grupo se protege sin marcas heredadas. Al desactivar todo no quedan estilos ni marcas.
+
+  Sin la regla nueva fallan 9 de las 17.
+- `tests/difuminado/selectores-menciones.test.ts`: los selectores eligen solo los botones y los nombres de los participantes, nunca «todos», `mention-secondary`, el avatar ni el botón, y exigen que el elemento del participante sea hijo directo del botón.
+- `tests/navegador/interruptores.test.ts` y `npm run test:extension`: las sugerencias de menciones forman parte de lo que protegen RF-01 y RF-02.
+- `tests/apoyo/whatsapp-simulado.ts`: `abrirMenciones`, `cerrarMenciones` y `mencionesInsertadas`. La estructura de las filas es la observada; el contenedor, los `id`, el interior de «todos» y la interacción son supuestos.
+
 ## [0.1.3] — 2026-10-30
 
 **Versión estable aprobada por el propietario y seleccionada como primera versión del lanzamiento público de Veilix** (30 de octubre de 2026), preparada a partir de `0.1.3-beta.0`. No está publicada ni etiquetada. Congelación de funcionalidades: no incluye ningún cambio de comportamiento respecto a `0.1.3-beta.0`. No inicia la Fase 3.
@@ -1420,6 +1529,8 @@ Manifiesto: `0.2.0.2002` en Chromium y Firefox, y `0.2.0` en Safari.
 - ESLint, Vitest e integración continua.
 
 [Sin publicar]: #sin-publicar
+[0.1.4-beta.1]: #014-beta1--2026-11-09
+[0.1.4-beta.0]: #014-beta0--2026-11-09
 [0.1.3]: #013--2026-10-30
 [0.1.2]: #012--2026-10-28
 [0.1.2-beta.5]: #012-beta5--2026-10-27
