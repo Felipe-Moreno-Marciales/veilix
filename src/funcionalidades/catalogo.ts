@@ -58,7 +58,7 @@ export const CATALOGO_FUNCIONALIDADES: readonly DefinicionFuncionalidad[] = [
   {
     id: 'difuminarNombres',
     titulo: 'Difuminar nombres de contactos',
-    descripcion: 'Difumina la identidad de contactos y grupos: sus nombres en la lista de chats, el encabezado de la conversación, los remitentes de los mensajes de grupo, el autor citado al responder y «Nuevo chat», y el nombre, el usuario, el teléfono y la descripción en «Info. del contacto».',
+    descripcion: 'Difumina la identidad de contactos y grupos: sus nombres en la lista de chats, el encabezado de la conversación, los remitentes de los mensajes de grupo y sus etiquetas de miembro, el autor citado al responder, «Nuevo chat», las sugerencias de menciones (@) y las llamadas, y el nombre, el usuario, el teléfono y la descripción en «Info. del contacto».',
     categoria: 'difuminado',
     estado: 'disponible',
     nota: REVELADO_GENERAL,
