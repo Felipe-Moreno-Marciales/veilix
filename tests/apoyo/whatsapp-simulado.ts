@@ -235,6 +235,18 @@ export interface MensajeObservado {
    */
   readonly autor?: 'span' | 'boton' | 'anidado' | 'anidadoInverso';
   /**
+   * Etiqueta de miembro («Member Tag») junto al autor.
+   *
+   * OBSERVADO en WhatsApp Web real (Chrome, diagnósticos e inspección sobre
+   * 0.1.4-beta.0): un `span` con `class` y `style`, único texto e hijo de un
+   * `div[role="button"][tabindex="0"]`, en la rama hermana inmediatamente
+   * posterior a la que contiene al autor, separada del cuerpo.
+   *
+   * SUPUESTO: los `div` intermedios y que la cabecera (la rama del autor y la de
+   * la etiqueta) sea un `div` propio dentro de `msg-container`.
+   */
+  readonly etiquetaMiembro?: string;
+  /**
    * Avatar del remitente junto al mensaje, en `[data-testid="group-chat-profile-picture"]`
    * (OBSERVADO en WhatsApp Web real): `foto` (`img` de `pps.whatsapp.net`) o
    * `inicial` (círculo de color con `[data-testid="profile-first-initial"]`),
@@ -674,6 +686,17 @@ export class WhatsAppSimulado {
             el(d, 'span', { ...boton, dir: 'auto', 'data-prueba': 'remitente-interior' }, ...contenido())));
           break;
       }
+    }
+    if (mensaje.etiquetaMiembro && remitente) {
+      // Cabecera: la rama del autor y, justo después, la de la etiqueta de miembro.
+      const autorDelMensaje = requerir(partes.pop(), 'autor');
+      partes.push(
+        el(d, 'div', { 'data-prueba': 'cabecera-remitente' },
+          el(d, 'div', {}, autorDelMensaje),
+          el(d, 'div', {},
+            el(d, 'div', { role: 'button', tabindex: '0', 'data-prueba': 'control-etiqueta' },
+              el(d, 'span', { class: 'x1etiqueta', style: 'color: #8696a0', 'data-prueba': 'etiqueta-miembro' }, mensaje.etiquetaMiembro)))),
+      );
     }
     if (cita) {
       partes.push(
@@ -1146,6 +1169,96 @@ export class WhatsAppSimulado {
 
   cerrarPanelLlamada(): void {
     this.documento.querySelector('[data-prueba="panel-llamada"]')?.remove();
+  }
+
+  /** Nombres de las menciones insertadas en el editor, en orden. */
+  readonly mencionesInsertadas: string[] = [];
+  private controlMenciones: AbortController | null = null;
+
+  /**
+   * Lista de sugerencias de menciones (`@`) de un grupo.
+   *
+   * OBSERVADO en WhatsApp Web real (Chrome, diagnóstico anonimizado sobre 0.1.3):
+   * - la lista está fuera de `#main`;
+   * - cada participante es un `button` cuyo hijo directo es
+   *   `[data-testid="contact-mention-list-item"]`, con el avatar (`img`), el
+   *   nombre en `[data-testid="mention-primary"]` › `span[dir="auto"]` y
+   *   `[data-testid="mention-secondary"]` sin texto;
+   * - la opción «todos» es `[data-testid="mention-all-list-item"]`, con «todos»
+   *   y una descripción genérica;
+   * - el editor usa `aria-autocomplete`, `aria-owns` y `aria-activedescendant`.
+   *
+   * SUPUESTO: el contenedor (`role="listbox"`; aquí en el flujo del documento,
+   * para no tapar otras zonas en las pruebas), los `id`, que
+   * «todos» vaya también en un `button`, su icono, su interior (aquí, con su
+   * propio `mention-primary`, el caso más desfavorable para comprobar que no se
+   * difumina) y la interacción: el foco se queda en el editor; las flechas
+   * cambian `aria-activedescendant` y `aria-selected`; Intro o un clic insertan
+   * la mención y cierran la lista.
+   */
+  abrirMenciones(participantes: readonly string[]): HTMLElement {
+    const d = this.documento;
+    this.cerrarMenciones();
+    const editor = this.editor;
+    const control = new AbortController();
+    this.controlMenciones = control;
+    const fila = (indice: number, contenido: HTMLElement) => {
+      const boton = el(d, 'button', { type: 'button', role: 'option', id: `prueba-mencion-${indice}`, tabindex: '-1', 'aria-selected': 'false', 'data-prueba': 'fila-mencion' }, contenido);
+      boton.addEventListener('click', () => {
+        insertar(indice);
+      });
+      return boton;
+    };
+    const todos = fila(0, el(d, 'div', { 'data-testid': 'mention-all-list-item', 'data-prueba': 'mencion-todos' },
+      el(d, 'div', {}, icono(d, 'wds-ic-mention')),
+      el(d, 'div', { 'data-testid': 'mention-primary', 'data-prueba': 'nombre-mencion-todos' }, el(d, 'span', { dir: 'auto' }, 'todos')),
+      el(d, 'div', { 'data-testid': 'mention-secondary', 'data-prueba': 'descripcion-mencion-todos' }, el(d, 'span', { dir: 'auto' }, 'Notificar a todos los participantes'))));
+    const filas = [todos, ...participantes.map((nombre, i) =>
+      fila(i + 1, el(d, 'div', { 'data-testid': 'contact-mention-list-item', 'data-prueba': 'mencion-contacto' },
+        el(d, 'div', {}, el(d, 'img', { src: URL_FOTO_PERFIL, alt: '', width: '32', height: '32', 'data-prueba': 'avatar-mencion' })),
+        el(d, 'div', {},
+          el(d, 'div', { 'data-testid': 'mention-primary', 'data-prueba': 'contenedor-nombre-mencion' }, el(d, 'span', { dir: 'auto', 'data-prueba': 'nombre-mencion' }, nombre)),
+          el(d, 'div', { 'data-testid': 'mention-secondary', 'data-prueba': 'secundario-mencion' })))))];
+    const lista = el(d, 'div', { role: 'listbox', id: 'prueba-menciones', 'data-prueba': 'menciones', style: 'width: 300px; display: flex; flex-direction: column' }, ...filas);
+    let actual = 1;
+    const seleccionar = (indice: number) => {
+      actual = Math.max(0, Math.min(filas.length - 1, indice));
+      filas.forEach((f, i) => {
+        f.setAttribute('aria-selected', String(i === actual));
+      });
+      editor.setAttribute('aria-activedescendant', requerir(filas[actual], 'fila').id);
+    };
+    const insertar = (indice: number) => {
+      const nombre = indice === 0 ? 'todos' : requerir(participantes[indice - 1], 'participante');
+      this.mencionesInsertadas.push(nombre);
+      requerir(editor.querySelector('p'), 'párrafo').replaceChildren(el(d, 'span', { 'data-prueba': 'mencion-insertada' }, `@${nombre}`), ' ');
+      this.cerrarMenciones();
+      editor.focus();
+    };
+    editor.addEventListener('keydown', (evento) => {
+      if (evento.key === 'ArrowDown' || evento.key === 'ArrowUp') {
+        evento.preventDefault();
+        seleccionar(actual + (evento.key === 'ArrowDown' ? 1 : -1));
+      } else if (evento.key === 'Enter') {
+        evento.preventDefault();
+        insertar(actual);
+      } else if (evento.key === 'Escape') {
+        this.cerrarMenciones();
+      }
+    }, { signal: control.signal });
+    editor.setAttribute('aria-autocomplete', 'list');
+    editor.setAttribute('aria-owns', lista.id);
+    this.app.append(lista);
+    seleccionar(1);
+    return lista;
+  }
+
+  cerrarMenciones(): void {
+    this.controlMenciones?.abort();
+    this.controlMenciones = null;
+    this.documento.querySelector('[data-prueba="menciones"]')?.remove();
+    const editor = this.documento.querySelector('#main footer [contenteditable="true"]');
+    for (const atributo of ['aria-owns', 'aria-activedescendant']) editor?.removeAttribute(atributo);
   }
 
   cerrarInfoContacto(): void {

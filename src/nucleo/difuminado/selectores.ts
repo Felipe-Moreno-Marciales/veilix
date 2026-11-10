@@ -407,6 +407,51 @@ export const AVATAR_PARTICIPANTE = `${PANEL_CONVERSACION} ${PANEL_MENSAJES} [dat
 /** Solo el `author` más externo, para no aplicar dos filtros a la misma información. */
 export const AUTOR_EXTERNO = `${AUTOR}:not(${AUTOR} *)`;
 
+/**
+ * Etiqueta de miembro («Member Tag»: apodo, rol o descripción que el grupo
+ * asigna a un participante) junto al autor de un mensaje de grupo.
+ *
+ * CONFIRMADO, Chrome, sobre 0.1.4-beta.0, con tres ejecuciones reales:
+ * - `diagnostico-etiquetas-miembro.js`, también su sección focalizada;
+ * - `inspeccion-etiqueta-miembro.js`, con la etiqueta elegida en DevTools.
+ *   El propietario comprobó visualmente que el único elemento de la variante V5
+ *   era la etiqueta.
+ *
+ * Estructura confirmada, dentro de `[data-testid="msg-container"]`:
+ * - Un `span` con texto, sin hijos, que es el único hijo de un
+ *   `div[role="button"][tabindex="0"]`.
+ * - Ese control tiene un único texto y no tiene `data-testid`, imágenes ni
+ *   iconos.
+ * - Está en la rama hermana inmediatamente posterior a una rama que contiene
+ *   al autor, fuera del autor, la cita, la hora y el cuerpo.
+ *
+ * No se usan la longitud, el texto, el idioma, las clases ni el `style` en
+ * línea. Restricción añadida a V5, coherente con la evidencia (la etiqueta
+ * está separada del autor y del cuerpo): la rama de la etiqueta no puede
+ * contener el autor, el cuerpo, una cita ni la hora. Así se excluyen
+ * controles de forma parecida, como «Leer más», que estén junto al cuerpo.
+ *
+ * Se difumina solo el `span`. Nunca el control, la rama ni el autor, que ya
+ * tiene su propio filtro.
+ */
+const ZONAS_DEL_MENSAJE = [
+  AUTOR,
+  '[data-testid="quoted-message"]',
+  '[data-testid="msg-meta"]',
+  '[data-pre-plain-text]',
+  '.selectable-text',
+  '[data-testid="selectable-text"]',
+].join(', ');
+const CONTROL_ETIQUETA_MIEMBRO = [
+  'div[role="button"][tabindex="0"]',
+  ':not([data-testid])',
+  ':not(:has(svg, img, video, canvas, [data-icon], [data-testid], button, [role="button"]))',
+  `:not(:is(${ZONAS_DEL_MENSAJE}) *)`,
+].join('');
+/** Rama hermana inmediatamente posterior a una rama del mensaje que contiene al autor (no a una cita). */
+const RAMA_TRAS_AUTOR = `:has(${AUTOR}):not([data-testid="quoted-message"], [data-testid="quoted-message"] *) + :not(:has(${ZONAS_DEL_MENSAJE}))`;
+export const ETIQUETA_MIEMBRO = `[data-testid="msg-container"] ${RAMA_TRAS_AUTOR} ${CONTROL_ETIQUETA_MIEMBRO} > span:only-child:not(:has(*))`;
+
 /** Editor de texto, que nunca se trata como nombre (lo protege RF-05). */
 export const EDITABLE = '[contenteditable]:not([contenteditable="false"])';
 
@@ -571,6 +616,25 @@ export const TEXTO_NOMBRE_LLAMADA = 'span[dir="auto"]:not(span[dir="auto"] span[
 const SIN_CONTROLES = ':not(:has(button, [role="button"]))';
 /** Estado y duración de la llamada (RF-04), salvo que contengan algún control. */
 export const DATOS_PANEL_LLAMADA = `:is([data-testid="voip-call-participant-info-call-state-text"], [data-testid="voip-call-timer"])${SIN_CONTROLES}`;
+
+/**
+ * Sugerencias de menciones (`@`) de un grupo (CONFIRMADO, Chrome, diagnóstico
+ * real sobre 0.1.3, con cuatro filas: «todos» y tres participantes): la lista
+ * está fuera de `#main`. Cada participante es un `button` cuyo hijo directo es
+ * `[data-testid="contact-mention-list-item"]`, con el avatar (`img`, ya
+ * difuminado por RF-02), el nombre en `[data-testid="mention-primary"]` (que
+ * contiene un `span[dir="auto"]`) y `[data-testid="mention-secondary"]`, sin
+ * texto en el diagnóstico. La opción «todos» es
+ * `[data-testid="mention-all-list-item"]` y no se difumina: el nombre se acota
+ * a `contact-mention-list-item`. Se difumina solo el contenedor del nombre, con
+ * un único filtro; nunca el botón, el avatar ni `mention-secondary`, que no se
+ * protege sin evidencia de contenido personal.
+ */
+const ELEMENTO_MENCION_CONTACTO = '[data-testid="contact-mention-list-item"]';
+/** Botón de la sugerencia de un participante (no la de «todos»). */
+export const FILA_MENCION_CONTACTO = `button:has(> ${ELEMENTO_MENCION_CONTACTO})`;
+/** Contenedor del nombre del participante en su sugerencia. */
+export const NOMBRE_MENCION_CONTACTO = `${ELEMENTO_MENCION_CONTACTO} [data-testid="mention-primary"]`;
 
 /**
  * Tarjeta de una llamada en la conversación (CONFIRMADO, Chrome, diagnóstico

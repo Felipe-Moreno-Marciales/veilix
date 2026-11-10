@@ -35,6 +35,8 @@ const PROPIOS: Readonly<Record<Interruptor, readonly string[]>> = {
     '[data-prueba="info-observada"]',
     '[data-prueba="nombre-info-contacto"], [data-prueba="usuario-info-contacto"], [data-prueba="telefono-info-contacto"], [data-prueba="descripcion-info-contacto"]',
     '[data-prueba="nombre-llamada"]',
+    '[data-prueba="nombre-mencion"]',
+    '[data-prueba="etiqueta-miembro"]',
   ],
   difuminarFotos: [
     '#pane-side [data-prueba="avatar"] img',
@@ -43,6 +45,7 @@ const PROPIOS: Readonly<Record<Interruptor, readonly string[]>> = {
     '[data-prueba="avatar-columna"]',
     '[data-prueba="foto-info-contacto"]',
     '[data-prueba="avatar-llamada"]',
+    '[data-prueba="avatar-mencion"]',
   ],
   difuminarMensajesRecientes: ['#pane-side span[title] > span[dir="ltr"]'],
   difuminarMensajesConversacion: [
@@ -117,6 +120,8 @@ describe('independencia de los cinco interruptores', () => {
     wa.abrirNuevoChatObservado(['Ana', 'Luis', 'Eva', 'Sara']);
     wa.abrirInfoContacto({ nombre: 'Marta Secreta', usuario: '@marta', telefono: '+57 300 1234567', descripcion: 'Privado', emojis: 1 });
     wa.abrirPanelLlamada({ nombre: 'Marta Secreta', duracion: '02:15' });
+    wa.abrirMenciones(['Ana', '~ Bruno', 'Eva']);
+    wa.agregarMensajeObservado({ tipo: 'texto', direccion: 'entrante', texto: 'Con etiqueta', remitente: 'Bruno', autor: 'boton', etiquetaMiembro: 'El crack' });
     wa.agregarMensajeObservado({ tipo: 'llamada', direccion: 'entrante', llamada: { titulo: 'Llamada de voz', detalle: 'Sin respuesta' } });
     wa.agregarMensajeObservado({ tipo: 'videoMiniatura', direccion: 'entrante', miniaturaVideo: { orientacion: 'horizontal' } });
     wa.agregarMensajeObservado({ tipo: 'documento', direccion: 'entrante', documento: { nombre: 'captura-secreta.png', formato: 'PNG', tamano: '245 kB' } });

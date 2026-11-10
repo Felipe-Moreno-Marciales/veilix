@@ -32,6 +32,14 @@
  * - Panel flotante de una llamada (estructura confirmada, desde 0.1.3-beta.0):
  *   el nombre del participante (`NOMBRE_LLAMADA`), nunca el panel entero ni sus
  *   controles. Solo CSS.
+ * - Etiquetas de miembro de un grupo (estructura confirmada, desde
+ *   0.1.4-beta.1): el `span` del apodo o rol junto al autor
+ *   (`ETIQUETA_MIEMBRO`), con un único filtro, revelado con el mensaje como el
+ *   autor. Nunca su control ni otros controles de forma parecida. Solo CSS.
+ * - Sugerencias de menciones (`@`) de un grupo (estructura confirmada, desde
+ *   0.1.4-beta.0): el contenedor del nombre (`mention-primary`) de cada
+ *   participante, con un único filtro, revelado con su fila. Nunca el botón,
+ *   el avatar (RF-02), `mention-secondary` ni la opción «todos». Solo CSS.
  *
  * Revelado temporal: cursor sobre la fila, el mensaje, el encabezado o el dato
  * del panel, foco de teclado en ellos, o Ctrl + Mayús + Espacio.
@@ -47,11 +55,14 @@ import {
   AUTOR,
   AUTOR_EXTERNO,
   ENCABEZADO_CONVERSACION,
+  ETIQUETA_MIEMBRO,
   FILA_CHAT,
   FILA_MENSAJE,
   MENSAJE,
   NOMBRE_INFO_CONTACTO,
+  FILA_MENCION_CONTACTO,
   NOMBRE_LLAMADA,
+  NOMBRE_MENCION_CONTACTO,
   PANEL_CONVERSACION,
   TEXTO_ENCABEZADO,
   TEXTO_NOMBRE_LLAMADA,
@@ -77,8 +88,8 @@ export const moduloDifuminarNombres = crearModuloDifuminado({
   reglas: [
     { contenedor: FILA_CHAT, objetivo: `[${ATRIBUTO_NOMBRE}]`, revelarConFoco: true },
     { contenedor: ENCABEZADO_CONVERSACION, objetivo: TEXTO_ENCABEZADO, revelarConFoco: true },
-    // Autores y remitentes dentro de un mensaje: se revelan con el mensaje completo.
-    { contenedor: `${FILA_MENSAJE}, ${MENSAJE}`, objetivo: `${AUTOR_EXTERNO}, ${REMITENTE_SIN_AUTOR}`, revelarConFoco: true },
+    // Autores, remitentes y etiquetas de miembro (desde 0.1.4-beta.1) dentro de un mensaje: se revelan con el mensaje completo.
+    { contenedor: `${FILA_MENSAJE}, ${MENSAJE}`, objetivo: `${AUTOR_EXTERNO}, ${REMITENTE_SIN_AUTOR}, ${ETIQUETA_MIEMBRO}`, revelarConFoco: true },
     // Fuera de los mensajes (recuadro «Responder», aviso fijado…): el propio nombre delimita el revelado.
     {
       contenedor: `${PANEL_CONVERSACION} :is(${AUTOR_EXTERNO}, ${REMITENTE_SIN_AUTOR})`,
@@ -98,6 +109,8 @@ export const moduloDifuminarNombres = crearModuloDifuminado({
     // Panel flotante de una llamada (desde 0.1.3-beta.0): el nombre (su span[dir="auto"] o, si no lo tiene, el propio contenedor).
     { contenedor: NOMBRE_LLAMADA, objetivo: TEXTO_NOMBRE_LLAMADA, revelarConFoco: true },
     { contenedor: `${NOMBRE_LLAMADA}:not(:has(span[dir="auto"]))`, objetivo: null, revelarConFoco: true },
+    // Sugerencias de menciones (desde 0.1.4-beta.0): el contenedor del nombre de cada participante, revelado con su fila.
+    { contenedor: FILA_MENCION_CONTACTO, objetivo: NOMBRE_MENCION_CONTACTO, revelarConFoco: true },
   ],
   marcador: combinarMarcadores(
     crearMarcadorListaChats('nombre', ATRIBUTO_NOMBRE),

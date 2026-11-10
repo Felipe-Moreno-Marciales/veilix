@@ -68,6 +68,15 @@ const PAGINA_SIMULADA = `<!doctype html>
         el('div', { 'data-testid': 'voip-call-participant-info-call-state-text', 'data-prueba': 'dato-llamada' }, 'Cifrada de extremo a extremo'),
         el('span', { 'data-testid': 'voip-call-timer', role: 'timer', 'data-prueba': 'dato-llamada' }, '02:15')),
       el('div', { role: 'toolbar', 'data-prueba': 'controles-llamada' }, el('button', { type: 'button', 'aria-label': 'Colgar' }, icono('wds-ic-call-end')))));
+    // Sugerencias de menciones con la estructura observada: el nombre del participante (RF-01), sin el botón ni la opción «todos».
+    app.append(el('div', { role: 'listbox', style: 'position:fixed;left:0;top:0' },
+      el('button', { type: 'button', 'data-prueba': 'boton-mencion' },
+        el('div', { 'data-testid': 'mention-all-list-item' },
+          el('div', { 'data-testid': 'mention-primary', 'data-prueba': 'todos-mencion' }, el('span', { dir: 'auto' }, 'todos')))),
+      el('button', { type: 'button', 'data-prueba': 'boton-mencion' },
+        el('div', { 'data-testid': 'contact-mention-list-item' },
+          el('div', { 'data-testid': 'mention-primary', 'data-prueba': 'nombre-mencion' }, el('span', { dir: 'auto' }, 'Marta Secreta')),
+          el('div', { 'data-testid': 'mention-secondary' })))));
     // «Info. del contacto» con la estructura observada: nombre, usuario, teléfono (valor en el div hermano de la sección) y su etiqueta.
     app.append(el('div', { 'data-testid': 'drawer-right' },
       el('div', { 'data-testid': 'chat-info-drawer' },
@@ -281,6 +290,32 @@ try {
   comprobar((await filtro('#main [data-testid="msg-meta"] svg')) === 'blur', 'difuminado en caliente: indicador de leído en el mensaje');
   comprobar((await filtro('#pane-side span[title="Secreto 1"] ~ svg')) === 'none', 'el icono de sticker no se difumina');
   comprobar((await filtro('#main [data-testid="msg-container"] > [data-testid="author"]')) === 'blur', 'difuminado en caliente: autor no guardado con nombre distinto del metadato');
+  // Mensaje nuevo con la estructura observada de una etiqueta de miembro: rama del autor y, justo después, la de la etiqueta.
+  // En la rama del cuerpo, un control de la misma forma («Leer más») que no debe difuminarse.
+  await whatsapp.evaluate(() => {
+    const crear = (etiqueta, atributos = {}, ...hijos) => {
+      const e = document.createElement(etiqueta);
+      for (const [nombre, valor] of Object.entries(atributos)) e.setAttribute(nombre, valor);
+      e.append(...hijos);
+      return e;
+    };
+    const control = (texto, prueba) => crear('div', { role: 'button', tabindex: '0' }, crear('span', { 'data-prueba': prueba }, texto));
+    document.querySelector('#main [data-testid="conversation-panel-messages"]').append(
+      crear('div', { role: 'row' }, crear('div', { 'data-id': 'false_etiqueta' }, crear('div', { 'data-testid': 'msg-container' },
+        crear('div', {}, crear('div', {}, crear('span', { 'data-testid': 'author', role: 'button' }, 'Bruno')), crear('div', {}, control('El crack', 'etiqueta-miembro'))),
+        crear('div', {}, crear('div', { 'data-pre-plain-text': '[10:41, 15/10/2026] Bruno: ' }, crear('span', { class: 'selectable-text' }, 'Texto largo')), control('Leer más', 'leer-mas'))))),
+    );
+  });
+  await whatsapp.waitForFunction(() => getComputedStyle(document.querySelector('[data-prueba="etiqueta-miembro"]')).filter === 'blur(6px)');
+  comprobar(
+    (await whatsapp.evaluate(() => {
+      const etiqueta = document.querySelector('[data-prueba="etiqueta-miembro"]');
+      let filtros = 0;
+      for (let a = etiqueta; a; a = a.parentElement) if (getComputedStyle(a).filter !== 'none') filtros++;
+      return filtros;
+    })) === 1 && (await filtro('[data-prueba="leer-mas"]')) === 'none',
+    'difuminado en caliente: etiqueta de miembro de un mensaje nuevo (un solo filtro), sin el «Leer más» de forma parecida',
+  );
   comprobar((await filtro('#main footer [data-testid="quoted-message"] [data-testid="selectable-text"]')) === 'blur', 'difuminado en caliente: texto citado del recuadro «Responder»');
   comprobar((await filtro('#main footer [aria-label="Cancelar respuesta"] svg')) === 'none', 'la X del recuadro «Responder» no se difumina');
   comprobar(
@@ -332,6 +367,13 @@ try {
       (await filtro('[data-prueba="icono-llamada"]')) === 'none' &&
       (await filtro('[data-prueba="tarjeta-llamada"]')) === 'none',
     'difuminado en caliente: nombre, estado y duración de la llamada y textos de su tarjeta, sin controles, icono ni tarjeta',
+  );
+  comprobar(
+    (await whatsapp.evaluate(() => getComputedStyle(document.querySelector('[data-prueba="nombre-mencion"]')).filter)) === 'blur(6px)' &&
+      (await whatsapp.evaluate(() => getComputedStyle(document.querySelector('[data-prueba="nombre-mencion"] span')).filter)) === 'none' &&
+      (await filtro('[data-prueba="todos-mencion"]')) === 'none' &&
+      (await whatsapp.$$eval('[data-prueba="boton-mencion"]', (botones) => botones.map((b) => getComputedStyle(b).filter).join())) === 'none,none',
+    'difuminado en caliente: nombre de la sugerencia de mención (un solo filtro), sin «todos» ni el botón',
   );
   comprobar((await filtro('[data-testid="drawer-right"] [data-testid="selectable-text"]')) === 'blur', 'difuminado en caliente: texto de «Info. del mensaje»');
   comprobar(
