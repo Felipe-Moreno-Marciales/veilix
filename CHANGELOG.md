@@ -43,7 +43,9 @@ Manifiesto: `0.1.5` en Chrome, Edge, Firefox y Safari (sin `version_name`). Pane
 
 ### Validación
 
-- **Real:** la de `0.1.4` sigue siendo válida, porque el código es el mismo. El propietario confirmó en Google Chrome que «todo funciona sin problemas».
+- **Real en Google Chrome:** la de `0.1.4` sigue siendo válida, porque el código es el mismo. El propietario confirmó que «todo funciona sin problemas».
+- **Real en Brave:** el propietario confirmó el 10 de noviembre de 2026 que funciona sin problemas (sistema y versión exacta sin indicar). Las notas de la Release `v0.1.5` lo indican.
+- **Sin prueba real:** Edge, Opera, Vivaldi, Firefox y Safari.
 - **Automatizada:** todas las verificaciones de `AGENTS.md` son correctas (ver [`docs/desarrollo.md`](docs/desarrollo.md), «Versión 0.1.5»).
 
 ### Distribución
