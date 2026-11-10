@@ -79,17 +79,29 @@ describe('selector de las etiquetas de miembro', () => {
 
   it('no elige un control parecido con icono, imagen, data-testid, dos textos u otro control dentro', () => {
     const variantes = [
-      (c: HTMLElement) => c.append(document.createElementNS('http://www.w3.org/2000/svg', 'svg')),
-      (c: HTMLElement) => c.append(document.createElement('img')),
-      (c: HTMLElement) => c.setAttribute('data-testid', 'reaction-bubble'),
-      (c: HTMLElement) => c.append(document.createElement('span')),
-      (c: HTMLElement) => c.querySelector('span')?.append(document.createElement('b')),
+      (c: Element) => {
+        c.append(document.createElementNS('http://www.w3.org/2000/svg', 'svg'));
+      },
+      (c: Element) => {
+        c.append(document.createElement('img'));
+      },
+      (c: Element) => {
+        c.setAttribute('data-testid', 'reaction-bubble');
+      },
+      (c: Element) => {
+        c.append(document.createElement('span'));
+      },
+      (c: Element) => {
+        c.querySelector('span')?.append(document.createElement('b'));
+      },
     ];
     for (const [i, variar] of variantes.entries()) {
       wa.abrirConversacionObservada('Grupo', CON_ETIQUETA);
       const etiqueta = requerirEtiqueta(document.querySelector('[data-prueba="cabecera-remitente"]'));
       expect(etiqueta.matches(ETIQUETA_MIEMBRO), `variante ${i + 1}, antes`).toBe(true);
-      variar(etiqueta.parentElement as HTMLElement);
+      const control = etiqueta.parentElement;
+      if (!control) throw new Error('Control no encontrado');
+      variar(control);
       expect(etiqueta.matches(ETIQUETA_MIEMBRO), `variante ${i + 1}, después`).toBe(false);
     }
   });
