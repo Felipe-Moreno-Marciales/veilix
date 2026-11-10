@@ -11,7 +11,7 @@ Extensión de privacidad para WhatsApp Web, desarrollada de forma independiente.
 Versión actual: **0.1.5**, estable del 10 de noviembre de 2026 y **primera publicación de Veilix como código abierto** (solo Chrome y Edge). Tiene el mismo código que `0.1.4`; solo cambian la versión, la licencia y la documentación. Ver [Versión 0.1.5](#versión-015-estable-primera-publicación-como-código-abierto). No inicia la Fase 3.
 - **Por qué una versión nueva:** la etiqueta `v0.1.4` se creó antes del cambio de licencia. El propietario decidió publicar con un número nuevo para que la etiqueta y los archivos «Source code» de la Release ya incluyan la GPL-3.0.
 - **Qué añadió `0.1.4`:** con RF-01, las [sugerencias de menciones](#sugerencias-de-menciones-en-grupos-rf-01-corrección-en-014-beta0) (`@`) y las [etiquetas de miembro](#etiquetas-de-miembro-en-grupos-rf-01-corrección-en-014-beta1) de los grupos. Ver [Versión 0.1.4](#versión-014-estable-elegida-para-el-primer-lanzamiento-público).
-- **Validación:** el 10 de noviembre de 2026, el propietario confirmó en Google Chrome que `0.1.4-beta.1` funciona y que «todo funciona sin problemas», menciones incluidas (confirmación general, sin detalle por caso). Vale para `0.1.5`, que tiene el mismo código.
+- **Validación:** el 10 de noviembre de 2026, el propietario confirmó en Google Chrome que `0.1.4-beta.1` funciona y que «todo funciona sin problemas», menciones incluidas (confirmación general, sin detalle por caso). Vale para `0.1.5`, que tiene el mismo código. Ese mismo día confirmó que también funciona sin problemas en Brave (sistema y versión exacta sin indicar).
 - **Publicación:** Release `v0.1.5` en este repositorio, siguiendo [Publicación de Veilix](publicacion.md).
 - **Estables anteriores, etiquetadas y sin publicar:**
   - `0.1.4` (`v0.1.4`, commit `19f418a`), elegida para el lanzamiento antes del cambio de licencia;
@@ -1693,6 +1693,11 @@ Cuando se pruebe una combinación real, sustituye ⏳ por ✅ o ❌ e indica la 
 - ✅ Validación parcial de `0.1.1-beta.0` y `0.1.1-beta.2`.
 - ✅ `0.1.1-beta.3`: información secundaria de «Nuevo chat», remitentes en grupos y sin regresiones. La regresión de remitentes de beta.2 no volvió a manifestarse; su causa sigue sin conocerse.
 - ⏳ `0.1.1` (y los cambios visuales de beta.4 y beta.5) sin probar.
+
+- ✅ `0.1.4-beta.1` (mismo código que `0.1.4` y `0.1.5`): «todo funciona sin problemas», comunicado por el propietario el 10 de noviembre de 2026.
+
+**Brave, sistema operativo y versión exacta sin indicar:**
+- ✅ Funciona sin problemas con el código de `0.1.4` y `0.1.5`, que es el mismo, comunicado por el propietario el 10 de noviembre de 2026 (confirmación general, sin detalle por caso). Es la segunda prueba real, después de Chrome. Las observaciones anteriores de Brave, con `0.2.0-beta`, están más abajo.
 
 La celda del sistema correspondiente se marcará cuando se indique cuál es. El indicador de reloj sigue pendiente.
 
