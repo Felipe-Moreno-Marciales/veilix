@@ -8,13 +8,19 @@ Extensión de privacidad para WhatsApp Web, desarrollada de forma independiente.
 
 ## Estado
 
-Versión actual: **0.1.4**, estable preparada el 10 de noviembre de 2026 a partir de `0.1.4-beta.1`, **elegida por el propietario como última versión estable y primera versión del lanzamiento público** (solo Chrome y Edge). Está etiquetada como `v0.1.4` en `main` (commit `19f418a`) y no está publicada. No inicia la Fase 3.
-- **Qué añade:** con RF-01, las [sugerencias de menciones](#sugerencias-de-menciones-en-grupos-rf-01-corrección-en-014-beta0) (`@`) y las [etiquetas de miembro](#etiquetas-de-miembro-en-grupos-rf-01-corrección-en-014-beta1) de los grupos. No cambia el comportamiento respecto a beta.1. Detalle en [Versión 0.1.4](#versión-014-estable-elegida-para-el-primer-lanzamiento-público).
-- **Validación:** el 10 de noviembre de 2026, el propietario confirmó en Google Chrome que `0.1.4-beta.1` funciona y que «todo funciona sin problemas», menciones incluidas (confirmación general, sin detalle por caso).
-- **Lanzamiento:** la primera publicación es `0.1.4`, siguiendo [Publicación de Veilix](publicacion.md). Sustituye a `0.1.3`.
-- **Estable anterior:** `0.1.3`, aprobada el 30 de octubre y elegida entonces para el primer lanzamiento público, etiquetada como `v0.1.3` en `main` (commit `ce22e1d`). El 10 de noviembre la sustituyó `0.1.4` para ese lanzamiento. Sus paquetes se conservan sin cambios y no se publican. Ver [Versión 0.1.3](#versión-013-estable-elegida-para-el-primer-lanzamiento-público).
-- **Estables previas:** `0.1.2`, etiquetada como `v0.1.2` y sustituida por `0.1.3` para el lanzamiento ([Versión 0.1.2](#versión-012-estable-aprobada-para-el-primer-lanzamiento-público)); y `0.1.1`, antecedente sin aprobación ni publicación constantes ([Versión 0.1.1](#versión-011-estable-anterior-antecedente)).
-- **Siguiente versión:** cualquier corrección posterior empezará en `0.1.5-beta.0` (`npm run version:beta`).
+Versión actual: **0.1.5**, estable del 10 de noviembre de 2026 y **primera publicación de Veilix como código abierto** (solo Chrome y Edge). Tiene el mismo código que `0.1.4`; solo cambian la versión, la licencia y la documentación. Ver [Versión 0.1.5](#versión-015-estable-primera-publicación-como-código-abierto). No inicia la Fase 3.
+- **Por qué una versión nueva:** la etiqueta `v0.1.4` se creó antes del cambio de licencia. El propietario decidió publicar con un número nuevo para que la etiqueta y los archivos «Source code» de la Release ya incluyan la GPL-3.0.
+- **Qué añadió `0.1.4`:** con RF-01, las [sugerencias de menciones](#sugerencias-de-menciones-en-grupos-rf-01-corrección-en-014-beta0) (`@`) y las [etiquetas de miembro](#etiquetas-de-miembro-en-grupos-rf-01-corrección-en-014-beta1) de los grupos. Ver [Versión 0.1.4](#versión-014-estable-elegida-para-el-primer-lanzamiento-público).
+- **Validación:** el 10 de noviembre de 2026, el propietario confirmó en Google Chrome que `0.1.4-beta.1` funciona y que «todo funciona sin problemas», menciones incluidas (confirmación general, sin detalle por caso). Vale para `0.1.5`, que tiene el mismo código.
+- **Publicación:** Release `v0.1.5` en este repositorio, siguiendo [Publicación de Veilix](publicacion.md).
+- **Estables anteriores, etiquetadas y sin publicar:**
+  - `0.1.4` (`v0.1.4`, commit `19f418a`), elegida para el lanzamiento antes del cambio de licencia;
+  - `0.1.3` (`v0.1.3`, commit `ce22e1d`);
+  - `0.1.2` (`v0.1.2`, commit `8672a99`).
+
+  El antecedente `0.1.1` no consta como aprobado ni publicado ([Versión 0.1.1](#versión-011-estable-anterior-antecedente)).
+- **Siguiente versión:** cualquier corrección posterior empezará en `0.1.6-beta.0` (`npm run version:beta`).
+- **Licencia:** desde el 10 de noviembre de 2026, Veilix es código abierto con licencia GPL-3.0 o posterior (`GPL-3.0-or-later`, [`LICENSE`](../LICENSE)). Antes era propietario (`UNLICENSED`). La nueva licencia se aplica también a las versiones anteriores. Ese mismo día el propietario hizo público el repositorio. Las guías para colaborar y para informar de vulnerabilidades están en [`CONTRIBUIR.md`](../CONTRIBUIR.md) y [`SEGURIDAD.md`](../SEGURIDAD.md).
 - **Historial:** el completo está en [CHANGELOG.md](../CHANGELOG.md).
 
 Las secciones de cada corrección conservan el nombre de la beta en que se introdujo, por ejemplo [«Info. del contacto»](#panel-info-del-contacto-rf-01-desde-012-beta13) o [Miniaturas de vídeo](#miniaturas-de-vídeo-corrección-en-012-beta7).
@@ -23,6 +29,20 @@ Las secciones de cada corrección conservan el nombre de la beta en que se intro
 - **Fase 2: motor de difuminado.** **cerrada oficialmente el 28 de octubre de 2026**, con la aprobación expresa del propietario. Sus entregables técnicos están consolidados en la estable `0.1.2`. Historial: implementada y **validada funcionalmente en Google Chrome** por el propietario con `0.2.0-beta.8` (sistema operativo sin indicar). La versión final es `0.1.0` (renumeración aprobada), con el mismo comportamiento que `0.2.0-beta.8`. Después, en pruebas reales se detectaron nombres de remitentes de grupo y elementos de «Nuevo chat» sin proteger; `0.1.1-beta.0` los corrige, y `0.1.1` reúne esas correcciones como estable. Con `0.1.1-beta.3`, el propietario validó en Chrome la información secundaria de «Nuevo chat» y los remitentes en grupos, sin regresiones. Los entregables técnicos (RF-01 a RF-05, con el revelado temporal, el panel y las preferencias) se integraron y ampliaron en `0.1.2`. Ver [Cierre de la Fase 2](#cierre-de-la-fase-2).
 - **Ampliación multiplataforma.** Una sola base de código genera los paquetes de Chromium (Chrome, Brave, Opera y Vivaldi), Edge, Firefox y Safari. El motor de difuminado se prueba de forma automatizada en Chromium, Firefox y WebKit. **Fuera de Google Chrome no se ha hecho ninguna prueba real, y Safari no se ha ejecutado nunca** (requiere macOS).
 - **Fase 3:** no iniciada.
+
+## Versión 0.1.5 (estable, primera publicación como código abierto)
+
+Preparada el 10 de noviembre de 2026 a partir de `0.1.4` con `npm run version:estable`, sin beta intermedia, porque no hay cambios de código. Manifiesto `0.1.5` en Chrome, Edge, Firefox y Safari, sin `version_name`. El panel muestra «Veilix 0.1.5».
+
+- **Contenido:** el de [0.1.4](#versión-014-estable-elegida-para-el-primer-lanzamiento-público). Los 13 archivos de los paquetes son idénticos salvo el número de versión (y los nombres de los fragmentos JavaScript, que dependen de su contenido).
+- **Novedades fuera del código:**
+  - la licencia GPL-3.0 (`LICENSE`);
+  - [`SEGURIDAD.md`](../SEGURIDAD.md) y [`CONTRIBUIR.md`](../CONTRIBUIR.md);
+  - los enlaces de descarga del README;
+  - la publicación en el propio repositorio.
+- **Huella SHA-256 de los paquetes de Chrome y Edge**, que son idénticos: `48dc03d19d7efd7f72c53908dae9e13ba836f04ae48430ccb873435db0451484`. El guion de [Publicación de Veilix](publicacion.md) la comprueba.
+- **Verificación automatizada:** la misma batería que `0.1.4`, repetida con `0.1.5`; el resultado está en el informe de entrega y en la integración continua del *pull request*.
+- **Limitaciones:** las de [0.1.4](#limitaciones-conocidas-de-014).
 
 ## Versión 0.1.4 (estable, elegida para el primer lanzamiento público)
 
@@ -1618,7 +1638,7 @@ WhatsApp Web solo muestra la interfaz de chats con una sesión iniciada, y desde
 
 ## Matriz de compatibilidad
 
-Estado de la versión `0.1.4`. Las columnas distinguen tres tipos de evidencia:
+Estado de la versión `0.1.5`. Las columnas distinguen tres tipos de evidencia:
 
 - **Compilación:** se genera un paquete válido para ese navegador.
 - **Pruebas simuladas:** pruebas automatizadas sobre un DOM que imita WhatsApp Web, ejecutadas en Linux (Codespaces y GitHub Actions).

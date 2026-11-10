@@ -10,6 +10,52 @@ Cada entrega de prueba con cambios en el código recibe una versión nueva. Volv
 
 ## [Sin publicar]
 
+## [0.1.5] — 2026-11-10
+
+**Versión estable y primera publicación de Veilix como código abierto** (10 de noviembre de 2026). Tiene **el mismo código que `0.1.4`**: solo cambian la versión, la licencia y la documentación. Se publica con un número nuevo, por decisión del propietario, para que su etiqueta y los archivos «Source code» de su Release ya incluyan la licencia GPL-3.0. La etiqueta `v0.1.4` se creó antes del cambio de licencia.
+
+Manifiesto: `0.1.5` en Chrome, Edge, Firefox y Safari (sin `version_name`). Panel: «Veilix 0.1.5». Paquetes: `veilix-0.1.5-{chrome,edge,firefox,safari}.zip` y `veilix-0.1.5-sources.zip`.
+
+### Cambiado (licencia)
+
+- **Código abierto:** el 10 de noviembre de 2026, el propietario decidió publicar Veilix con licencia GPL-3.0 o posterior (`GPL-3.0-or-later`), para que cualquiera pueda comprobar que no hay telemetría ni envío de datos.
+  - **Archivos:** `LICENSE` contiene el texto oficial de gnu.org, sin modificar. `package.json` y `package-lock.json` pasan de `UNLICENSED` a `GPL-3.0-or-later`.
+  - **README:** la cabecera indica «Código abierto (GPL-3.0)»; la sección de licencia la resume, y la de privacidad invita a revisar el código.
+  - **Versiones anteriores:** la licencia se aplica también a ellas, incluidas las etiquetas `v0.1.2`, `v0.1.3` y `v0.1.4`.
+- **Publicación** ([`docs/publicacion.md`](docs/publicacion.md)): la Release se publica en el propio repositorio de Veilix, que el propietario hizo público el 10 de noviembre de 2026, en lugar de en un repositorio de distribución aislado. Se añade una revisión previa: historial sin credenciales, dirección *noreply* en los commits y dependencias con licencia compatible.
+- Sin cambios en el código de la extensión.
+
+### Añadido (documentación)
+
+- [`SEGURIDAD.md`](SEGURIDAD.md): política de seguridad. Explica cómo informar de una vulnerabilidad en privado, desde la pestaña «Security» del repositorio y sin datos personales, qué se considera vulnerabilidad y qué no, y qué versiones tienen soporte.
+- [`CONTRIBUIR.md`](CONTRIBUIR.md): guía para colaborar.
+  - **Qué contiene:** el idioma del proyecto, cómo comunicar fallos sin datos personales, las reglas que no se negocian (privacidad, mínimo privilegio, protección solo visual, selectores con evidencia), cómo preparar el entorno, las comprobaciones antes de un *pull request* y la licencia de las contribuciones.
+- **Nombres en español:** los dos archivos usan nombres en español, por decisión del propietario. GitHub solo reconoce automáticamente `SECURITY.md` y `CONTRIBUTING.md`, así que no los muestra en sus pestañas especiales. El README los enlaza.
+- **README:**
+  - enlaces directos de descarga a la Release `v0.1.5` (Chrome, Brave, Opera, Vivaldi y Edge);
+  - enlaces a los dos documentos nuevos.
+
+### Cambiado (versionado)
+
+- Se pasa de `0.1.4` a `0.1.5` con `npm run version:estable`, sin beta intermedia, porque no hay cambios de código.
+- Los 13 archivos de los paquetes son idénticos a los de `0.1.4` salvo el número de versión (y los nombres de los fragmentos JavaScript, que dependen de su contenido).
+- Cualquier corrección posterior empieza en `0.1.6-beta.0` (`npm run version:beta`).
+
+### Validación
+
+- **Real:** la de `0.1.4` sigue siendo válida, porque el código es el mismo. El propietario confirmó en Google Chrome que «todo funciona sin problemas».
+- **Automatizada:** todas las verificaciones de `AGENTS.md` son correctas (ver [`docs/desarrollo.md`](docs/desarrollo.md), «Versión 0.1.5»).
+
+### Distribución
+
+- **Release `v0.1.5`** en este repositorio, siguiendo [`docs/publicacion.md`](docs/publicacion.md): solo los paquetes de Chrome y Edge, y `SHA256SUMS.txt`.
+- **Huella SHA-256 de los paquetes de Chrome y Edge**, que son idénticos: `48dc03d19d7efd7f72c53908dae9e13ba836f04ae48430ccb873435db0451484`.
+- **No se publican:** los paquetes de Firefox y Safari, que son técnicos, ni el de fuentes.
+
+### Limitaciones conocidas
+
+- Las de [0.1.4] siguen vigentes.
+
 ## [0.1.4] — 2026-11-10
 
 **Versión estable seleccionada por el propietario como última versión estable y primera versión del lanzamiento público de Veilix** (10 de noviembre de 2026), preparada ese mismo día a partir de `0.1.4-beta.1`. Está etiquetada como `v0.1.4` en `main` (commit `19f418a`) y todavía no está publicada. Mantiene la congelación de funcionalidades: solo correcciones de privacidad de RF-01 sobre `0.1.3`.
@@ -1590,6 +1636,7 @@ Manifiesto: `0.2.0.2002` en Chromium y Firefox, y `0.2.0` en Safari.
 - ESLint, Vitest e integración continua.
 
 [Sin publicar]: #sin-publicar
+[0.1.5]: #015--2026-11-10
 [0.1.4]: #014--2026-11-10
 [0.1.4-beta.1]: #014-beta1--2026-11-09
 [0.1.4-beta.0]: #014-beta0--2026-11-09
