@@ -1,35 +1,30 @@
 # Publicación de Veilix
 
-> Procedimiento interno para el propietario: publicar las descargas de Veilix en GitHub Releases sin exponer el código propietario. La primera publicación es la estable `0.1.4`, elegida por el propietario el 10 de noviembre de 2026 como última versión estable, solo para Chrome y Edge. Sustituye a `0.1.3`, que se había elegido el 30 de octubre. Los paquetes de `0.1.2` y `0.1.3` se conservan como históricos y no se publican. No forma parte del repositorio público de distribución. La sección de descargas para usuarios está en el [README](../README.md#-descargar-veilix).
+> Procedimiento para el propietario: publicar las descargas de Veilix en GitHub Releases. La primera publicación es la estable `0.1.4`, elegida por el propietario el 10 de noviembre de 2026 como última versión estable, solo para Chrome y Edge. Sustituye a `0.1.3`, que se había elegido el 30 de octubre. Los paquetes de `0.1.2` y `0.1.3` se conservan como históricos y no se publican. La sección de descargas para usuarios está en el [README](../README.md#-descargar-veilix).
 
-## Por qué no se usa el repositorio de Veilix
+## Código abierto y repositorio de publicación
 
-El repositorio de Veilix es **privado**. Los archivos de una Release de un repositorio privado solo pueden descargarlos quienes tienen acceso a él, así que no sirven como descarga pública. Hacerlo público expondría el código fuente.
+El 10 de noviembre de 2026, el propietario decidió publicar Veilix como **código abierto con licencia GPL-3.0** ([`LICENSE`](../LICENSE)), para que cualquiera pueda comprobar que no hay telemetría ni envío de datos. La licencia se aplica también a las versiones anteriores.
 
-## Repositorio público de distribución
+Por eso la Release se publica en **el propio repositorio de Veilix**, cuando el propietario lo haga público. Ya no hace falta el repositorio de distribución aislado que preveía la versión anterior de este documento.
 
-Opción propuesta, pendiente de la autorización del propietario: un repositorio público aparte, dedicado solo a la distribución.
-
-| Primera publicación (`v0.1.4`) | Nunca se publica |
+| Se adjunta a la Release `v0.1.4` | No se adjunta |
 | --- | --- |
-| `veilix-0.1.4-chrome.zip` y `veilix-0.1.4-edge.zip` | `veilix-0.1.4-sources.zip`: es el código fuente, y solo se entrega a Mozilla para su revisión |
-| `SHA256SUMS.txt`, con las huellas de **solo** esos dos paquetes | `veilix-0.1.4-firefox.zip` y `veilix-0.1.4-safari.zip`: son paquetes técnicos, no instalables por usuarios finales |
-| Un README breve para usuarios, con las secciones públicas del README principal (sin el apartado «Documentación», que enlaza a documentos internos), y las notas de la versión | El código fuente (`src/`, `scripts/`, `tests/`, configuración), los diagnósticos, `CHANGELOG.md`, `AGENTS.md` y la documentación interna |
-| Los términos de uso de la licencia propietaria | Credenciales, `.env` y datos personales |
+| `veilix-0.1.4-chrome.zip` y `veilix-0.1.4-edge.zip` | `veilix-0.1.4-firefox.zip` y `veilix-0.1.4-safari.zip`: son paquetes técnicos, no instalables por usuarios finales |
+| `SHA256SUMS.txt`, con las huellas de **solo** esos dos paquetes | `veilix-0.1.4-sources.zip`: es para la revisión de Mozilla; el código ya está en el repositorio |
 
 **Publicaciones posteriores:** el `.xpi` de Firefox, cuando Mozilla lo firme, y la app de Safari, cuando exista y esté firmada.
 
-Los paquetes contienen el código compilado de la extensión, como cualquier extensión de navegador. Ya se revisó que no incluyen diagnósticos, pruebas, mapas de código ni credenciales.
+### Antes de hacer público el repositorio
 
-### Aislamiento
+Hacer público el repositorio expone **todo su historial**: el código, la documentación interna, los diagnósticos y las etiquetas. Es irreversible: lo que alguien descargue ya no se puede retirar.
 
-- **Repositorio nuevo.** Créalo vacío, desde cero: sin bifurcar el repositorio de Veilix, sin importarlo ni reflejarlo y sin enviarle ramas o etiquetas de este clon. Las etiquetas del repositorio privado (`v0.1.2`, `v0.1.3`, `v0.1.4`…) tampoco se envían: la Release del repositorio de distribución tiene su propia etiqueta `v0.1.4`, creada allí. Su historial no puede contener ningún commit del repositorio privado.
-- **Clon propio.** Trabaja en una carpeta nueva, **fuera** del clon privado, con su propio `git init` o `git clone` del repositorio de distribución. Nunca añadas el repositorio privado como remoto.
-- **Contenido versionado:** solo documentación pública. Es decir, el README para usuarios, las notas de la versión y los términos de la licencia.
-- **README público:** una copia de las secciones públicas del `README.md` principal, sin el apartado «Documentación», que enlaza a documentos internos. Si muestra el logotipo, copia también `public/icon/128.png`, que es la imagen pública de la extensión, o retira la imagen.
-- **Paquetes:** se suben únicamente como archivos adjuntos de la Release, no como commits.
-- **Archivos automáticos de GitHub:** cada Release incluye siempre «Source code (zip)» y «Source code (tar.gz)», con el contenido del repositorio de distribución en la etiqueta. Por eso ese repositorio solo puede contener lo autorizado.
-- **Lo que no puede estar en ningún commit ni en la Release:** el código fuente propietario, `veilix-0.1.4-sources.zip`, los diagnósticos, `CHANGELOG.md`, `AGENTS.md`, la documentación interna, `.env`, credenciales ni datos personales.
+- **Revisado el 10 de noviembre de 2026:**
+  - no hay credenciales, `.env`, claves ni certificados versionados, tampoco en el historial;
+  - los commits usan la dirección *noreply* de GitHub del propietario;
+  - las dependencias de producción (React) tienen licencia MIT, compatible con la GPL-3.0.
+- **Archivos automáticos de GitHub:** cada Release incluye «Source code (zip)» y «Source code (tar.gz)» del repositorio en la etiqueta. Con el código abierto no es un problema.
+- **Lo que nunca puede estar en ningún commit ni en la Release:** `.env`, credenciales, tokens ni datos personales (nombres, teléfonos o mensajes reales de WhatsApp). Los diagnósticos solo se comparten anonimizados.
 
 ## Prueba de humo del paquete final
 
@@ -50,12 +45,11 @@ Antes de publicar, confirma que el paquete exacto que se va a distribuir conserv
 
 ## Pasos, cuando lo autorices
 
-1. **Crea el repositorio público de distribución** según las reglas de aislamiento. Por ejemplo, con un nombre como `veilix-releases`; el nombre lo decides tú. Antes de etiquetar, comprueba en su clon que solo contiene lo autorizado y que el historial es solo suyo:
+1. **Haz público el repositorio de Veilix**, cuando lo decidas: *Settings* → *Danger Zone* → *Change visibility* → *Change to public*. Antes, comprueba en `main` que la licencia y el README están al día y que no hay nada que no deba publicarse:
 
    ```bash
-   git ls-files                  # Solo la documentación pública autorizada.
-   git log --oneline             # Solo commits del repositorio de distribución.
-   git remote -v                 # Solo el repositorio de distribución.
+   git ls-files | grep -iE '(^|/)\.env|\.pem$|\.key$' || echo "sin archivos sensibles"
+   head -2 LICENSE               # GNU GENERAL PUBLIC LICENSE, Version 3
    ```
 2. **Prepara los paquetes desde la raíz del proyecto Veilix.** El guion se ejecuta en un `bash` aparte, así que cualquier fallo lo detiene sin cerrar tu terminal. Antes de generar `SHA256SUMS.txt` comprueba:
    - que la lista de paquetes es exactamente la autorizada;
@@ -109,19 +103,19 @@ Antes de publicar, confirma que el paquete exacto que se va a distribuir conserv
    ```
 
    Sigue solo si termina con «LISTO». Si aparece «DETENER», no publiques: corrige la causa que indica y vuelve a ejecutarlo.
-3. **Crea la Release `v0.1.4`** en el repositorio de distribución con estos tres archivos de `.output/` y nada más: `veilix-0.1.4-chrome.zip`, `veilix-0.1.4-edge.zip` y `SHA256SUMS.txt`. Puedes hacerlo desde la web de GitHub o con:
+3. **Crea la Release `v0.1.4`** en el repositorio de Veilix, sobre la etiqueta `v0.1.4` que ya existe, con estos tres archivos de `.output/` y nada más: `veilix-0.1.4-chrome.zip`, `veilix-0.1.4-edge.zip` y `SHA256SUMS.txt`. Puedes hacerlo desde la web de GitHub o con:
 
    ```bash
    gh release create v0.1.4 .output/veilix-0.1.4-chrome.zip .output/veilix-0.1.4-edge.zip .output/SHA256SUMS.txt \
-     --repo <propietario>/<repositorio-de-distribución> --title "Veilix 0.1.4" --notes-file <notas-de-la-versión>.md
+     --repo Felipe-Moreno-Marciales/veilix --verify-tag --title "Veilix 0.1.4" --notes-file <notas-de-la-versión>.md
    ```
-4. **Comprueba lo publicado.** Los archivos adjuntos deben ser exactamente `veilix-0.1.4-chrome.zip`, `veilix-0.1.4-edge.zip` y `SHA256SUMS.txt`. Descarga también «Source code (zip)» de la Release y comprueba que solo contiene la documentación pública autorizada.
+4. **Comprueba lo publicado.** Los archivos adjuntos deben ser exactamente `veilix-0.1.4-chrome.zip`, `veilix-0.1.4-edge.zip` y `SHA256SUMS.txt`, además de los «Source code» automáticos de GitHub.
 
    ```bash
-   gh release view v0.1.4 --repo <propietario>/<repositorio-de-distribución> --json assets --jq '.assets[].name'
+   gh release view v0.1.4 --repo Felipe-Moreno-Marciales/veilix --json assets --jq '.assets[].name'
    ```
 5. **Actualiza la sección de descargas del [README](../README.md#-descargar-veilix):**
-   - En las filas de Chrome, de Brave, Opera y Vivaldi, y de Edge, sustituye «Publicación pendiente» por el enlace directo. Su estructura es `https://github.com/<propietario>/<repositorio-de-distribución>/releases/download/v0.1.4/veilix-0.1.4-chrome.zip`, y lo mismo con `-edge.zip`.
+   - En las filas de Chrome, de Brave, Opera y Vivaldi, y de Edge, sustituye «Publicación pendiente» por el enlace directo. Su estructura es `https://github.com/Felipe-Moreno-Marciales/veilix/releases/download/v0.1.4/veilix-0.1.4-chrome.zip`, y lo mismo con `-edge.zip`.
    - Actualiza el aviso de «Publicación pendiente» con el enlace a la página de la Release.
    - Firefox y Safari no cambian.
 6. **Más adelante:**
