@@ -10,6 +10,15 @@ Cada entrega de prueba con cambios en el código recibe una versión nueva. Volv
 
 ## [Sin publicar]
 
+### Cambiado (licencia)
+
+- **Código abierto:** el 10 de noviembre de 2026, el propietario decidió publicar Veilix con licencia GPL-3.0 o posterior (`GPL-3.0-or-later`), para que cualquiera pueda comprobar que no hay telemetría ni envío de datos.
+  - **Archivos:** `LICENSE` contiene el texto oficial de gnu.org, sin modificar. `package.json` y `package-lock.json` pasan de `UNLICENSED` a `GPL-3.0-or-later`.
+  - **README:** la cabecera indica «Código abierto (GPL-3.0)»; la sección de licencia la resume, y la de privacidad invita a revisar el código.
+  - **Versiones anteriores:** la licencia se aplica también a ellas, incluidas las etiquetas `v0.1.2`, `v0.1.3` y `v0.1.4`.
+- **Publicación** ([`docs/publicacion.md`](docs/publicacion.md)): la Release se hará en el propio repositorio de Veilix cuando el propietario lo haga público, en lugar de en un repositorio de distribución aislado. Se añade una revisión previa: historial sin credenciales, dirección *noreply* en los commits y dependencias con licencia compatible.
+- Sin cambios en el código de la extensión ni en la versión.
+
 ## [0.1.4] — 2026-11-10
 
 **Versión estable seleccionada por el propietario como última versión estable y primera versión del lanzamiento público de Veilix** (10 de noviembre de 2026), preparada ese mismo día a partir de `0.1.4-beta.1`. Está etiquetada como `v0.1.4` en `main` (commit `19f418a`) y todavía no está publicada. Mantiene la congelación de funcionalidades: solo correcciones de privacidad de RF-01 sobre `0.1.3`.
