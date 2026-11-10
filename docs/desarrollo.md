@@ -8,12 +8,13 @@ Extensión de privacidad para WhatsApp Web, desarrollada de forma independiente.
 
 ## Estado
 
-Versión actual: **0.1.3**, estable preparada el 30 de octubre de 2026 a partir de `0.1.3-beta.0`, **aprobada por el propietario y elegida como primera versión del lanzamiento público** (solo Chrome y Edge). No está publicada ni etiquetada. No inicia la Fase 3.
-- **Qué añade:** la protección visual de las llamadas: el panel flotante de una llamada en curso y las tarjetas de llamada de la conversación. No cambia el comportamiento respecto a beta.0. Detalle en [Versión 0.1.3](#versión-013-estable-elegida-para-el-primer-lanzamiento-público).
-- **Validación:** el propietario confirmó en Google Chrome que las correcciones de las llamadas funcionan en las variantes observadas.
-- **Estable anterior:** `0.1.2`, aprobada el 28 de octubre para el primer lanzamiento y etiquetada como `v0.1.2` en `main` (commit `8672a99`). El 30 de octubre la sustituyó `0.1.3` para ese lanzamiento. Sus paquetes se conservan sin cambios y no se publican. Ver [Versión 0.1.2](#versión-012-estable-aprobada-para-el-primer-lanzamiento-público).
-- **Antecedente:** `0.1.1`, estable preparada el 21 de octubre de 2026 durante el desarrollo. No consta que se aprobara ni que se publicara; ver [Versión 0.1.1](#versión-011-estable-anterior-antecedente).
-- **En desarrollo:** `0.1.4-beta.1` (9 de noviembre de 2026), compilación interna sobre `0.1.4-beta.0`. Protege con RF-01 las [etiquetas de miembro](#etiquetas-de-miembro-en-grupos-rf-01-corrección-en-014-beta1) junto al autor de los mensajes de grupo, y está pendiente de validación real. La anterior, `0.1.4-beta.0` (9 de noviembre de 2026), es una compilación interna sobre `0.1.3`. Protege con RF-01 los nombres de las [sugerencias de menciones](#sugerencias-de-menciones-en-grupos-rf-01-corrección-en-014-beta0) (`@`) de los grupos. Está pendiente de validación real. No sustituye a `0.1.3` para el lanzamiento ni cambia sus paquetes, y no inicia la Fase 3.
+Versión actual: **0.1.4**, estable preparada el 10 de noviembre de 2026 a partir de `0.1.4-beta.1`, con la autorización del propietario. No está publicada ni etiquetada. No inicia la Fase 3.
+- **Qué añade:** con RF-01, las [sugerencias de menciones](#sugerencias-de-menciones-en-grupos-rf-01-corrección-en-014-beta0) (`@`) y las [etiquetas de miembro](#etiquetas-de-miembro-en-grupos-rf-01-corrección-en-014-beta1) de los grupos. No cambia el comportamiento respecto a beta.1. Detalle en [Versión 0.1.4](#versión-014-estable).
+- **Validación:** el 10 de noviembre de 2026, el propietario confirmó en Google Chrome que `0.1.4-beta.1` funciona y que «todo funciona sin problemas», menciones incluidas (confirmación general, sin detalle por caso).
+- **Lanzamiento:** la primera publicación prevista sigue siendo `0.1.3` ([Publicación de Veilix](publicacion.md)) hasta que el propietario decida si `0.1.4` la sustituye.
+- **Estable anterior:** `0.1.3`, aprobada el 30 de octubre y elegida para el primer lanzamiento público, etiquetada como `v0.1.3` en `main` (commit `ce22e1d`). Sus paquetes se conservan sin cambios. Ver [Versión 0.1.3](#versión-013-estable-elegida-para-el-primer-lanzamiento-público).
+- **Estables previas:** `0.1.2`, etiquetada como `v0.1.2` y sustituida por `0.1.3` para el lanzamiento ([Versión 0.1.2](#versión-012-estable-aprobada-para-el-primer-lanzamiento-público)); y `0.1.1`, antecedente sin aprobación ni publicación constantes ([Versión 0.1.1](#versión-011-estable-anterior-antecedente)).
+- **Siguiente versión:** cualquier corrección posterior empezará en `0.1.5-beta.0` (`npm run version:beta`).
 - **Historial:** el completo está en [CHANGELOG.md](../CHANGELOG.md).
 
 Las secciones de cada corrección conservan el nombre de la beta en que se introdujo, por ejemplo [«Info. del contacto»](#panel-info-del-contacto-rf-01-desde-012-beta13) o [Miniaturas de vídeo](#miniaturas-de-vídeo-corrección-en-012-beta7).
@@ -22,6 +23,58 @@ Las secciones de cada corrección conservan el nombre de la beta en que se intro
 - **Fase 2: motor de difuminado.** **cerrada oficialmente el 28 de octubre de 2026**, con la aprobación expresa del propietario. Sus entregables técnicos están consolidados en la estable `0.1.2`. Historial: implementada y **validada funcionalmente en Google Chrome** por el propietario con `0.2.0-beta.8` (sistema operativo sin indicar). La versión final es `0.1.0` (renumeración aprobada), con el mismo comportamiento que `0.2.0-beta.8`. Después, en pruebas reales se detectaron nombres de remitentes de grupo y elementos de «Nuevo chat» sin proteger; `0.1.1-beta.0` los corrige, y `0.1.1` reúne esas correcciones como estable. Con `0.1.1-beta.3`, el propietario validó en Chrome la información secundaria de «Nuevo chat» y los remitentes en grupos, sin regresiones. Los entregables técnicos (RF-01 a RF-05, con el revelado temporal, el panel y las preferencias) se integraron y ampliaron en `0.1.2`. Ver [Cierre de la Fase 2](#cierre-de-la-fase-2).
 - **Ampliación multiplataforma.** Una sola base de código genera los paquetes de Chromium (Chrome, Brave, Opera y Vivaldi), Edge, Firefox y Safari. El motor de difuminado se prueba de forma automatizada en Chromium, Firefox y WebKit. **Fuera de Google Chrome no se ha hecho ninguna prueba real, y Safari no se ha ejecutado nunca** (requiere macOS).
 - **Fase 3:** no iniciada.
+
+## Versión 0.1.4 (estable)
+
+Preparada el 10 de noviembre de 2026 a partir de `0.1.4-beta.1` con `npm run version:estable`, sin cambios de comportamiento. Manifiesto `0.1.4` en Chrome, Edge, Firefox y Safari, sin `version_name`. El panel muestra «Veilix 0.1.4». No está publicada ni etiquetada.
+
+### Contenido de 0.1.4
+
+| Interruptor | Novedades respecto a `0.1.3` |
+| --- | --- |
+| RF-01 · nombres e información personal | Nombre de cada participante en las [sugerencias de menciones](#sugerencias-de-menciones-en-grupos-rf-01-corrección-en-014-beta0) (`@`), y [etiqueta de miembro](#etiquetas-de-miembro-en-grupos-rf-01-corrección-en-014-beta1) junto al autor de los mensajes de grupo |
+| RF-02, RF-03, RF-04 y RF-05 | Sin cambios |
+
+- **Lo que nunca se difumina:** el botón de cada sugerencia, la opción «todos», `mention-secondary`, el control de la etiqueta ni los controles de forma parecida («Leer más»).
+- **Revelado:** el nombre de una sugerencia se revela con su fila, y la etiqueta, con su mensaje, como el autor.
+
+### Evidencia de 0.1.4, por tipo
+
+| Tipo | Alcance | Resultado |
+| --- | --- | --- |
+| Compilación | Chrome, Edge, Firefox y Safari | ✅ |
+| Pruebas simuladas | Chromium, Firefox y WebKit de Playwright | ✅ 993 de 993 (331 por motor) |
+| Extensión cargada (simulado) | Paquete de Chrome con la red bloqueada | ✅ |
+| Real en Google Chrome (propietario) | `0.1.4-beta.1`: menciones y etiquetas de miembro | ✅ «Todo funciona sin problemas» (confirmación general, sin detalle por caso) |
+| Real en Edge, Firefox, Brave, Opera, Vivaldi y Safari | — | ⏳ Ninguna prueba real ([matriz](#matriz-de-compatibilidad)) |
+
+### Resultados automatizados (`0.1.4`)
+
+| Verificación | Resultado |
+| --- | --- |
+| `compile`, `lint` | Sin errores |
+| `npm test` | 248 de 248 (24 archivos) |
+| `test:navegador` | 993 de 993 (331 por motor en Chromium, Firefox y WebKit) |
+| `npm run build` (Chrome, Edge, Firefox y Safari) | Correcto; manifiesto `0.1.4` en los cuatro, sin `version_name`, solo `storage` |
+| `lint:firefox` | 0 errores; los 2 avisos conocidos `UNSAFE_VAR_ASSIGNMENT` de `react-dom` |
+| `test:extension` | Todas las comprobaciones correctas, también las de las menciones y las etiquetas de miembro, sin peticiones de red externas |
+| `version:comprobar` | Correcta: `0.1.3` → `0.1.4` |
+| `zip:*` (solo en local) | `veilix-0.1.4-{chrome,edge,firefox,safari}.zip` y `veilix-0.1.4-sources.zip` |
+
+- **Sin cambios funcionales:** el código de `src/`, `public/` y `wxt.config.ts` es el de `0.1.4-beta.1`; solo cambia la versión de `package.json`.
+- **Huella SHA-256 de los paquetes de Chrome y Edge de `0.1.4`,** que son idénticos: `93d34bb404a9ad48cd11bf46028e5bfff58ae6cb35b956cffc1a87e596f4a78a`. Los de Firefox y Safari son técnicos, y el de fuentes es privado.
+- **Distribución:** pendiente de decisión del propietario. [Publicación de Veilix](publicacion.md) sigue preparada para `0.1.3`.
+- **Paquetes de `0.1.3`:** se conservan con las mismas huellas.
+
+### Limitaciones conocidas de 0.1.4
+
+- **Menciones:**
+  - Al recorrer la lista con las flechas, los nombres no se revelan, porque el foco se queda en el editor; el atajo sí los revela.
+  - `mention-secondary` no se protege, porque no se ha observado con contenido.
+- **Etiquetas de miembro sin evidencia:** en citas, «Info. del grupo», la lista de participantes, mensajes propios y el recuadro «Responder».
+- **Etiqueta solo con emojis:** RF-04 podría difuminarla también como reacción. Sin evidencia.
+- **Hallazgo independiente:** el autor de una cita tiene dos filtros (RF-01 y RF-04 sobre un antecesor). Sin corregir.
+- **Resto:** siguen vigentes las [limitaciones de 0.1.3](#limitaciones-conocidas-de-013).
 
 ## Versión 0.1.3 (estable, elegida para el primer lanzamiento público)
 
@@ -310,7 +363,7 @@ No son requisitos del cierre de la fase, sino tareas técnicas abiertas:
 
 | Funcionalidad | Categoría | Estado | Observaciones |
 | --- | --- | --- | --- |
-| Difuminar nombres de contactos (RF-01) | Difuminado visual | Disponible · validado en Chrome. En `0.1.2`: autores de grupo por su estructura e información personal de «Info. del contacto» (serie `0.1.2-beta` validada por el propietario; ver [Versión 0.1.2](#versión-012-estable-aprobada-para-el-primer-lanzamiento-público)). En `0.1.4-beta.1`, pendiente de validación real: [etiquetas de miembro](#etiquetas-de-miembro-en-grupos-rf-01-corrección-en-014-beta1). En `0.1.4-beta.0`, pendiente de validación real: [sugerencias de menciones](#sugerencias-de-menciones-en-grupos-rf-01-corrección-en-014-beta0) | Lista de chats y encabezado de la conversación; remitentes y autores de grupo (también en citas y en el aviso fijado); autor citado en «Responder»; nombre e información de «Nuevo chat»; otras filas de contacto con avatar SVG (hipótesis); y nombre, usuario, teléfono y descripción de «Info. del contacto». Las notas guardadas, los números no guardados y otros textos del panel no están cubiertos. |
+| Difuminar nombres de contactos (RF-01) | Difuminado visual | Disponible · validado en Chrome. En `0.1.2`: autores de grupo por su estructura e información personal de «Info. del contacto» (serie `0.1.2-beta` validada por el propietario; ver [Versión 0.1.2](#versión-012-estable-aprobada-para-el-primer-lanzamiento-público)). En `0.1.4`, confirmadas por el propietario en Chrome: [etiquetas de miembro](#etiquetas-de-miembro-en-grupos-rf-01-corrección-en-014-beta1) y [sugerencias de menciones](#sugerencias-de-menciones-en-grupos-rf-01-corrección-en-014-beta0) | Lista de chats y encabezado de la conversación; remitentes y autores de grupo (también en citas y en el aviso fijado); autor citado en «Responder»; nombre e información de «Nuevo chat»; otras filas de contacto con avatar SVG (hipótesis); y nombre, usuario, teléfono y descripción de «Info. del contacto». Las notas guardadas, los números no guardados y otros textos del panel no están cubiertos. |
 | Difuminar fotografías de contactos (RF-02) | Difuminado visual | Disponible · validado en Chrome. En `0.1.2`: avatares de «Nuevo chat» y de participantes en grupos (serie `0.1.2-beta` validada por el propietario) | Fotos y avatares predeterminados de la lista, del encabezado, de «Nuevo chat» (también «Tú») y junto a los mensajes de grupo (foto e inicial; la silueta, sin confirmar), y fotos de perfil en cualquier otra zona, como «Info. del contacto». No afecta a iconos, contadores ni imágenes de mensajes. |
 | Difuminar mensajes recientes (RF-03) | Difuminado visual | Disponible · validado en Chrome (reloj pendiente) | Vista previa en la lista de chats, incluidas las especiales con iconos dentro (por ejemplo, «reaccionó con 👌 a:» con el icono de una foto), y su indicador de **leído** (`wds-ic-read`) cuando el último mensaje es propio. Enviado, entregado y pendiente, pendientes de diagnóstico. Silenciado, fijado, estados, mensajes temporales, stickers y contador de no leídos siguen visibles. |
 | Difuminar mensajes de conversaciones (RF-04) | Difuminado visual | Disponible · validado en Chrome (reloj pendiente). En `0.1.2`: «Responder», «Info. del mensaje», vídeos, documentos, citas y estados citados (serie `0.1.2-beta` validada por el propietario) | Texto, descripciones, multimedia (fotos, vídeos, miniaturas de vídeo y stickers), hora, reacciones e indicador de **leído** de los mensajes. Texto citado del recuadro «Responder». Texto y stickers de «Info. del mensaje». Nombre, formato, tamaño y etiqueta del icono de los documentos. Miniatura, duración y encabezado «Tú · Estados» de las citas (encabezado solo en español e inglés). Los botones, los demás iconos y los separadores siguen visibles. Sin cubrir: fotos y vídeos de «Info. del mensaje», miniaturas citadas de «Responder» y estados de foto, texto o GIF. |
@@ -1273,6 +1326,8 @@ El esquema solo indica qué hay dentro de la tarjeta. El orden y el anidamiento 
 
 **Incidencia (Chrome, `0.1.3`):** al escribir `@` en un grupo, la lista de participantes que se pueden mencionar deja los nombres visibles con RF-01 activada. Los avatares sí se difuminan con RF-02.
 
+**Validación real:** el 10 de noviembre de 2026, el propietario confirmó en Google Chrome que «todo funciona sin problemas» con `0.1.4-beta.1`, que incluye esta corrección (confirmación general, sin detalle de cada prueba manual de abajo). Está incluida en la estable `0.1.4`.
+
 **Diagnóstico real** (Chrome, `scripts/diagnostico-menciones.js`; Veilix cargado, cuatro filas, sin filtros dobles ni controles difuminados):
 
 ```text
@@ -1355,7 +1410,7 @@ Encontró el contenedor y la opción «todos» en las tres. Distinguió los part
 
 **Incidencia (Chrome, `0.1.4-beta.0`):** en un grupo, la etiqueta de miembro («Member Tag») de un participante queda visible con RF-01 y RF-04 activadas, aunque su nombre y el mensaje se difuminan. Es un apodo, rol o descripción que el grupo asigna a cada miembro.
 
-**Estado:** corregido en `0.1.4-beta.1` (`ETIQUETA_MIEMBRO`, solo CSS, en RF-01), pendiente de validación real. Debajo se conserva el historial del diagnóstico.
+**Estado:** corregido en `0.1.4-beta.1` (`ETIQUETA_MIEMBRO`, solo CSS, en RF-01). El 10 de noviembre de 2026, el propietario confirmó que `0.1.4-beta.1` funciona en Google Chrome. Es una confirmación general, sin detalle de cada prueba manual de abajo. Las variantes sin evidencia (citas, «Info. del grupo», participantes, mensajes propios, etiquetas solo de emojis) siguen pendientes. Debajo se conserva el historial del diagnóstico.
 
 **Evidencia final (Chrome, inspección sobre `0.1.4-beta.0`):** el propietario eligió la etiqueta en DevTools y comprobó visualmente que el único elemento de la variante V5 (`[data-veilix-inspeccion="V5-1"]`) era exactamente el apodo.
 
@@ -1563,7 +1618,7 @@ WhatsApp Web solo muestra la interfaz de chats con una sesión iniciada, y desde
 
 ## Matriz de compatibilidad
 
-Estado de la versión `0.1.3`. Las columnas distinguen tres tipos de evidencia:
+Estado de la versión `0.1.4`. Las columnas distinguen tres tipos de evidencia:
 
 - **Compilación:** se genera un paquete válido para ese navegador.
 - **Pruebas simuladas:** pruebas automatizadas sobre un DOM que imita WhatsApp Web, ejecutadas en Linux (Codespaces y GitHub Actions).
@@ -1581,7 +1636,7 @@ Estado de la versión `0.1.3`. Las columnas distinguen tres tipos de evidencia:
 
 Leyenda: ✅ comprobado · ◐ evidencia indirecta (mismo motor de renderizado, otro navegador) · ❌ no realizado · ⏳ pendiente de prueba real · — no aplica.
 
-- **Motor de difuminado (simulado):** las 299 pruebas de `tests/navegador` en cada motor:
+- **Motor de difuminado (simulado):** las 331 pruebas de `tests/navegador` en cada motor:
 
   | Archivo | Pruebas |
   | --- | --- |
@@ -1605,6 +1660,8 @@ Leyenda: ✅ comprobado · ◐ evidencia indirecta (mismo motor de renderizado, 
   | Encabezado de los estados citados (RF-04) | 11 |
   | «Info. del contacto» (RF-01 y RF-02) | 16 |
   | Llamadas (RF-01, RF-02 y RF-04) | 18 |
+  | Sugerencias de menciones (RF-01) | 17 |
+  | Etiquetas de miembro (RF-01) | 15 |
  Comprueban el CSS calculado, el revelado con cursor, Tab y atajo, la escritura, los clics y los cambios dinámicos.
 - **Extensión cargada (simulado):** `npm run test:extension`. Carga el paquete compilado, lo usa desde su panel real, bloquea la red y sirve una página simulada en `web.whatsapp.com`. Playwright solo puede cargar extensiones en Chromium.
 - **WebKit de Playwright no es Safari:** comparte el motor de renderizado, pero no la integración de extensiones de Safari (permisos por sitio, almacenamiento, ventana emergente), ni el sistema macOS ni la versión exacta de Safari.

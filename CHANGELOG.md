@@ -10,11 +10,64 @@ Cada entrega de prueba con cambios en el código recibe una versión nueva. Volv
 
 ## [Sin publicar]
 
-## [0.1.4-beta.1] — 2026-11-09
+## [0.1.4] — 2026-11-10
+
+**Versión estable** preparada el 10 de noviembre de 2026 a partir de `0.1.4-beta.1`, con la autorización del propietario. No está publicada ni etiquetada. Mantiene la congelación de funcionalidades: solo correcciones de privacidad de RF-01 sobre `0.1.3`.
+
+Manifiesto: `0.1.4` en Chrome, Edge, Firefox y Safari (sin `version_name`). Panel: «Veilix 0.1.4». Paquetes: `veilix-0.1.4-{chrome,edge,firefox,safari}.zip` y `veilix-0.1.4-sources.zip`.
+
+### Incluye
+
+Lo entregado en `0.1.4-beta.0` y `0.1.4-beta.1`; el detalle está en [Compilaciones internas de 0.1.4](#compilaciones-internas-de-014).
+
+- **Sugerencias de menciones (RF-01, `0.1.4-beta.0`):** al escribir `@` en un grupo, el nombre de cada participante (`NOMBRE_MENCION_CONTACTO`, en `contact-mention-list-item` › `mention-primary`), con un único filtro, revelado con su fila. Nunca el botón, la opción «todos», `mention-secondary` ni el avatar (RF-02).
+- **Etiquetas de miembro (RF-01, `0.1.4-beta.1`):** el apodo o rol junto al autor de los mensajes de grupo (`ETIQUETA_MIEMBRO`), con un único filtro, revelado con el mensaje como el autor. Nunca su control ni controles de forma parecida como «Leer más».
+- **Descripción de RF-01 en el panel:** menciona las sugerencias de menciones, las llamadas y las etiquetas de miembro.
+- **Diagnósticos** (no se incluyen en los paquetes): `scripts/diagnostico-menciones.js`, `scripts/diagnostico-etiquetas-miembro.js` y `scripts/inspeccion-etiqueta-miembro.js`.
+- **Sin cambios en:** RF-02, RF-03, RF-04, RF-05, los permisos (solo `storage`), el almacenamiento, el panel de Veilix y la identidad visual.
+
+### Cambiado (versionado)
+
+- Se pasa de `0.1.4-beta.1` a `0.1.4` con `npm run version:estable`, sin cambios de comportamiento: el código de `src/`, `public/` y `wxt.config.ts` es el de `0.1.4-beta.1`.
+- Las compilaciones internas `0.1.4.2000` y `0.1.4.2001` quedan numéricamente por encima de `0.1.4`. Es la consecuencia aceptada en la renumeración de `0.1.0`: no afecta a las tiendas, porque las betas nunca se suben.
+- **Commits de las betas:** las dos betas se confirmaron y se integraron en `main` (PR #5 y #6) antes de esta estable. El PR #6 corrige solo errores de lint de una prueba.
+- Cualquier corrección posterior empieza en `0.1.5-beta.0` (`npm run version:beta`) y no reutiliza `0.1.4`.
+
+### Validación
+
+- **Real en Google Chrome**, comunicada por el propietario el 10 de noviembre de 2026 (sistema operativo sin indicar): `0.1.4-beta.1` funciona, y «todo funciona sin problemas», también las sugerencias de menciones de `0.1.4-beta.0`.
+  - Fue una confirmación general, sin detalle por caso.
+- **Automatizada:** todas las verificaciones de `AGENTS.md` son correctas; los resultados están en la documentación técnica ([`docs/desarrollo.md`](docs/desarrollo.md), «Versión 0.1.4»).
+- **Sin prueba real** en Edge, Firefox, Brave, Opera, Vivaldi ni Safari.
+
+### Distribución
+
+- **Pendiente de decisión del propietario:** la primera publicación prevista en [`docs/publicacion.md`](docs/publicacion.md) sigue siendo `0.1.3`.
+- **Huella SHA-256 de los paquetes de Chrome y Edge de `0.1.4`**, que son idénticos: `93d34bb404a9ad48cd11bf46028e5bfff58ae6cb35b956cffc1a87e596f4a78a`.
+- **No autorizados para publicar:** los de Firefox y Safari, que son técnicos.
+- **Privado:** el de fuentes. Nunca se publica.
+
+### Limitaciones conocidas
+
+- **Sugerencias de menciones:**
+  - Al recorrer la lista con las flechas, el foco se queda en el editor y los nombres no se revelan; con el teclado, el atajo los revela.
+  - `mention-secondary` no se protege, porque no se ha observado con contenido.
+- **Etiquetas de miembro:**
+  - **Sin evidencia:** las etiquetas en citas, en «Info. del grupo», en la lista de participantes, en mensajes propios y en el recuadro «Responder».
+  - **Etiqueta solo con emojis:** RF-04 podría reconocerla también como reacción; con RF-01 desactivado seguiría difuminada.
+  - **Colisiones:** se midieron solo en las conversaciones del propietario.
+- **Hallazgo independiente sin corregir:** el autor de una cita tiene dos filtros, de RF-01 y de RF-04 sobre un antecesor.
+- **Resto:** las limitaciones de [0.1.3] siguen vigentes.
+
+## Compilaciones internas de 0.1.4
+
+Compilaciones internas de prueba `0.1.4-beta.0` y `0.1.4-beta.1`, conservadas tal como se registraron. No se publicaron. Su contenido está consolidado en [0.1.4]. Van con un nivel de encabezado menos porque sus manifiestos (`0.1.4.2000` y `0.1.4.2001`) son mayores que el de la estable `0.1.4`: la lista de versiones `## [...]` solo recoge las estables, en orden creciente de manifiesto.
+
+### [0.1.4-beta.1] — 2026-11-09
 
 Compilación interna de prueba sobre `0.1.4-beta.0`. Manifiesto: `0.1.4.2001` en Chromium y Firefox (`version_name` `0.1.4-beta.1` en Chromium), y `0.1.4` en Safari. Corrección de privacidad de las etiquetas de miembro, autorizada por el propietario. No inicia formalmente la Fase 3, y los paquetes de `0.1.3` no cambian.
 
-### Corregido
+#### Corregido
 
 - **Etiquetas de miembro (RF-01):** en los grupos, la etiqueta de miembro («Member Tag»: apodo, rol o descripción que el grupo asigna a un participante) quedaba visible junto al autor de sus mensajes con `0.1.4-beta.0`, aunque el nombre y el mensaje se difuminaban.
   - **Estructura confirmada** por tres ejecuciones reales en Chrome:
@@ -28,13 +81,14 @@ Compilación interna de prueba sobre `0.1.4-beta.0`. Manifiesto: `0.1.4.2001` en
     - Se difumina solo el `span`, con un único filtro, en la misma regla que el autor. Se revela con el mensaje (cursor o foco de teclado dentro) y con el atajo.
   - **Lo que nunca se difumina:** el control de la etiqueta (sigue recibiendo clics y foco), la cabecera, el autor (mantiene su propio filtro) y los controles de forma parecida que no siguen inmediatamente a la rama del autor o que comparten rama con el cuerpo, como «Leer más».
   - **Implementación:** solo CSS, en RF-01. Sin observadores, marcas, permisos ni cambios del manifiesto. Sin cambios en RF-02 ni RF-04.
-  - **Sin evidencia:** las etiquetas en citas, en «Info. del grupo», en la lista de participantes, en mensajes propios y en el recuadro «Responder»; y una etiqueta formada solo por emojis, que RF-04 podría reconocer además como reacción. Pendiente de validación real.
+  - **Sin evidencia:** las etiquetas en citas, en «Info. del grupo», en la lista de participantes, en mensajes propios y en el recuadro «Responder»; y una etiqueta formada solo por emojis, que RF-04 podría reconocer además como reacción.
+  - **Validación real:** el 10 de noviembre de 2026, el propietario confirmó que `0.1.4-beta.1` funciona en Google Chrome. Fue una confirmación general, sin detalle de cada prueba manual. Las variantes sin evidencia siguen pendientes.
 
-### Cambiado
+#### Cambiado
 
 - **Descripción de RF-01 en el panel:** menciona las etiquetas de miembro de los remitentes de grupo.
 
-### Añadido (diagnóstico)
+#### Añadido (diagnóstico)
 
 - `scripts/diagnostico-etiquetas-miembro.js`: diagnóstico anonimizado de las etiquetas de miembro.
   - **Qué hace:** clasifica cada texto de los mensajes por zona (autor, cuerpo, hora, cita u OTRO) y da la relación de los textos OTRO con el autor y el cuerpo, las reglas de Veilix que los alcanzan y los filtros dobles.
@@ -47,11 +101,11 @@ Compilación interna de prueba sobre `0.1.4-beta.0`. Manifiesto: `0.1.4.2001` en
   - En un DOM inventado, V1 a V4 también alcanzan un «Leer más» y una reacción; V5, solo etiquetas.
 - Ninguno de los dos se incluye en los paquetes.
 
-### Registrado (hallazgo independiente)
+#### Registrado (hallazgo independiente)
 
 - **Filtro doble en el autor de una cita:** lo producen RF-01, sobre el autor, y RF-04, sobre un antecesor. No se corrige porque no se ha demostrado que cause una regresión. Pendiente: en qué tipo de cita ocurre, y si con RF-01 desactivado el autor de la cita sigue difuminado por RF-04.
 
-### Añadido (pruebas)
+#### Añadido (pruebas)
 
 - `tests/navegador/etiquetas-miembro.test.ts`, en Chromium, Firefox y WebKit (15 pruebas por motor):
   - **Casos:** tres etiquetas tras autores de distinto tipo (botón, `span`, no guardado) y un mensaje consecutivo sin autor.
@@ -69,11 +123,11 @@ Compilación interna de prueba sobre `0.1.4-beta.0`. Manifiesto: `0.1.4.2001` en
 - `tests/navegador/interruptores.test.ts` y `npm run test:extension`: la etiqueta forma parte de lo que protege RF-01. La verificación de extremo a extremo la comprueba en un mensaje que aparece después, junto a un «Leer más» de la misma forma.
 - `tests/apoyo/whatsapp-simulado.ts`: `etiquetaMiembro` en `MensajeObservado`.
 
-## [0.1.4-beta.0] — 2026-11-09
+### [0.1.4-beta.0] — 2026-11-09
 
 Compilación interna de prueba sobre la estable `0.1.3`. Manifiesto: `0.1.4.2000` en Chromium y Firefox (`version_name` `0.1.4-beta.0` en Chromium), y `0.1.4` en Safari. Corrección de privacidad de las sugerencias de menciones, autorizada por el propietario. No inicia formalmente la Fase 3, y los paquetes de `0.1.3` no cambian.
 
-### Corregido
+#### Corregido
 
 - **Sugerencias de menciones (RF-01):** al escribir `@` en un grupo con `0.1.3`, los nombres de los participantes de la lista quedaban visibles. Los avatares sí se difuminaban con RF-02.
   - **Estructura confirmada** por el diagnóstico real (`scripts/diagnostico-menciones.js`, Chrome, cuatro filas: «todos» y tres participantes):
@@ -93,11 +147,11 @@ Compilación interna de prueba sobre la estable `0.1.3`. Manifiesto: `0.1.4.2000
   - **Sin evidencia:** el contenido de `mention-secondary` cuando no está vacío, que no se protege, y la estructura interior de «todos».
   - Pendiente de validación real.
 
-### Cambiado
+#### Cambiado
 
 - **Descripción de RF-01 en el panel:** menciona las sugerencias de menciones (@) y las llamadas. RF-01 protege el nombre de las llamadas desde `0.1.3`, pero el texto no lo decía.
 
-### Añadido (diagnóstico)
+#### Añadido (diagnóstico)
 
 - `scripts/diagnostico-menciones.js`: diagnóstico anonimizado de la lista de sugerencias de menciones.
   - **Cómo localiza la lista:** por los atributos ARIA del editor, `role="listbox"`, `data-testid`, los avatares y el texto genérico «todos».
@@ -105,7 +159,7 @@ Compilación interna de prueba sobre la estable `0.1.3`. Manifiesto: `0.1.4.2000
   - **Si la lista se cierra** al pasar a la consola, se repite una vez a los 8 segundos.
   - No se incluye en los paquetes.
 
-### Añadido (pruebas)
+#### Añadido (pruebas)
 
 - `tests/navegador/menciones.test.ts`, en Chromium, Firefox y WebKit (17 pruebas por motor):
   - **Qué se difumina:** los nombres de tres participantes, cada uno con un único filtro, y no el botón, «todos», su icono, la información secundaria, el avatar ni el editor.
@@ -1529,6 +1583,7 @@ Manifiesto: `0.2.0.2002` en Chromium y Firefox, y `0.2.0` en Safari.
 - ESLint, Vitest e integración continua.
 
 [Sin publicar]: #sin-publicar
+[0.1.4]: #014--2026-11-10
 [0.1.4-beta.1]: #014-beta1--2026-11-09
 [0.1.4-beta.0]: #014-beta0--2026-11-09
 [0.1.3]: #013--2026-10-30
