@@ -28,7 +28,8 @@ Compilación interna de prueba sobre `0.1.4-beta.0`. Manifiesto: `0.1.4.2001` en
     - Se difumina solo el `span`, con un único filtro, en la misma regla que el autor. Se revela con el mensaje (cursor o foco de teclado dentro) y con el atajo.
   - **Lo que nunca se difumina:** el control de la etiqueta (sigue recibiendo clics y foco), la cabecera, el autor (mantiene su propio filtro) y los controles de forma parecida que no siguen inmediatamente a la rama del autor o que comparten rama con el cuerpo, como «Leer más».
   - **Implementación:** solo CSS, en RF-01. Sin observadores, marcas, permisos ni cambios del manifiesto. Sin cambios en RF-02 ni RF-04.
-  - **Sin evidencia:** las etiquetas en citas, en «Info. del grupo», en la lista de participantes, en mensajes propios y en el recuadro «Responder»; y una etiqueta formada solo por emojis, que RF-04 podría reconocer además como reacción. Pendiente de validación real.
+  - **Sin evidencia:** las etiquetas en citas, en «Info. del grupo», en la lista de participantes, en mensajes propios y en el recuadro «Responder»; y una etiqueta formada solo por emojis, que RF-04 podría reconocer además como reacción.
+  - **Validación real:** el 10 de noviembre de 2026, el propietario confirmó que `0.1.4-beta.1` funciona en Google Chrome. Fue una confirmación general, sin detalle de cada prueba manual. Las variantes sin evidencia siguen pendientes.
 
 ### Cambiado
 
