@@ -4,7 +4,7 @@
   "private": true,
   "version": "0.1.4",
   "type": "module",
-  "license": "UNLICENSED",
+  "license": "GPL-3.0-or-later",
   "engines": {
     "node": ">=22.12.0"
   },
