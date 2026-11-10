@@ -8,11 +8,11 @@ Extensión de privacidad para WhatsApp Web, desarrollada de forma independiente.
 
 ## Estado
 
-Versión actual: **0.1.4**, estable preparada el 10 de noviembre de 2026 a partir de `0.1.4-beta.1`, con la autorización del propietario. No está publicada ni etiquetada. No inicia la Fase 3.
-- **Qué añade:** con RF-01, las [sugerencias de menciones](#sugerencias-de-menciones-en-grupos-rf-01-corrección-en-014-beta0) (`@`) y las [etiquetas de miembro](#etiquetas-de-miembro-en-grupos-rf-01-corrección-en-014-beta1) de los grupos. No cambia el comportamiento respecto a beta.1. Detalle en [Versión 0.1.4](#versión-014-estable).
+Versión actual: **0.1.4**, estable preparada el 10 de noviembre de 2026 a partir de `0.1.4-beta.1`, **elegida por el propietario como última versión estable y primera versión del lanzamiento público** (solo Chrome y Edge). Está etiquetada como `v0.1.4` en `main` (commit `19f418a`) y no está publicada. No inicia la Fase 3.
+- **Qué añade:** con RF-01, las [sugerencias de menciones](#sugerencias-de-menciones-en-grupos-rf-01-corrección-en-014-beta0) (`@`) y las [etiquetas de miembro](#etiquetas-de-miembro-en-grupos-rf-01-corrección-en-014-beta1) de los grupos. No cambia el comportamiento respecto a beta.1. Detalle en [Versión 0.1.4](#versión-014-estable-elegida-para-el-primer-lanzamiento-público).
 - **Validación:** el 10 de noviembre de 2026, el propietario confirmó en Google Chrome que `0.1.4-beta.1` funciona y que «todo funciona sin problemas», menciones incluidas (confirmación general, sin detalle por caso).
-- **Lanzamiento:** la primera publicación prevista sigue siendo `0.1.3` ([Publicación de Veilix](publicacion.md)) hasta que el propietario decida si `0.1.4` la sustituye.
-- **Estable anterior:** `0.1.3`, aprobada el 30 de octubre y elegida para el primer lanzamiento público, etiquetada como `v0.1.3` en `main` (commit `ce22e1d`). Sus paquetes se conservan sin cambios. Ver [Versión 0.1.3](#versión-013-estable-elegida-para-el-primer-lanzamiento-público).
+- **Lanzamiento:** la primera publicación es `0.1.4`, siguiendo [Publicación de Veilix](publicacion.md). Sustituye a `0.1.3`.
+- **Estable anterior:** `0.1.3`, aprobada el 30 de octubre y elegida entonces para el primer lanzamiento público, etiquetada como `v0.1.3` en `main` (commit `ce22e1d`). El 10 de noviembre la sustituyó `0.1.4` para ese lanzamiento. Sus paquetes se conservan sin cambios y no se publican. Ver [Versión 0.1.3](#versión-013-estable-elegida-para-el-primer-lanzamiento-público).
 - **Estables previas:** `0.1.2`, etiquetada como `v0.1.2` y sustituida por `0.1.3` para el lanzamiento ([Versión 0.1.2](#versión-012-estable-aprobada-para-el-primer-lanzamiento-público)); y `0.1.1`, antecedente sin aprobación ni publicación constantes ([Versión 0.1.1](#versión-011-estable-anterior-antecedente)).
 - **Siguiente versión:** cualquier corrección posterior empezará en `0.1.5-beta.0` (`npm run version:beta`).
 - **Historial:** el completo está en [CHANGELOG.md](../CHANGELOG.md).
@@ -24,9 +24,9 @@ Las secciones de cada corrección conservan el nombre de la beta en que se intro
 - **Ampliación multiplataforma.** Una sola base de código genera los paquetes de Chromium (Chrome, Brave, Opera y Vivaldi), Edge, Firefox y Safari. El motor de difuminado se prueba de forma automatizada en Chromium, Firefox y WebKit. **Fuera de Google Chrome no se ha hecho ninguna prueba real, y Safari no se ha ejecutado nunca** (requiere macOS).
 - **Fase 3:** no iniciada.
 
-## Versión 0.1.4 (estable)
+## Versión 0.1.4 (estable, elegida para el primer lanzamiento público)
 
-Preparada el 10 de noviembre de 2026 a partir de `0.1.4-beta.1` con `npm run version:estable`, sin cambios de comportamiento. Manifiesto `0.1.4` en Chrome, Edge, Firefox y Safari, sin `version_name`. El panel muestra «Veilix 0.1.4». No está publicada ni etiquetada.
+Preparada el 10 de noviembre de 2026 a partir de `0.1.4-beta.1` con `npm run version:estable`, sin cambios de comportamiento. Ese mismo día el propietario la eligió como última versión estable y primera versión del lanzamiento público, en lugar de `0.1.3`. Manifiesto `0.1.4` en Chrome, Edge, Firefox y Safari, sin `version_name`. El panel muestra «Veilix 0.1.4». Está etiquetada como `v0.1.4` en `main` (commit `19f418a`) y no está publicada.
 
 ### Contenido de 0.1.4
 
@@ -63,7 +63,7 @@ Preparada el 10 de noviembre de 2026 a partir de `0.1.4-beta.1` con `npm run ver
 
 - **Sin cambios funcionales:** el código de `src/`, `public/` y `wxt.config.ts` es el de `0.1.4-beta.1`; solo cambia la versión de `package.json`.
 - **Huella SHA-256 de los paquetes de Chrome y Edge de `0.1.4`,** que son idénticos: `93d34bb404a9ad48cd11bf46028e5bfff58ae6cb35b956cffc1a87e596f4a78a`. Los de Firefox y Safari son técnicos, y el de fuentes es privado.
-- **Distribución:** pendiente de decisión del propietario. [Publicación de Veilix](publicacion.md) sigue preparada para `0.1.3`.
+- **Distribución:** la prevista son solo los paquetes de Chrome y Edge, siguiendo [Publicación de Veilix](publicacion.md), cuyo guion comprueba esa huella. `SHA256SUMS.txt` se genera al publicar.
 - **Paquetes de `0.1.3`:** se conservan con las mismas huellas.
 
 ### Limitaciones conocidas de 0.1.4
@@ -355,7 +355,7 @@ No son requisitos del cierre de la fase, sino tareas técnicas abiertas:
 
 - **Otros navegadores y sistemas:** pruebas manuales en Edge, Brave, Opera, Vivaldi, Firefox y Safari, y en Chrome con el sistema operativo indicado. Ver la [matriz de compatibilidad](#matriz-de-compatibilidad).
 - **Indicador de reloj (pendiente):** validación pendiente.
-- **Prueba de humo antes de publicar:** la de `0.1.2` (ver [Antes de publicar 0.1.2](#antes-de-publicar-012)). La de `0.1.1` ya no es necesaria.
+- **Prueba de humo antes de publicar:** la del paquete final de `0.1.4`, en [Publicación de Veilix](publicacion.md#prueba-de-humo-del-paquete-final). Las de `0.1.1` y `0.1.2` ya no son necesarias.
 - **Correcciones de RF-01 y RF-02 de `0.1.1`:** validadas en Chrome real con `0.1.1-beta.0`, `0.1.1-beta.2` y `0.1.1-beta.3`. La causa de la regresión de remitentes de beta.2 sigue sin conocerse, aunque no se repitió en beta.3. Ver [Versión 0.1.1](#versión-011-estable-anterior-antecedente).
 - **Alertas de `npm audit`** en dependencias de desarrollo (`web-ext → node-forge`).
 

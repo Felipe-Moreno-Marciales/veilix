@@ -12,7 +12,7 @@ Cada entrega de prueba con cambios en el código recibe una versión nueva. Volv
 
 ## [0.1.4] — 2026-11-10
 
-**Versión estable** preparada el 10 de noviembre de 2026 a partir de `0.1.4-beta.1`, con la autorización del propietario. No está publicada ni etiquetada. Mantiene la congelación de funcionalidades: solo correcciones de privacidad de RF-01 sobre `0.1.3`.
+**Versión estable seleccionada por el propietario como última versión estable y primera versión del lanzamiento público de Veilix** (10 de noviembre de 2026), preparada ese mismo día a partir de `0.1.4-beta.1`. Está etiquetada como `v0.1.4` en `main` (commit `19f418a`) y todavía no está publicada. Mantiene la congelación de funcionalidades: solo correcciones de privacidad de RF-01 sobre `0.1.3`.
 
 Manifiesto: `0.1.4` en Chrome, Edge, Firefox y Safari (sin `version_name`). Panel: «Veilix 0.1.4». Paquetes: `veilix-0.1.4-{chrome,edge,firefox,safari}.zip` y `veilix-0.1.4-sources.zip`.
 
@@ -40,9 +40,14 @@ Lo entregado en `0.1.4-beta.0` y `0.1.4-beta.1`; el detalle está en [Compilacio
 - **Automatizada:** todas las verificaciones de `AGENTS.md` son correctas; los resultados están en la documentación técnica ([`docs/desarrollo.md`](docs/desarrollo.md), «Versión 0.1.4»).
 - **Sin prueba real** en Edge, Firefox, Brave, Opera, Vivaldi ni Safari.
 
+### Aprobación
+
+- **Primer lanzamiento público:** el 10 de noviembre de 2026, el propietario eligió `0.1.4` como última versión estable y primera versión del lanzamiento público, en lugar de `0.1.3`. `0.1.3` se conserva etiquetada y sin publicar.
+- **Etiqueta:** `v0.1.4` sobre el commit de fusión `19f418a` (PR #7), tras pasar la integración continua. `v0.1.2` y `v0.1.3` no cambian.
+
 ### Distribución
 
-- **Pendiente de decisión del propietario:** la primera publicación prevista en [`docs/publicacion.md`](docs/publicacion.md) sigue siendo `0.1.3`.
+- **Prevista:** solo los paquetes de Chrome y Edge, siguiendo [`docs/publicacion.md`](docs/publicacion.md).
 - **Huella SHA-256 de los paquetes de Chrome y Edge de `0.1.4`**, que son idénticos: `93d34bb404a9ad48cd11bf46028e5bfff58ae6cb35b956cffc1a87e596f4a78a`.
 - **No autorizados para publicar:** los de Firefox y Safari, que son técnicos.
 - **Privado:** el de fuentes. Nunca se publica.
@@ -210,6 +215,8 @@ Lo entregado en `0.1.3-beta.0`; el detalle está en [Compilaciones internas de 0
 ### Aprobación
 
 - **Primer lanzamiento público:** el 30 de octubre de 2026, el propietario aprobó técnicamente `0.1.3` y la eligió como primera versión del lanzamiento público, en lugar de `0.1.2`. La publicación todavía no se ha hecho.
+
+- **Nota (10 de noviembre de 2026):** el propietario eligió `0.1.4` para el primer lanzamiento público, en lugar de `0.1.3`. `0.1.3` se conserva etiquetada como `v0.1.3` y sin publicar.
 
 ### Distribución
 
