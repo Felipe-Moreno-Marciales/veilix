@@ -85,7 +85,7 @@ Es una instalación manual. El navegador puede avisar de que la extensión está
 
 ## Limitaciones
 
-- **Validación:** Veilix se ha probado en Google Chrome. Los demás navegadores no se han probado todavía con WhatsApp Web real.
+- **Validación:** Veilix se ha probado con WhatsApp Web real en Google Chrome y en Brave. Edge, Opera, Vivaldi, Firefox y Safari no se han probado todavía.
 - **Partes de WhatsApp Web aún no cubiertas:** algunas, como las fotos y los vídeos de «Info. del mensaje» o las notas guardadas de un contacto, pueden quedar visibles.
 - **Cambios de WhatsApp:** si WhatsApp cambia su diseño, alguna protección puede dejar de funcionar hasta que se actualice Veilix.
 
