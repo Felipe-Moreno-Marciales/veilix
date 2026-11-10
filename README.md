@@ -6,7 +6,7 @@
 
 <p align="center"><strong>Privacidad para WhatsApp Web.</strong><br>Funciona de forma local y no envía datos a servidores externos.</p>
 
-<p align="center">Versión estable <strong>0.1.4</strong> · Software propietario</p>
+<p align="center">Versión estable <strong>0.1.4</strong> · Código abierto (GPL-3.0)</p>
 
 ---
 
@@ -81,6 +81,7 @@ Es una instalación manual. El navegador puede avisar de que la extensión está
 - **Permisos mínimos.** Solo pide guardar sus preferencias (`storage`) y solo actúa en `web.whatsapp.com`.
 - **No guarda tus conversaciones.** Lee la página únicamente para decidir qué difuminar, en tu propio equipo. Lo único que almacena son tus preferencias.
 - **Protección visual.** Difumina lo que se ve en pantalla. No cifra nada ni cambia lo que WhatsApp guarda o envía.
+- **Código abierto.** Todo el código de Veilix es público, así que cualquiera puede comprobar que no hay telemetría ni envío de datos.
 
 ## Limitaciones
 
@@ -98,8 +99,10 @@ La lista completa está en el [historial de versiones](CHANGELOG.md#014--2026-11
 
 ## Licencia y créditos
 
-© 2026 Felipe Moreno Marciales. Todos los derechos reservados.
+© 2026 Felipe Moreno Marciales.
 
-Veilix es software propietario de código cerrado (`UNLICENSED`). No se permite copiar, modificar ni redistribuir su código sin autorización expresa del autor.
+Veilix es software libre: puedes usarlo, estudiarlo, modificarlo y redistribuirlo según los términos de la [Licencia Pública General de GNU](LICENSE), versión 3 o (a tu elección) cualquier versión posterior (`GPL-3.0-or-later`). Si distribuyes una versión modificada, también debes publicar su código con la misma licencia.
+
+Se ofrece **sin ninguna garantía**; los detalles están en la [licencia](LICENSE). Esta licencia se aplica también a todas las versiones anteriores de Veilix.
 
 Hecho con ❤️ por **Felipe Moreno Marciales** 🇨🇴
