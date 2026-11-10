@@ -15,6 +15,7 @@ Versión actual: **0.1.4**, estable preparada el 10 de noviembre de 2026 a parti
 - **Estable anterior:** `0.1.3`, aprobada el 30 de octubre y elegida entonces para el primer lanzamiento público, etiquetada como `v0.1.3` en `main` (commit `ce22e1d`). El 10 de noviembre la sustituyó `0.1.4` para ese lanzamiento. Sus paquetes se conservan sin cambios y no se publican. Ver [Versión 0.1.3](#versión-013-estable-elegida-para-el-primer-lanzamiento-público).
 - **Estables previas:** `0.1.2`, etiquetada como `v0.1.2` y sustituida por `0.1.3` para el lanzamiento ([Versión 0.1.2](#versión-012-estable-aprobada-para-el-primer-lanzamiento-público)); y `0.1.1`, antecedente sin aprobación ni publicación constantes ([Versión 0.1.1](#versión-011-estable-anterior-antecedente)).
 - **Siguiente versión:** cualquier corrección posterior empezará en `0.1.5-beta.0` (`npm run version:beta`).
+- **Licencia:** desde el 10 de noviembre de 2026, Veilix es código abierto con licencia GPL-3.0 o posterior (`GPL-3.0-or-later`, [`LICENSE`](../LICENSE)). Antes era propietario (`UNLICENSED`). La nueva licencia se aplica también a las versiones anteriores. El repositorio sigue privado hasta que el propietario lo haga público.
 - **Historial:** el completo está en [CHANGELOG.md](../CHANGELOG.md).
 
 Las secciones de cada corrección conservan el nombre de la beta en que se introdujo, por ejemplo [«Info. del contacto»](#panel-info-del-contacto-rf-01-desde-012-beta13) o [Miniaturas de vídeo](#miniaturas-de-vídeo-corrección-en-012-beta7).
