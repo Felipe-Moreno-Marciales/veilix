@@ -16,7 +16,8 @@ import { MENSAJES_AVATARES_GRUPO, montarWhatsAppConAvataresGrupo, type WhatsAppS
 
 const FILTRO_VEILIX = `blur(${DESENFOQUE})`;
 const CINCO = ['difuminarNombres', 'difuminarFotos', 'difuminarMensajesRecientes', 'difuminarMensajesConversacion', 'difuminarCampoEntrada'] as const;
-const PARTICIPANTES = ['Ana Secreta', '~ Bruno', 'Eva Privada'];
+// Como en la captura del propietario: información secundaria con un nombre de perfil, con emojis o vacía.
+const PARTICIPANTES = [{ nombre: 'Ana Secreta', secundario: 'Camila Perfil' }, '~ Bruno', { nombre: 'Eva Privada', secundario: '🕊️📍' }];
 
 function preferenciasCon(...ids: IdFuncionalidad[]): Preferencias {
   const funcionalidades = { ...PREFERENCIAS_PREDETERMINADAS.funcionalidades };
@@ -91,14 +92,15 @@ describe('sugerencias de menciones en un grupo', () => {
   const nombres = () => todos('nombre-mencion');
   const contenedoresNombre = () => todos('contenedor-nombre-mencion');
   const avatares = () => todos('avatar-mencion');
+  const secundarios = () => todos('texto-secundario-mencion');
+  const contenedoresSecundario = () => todos('secundario-mencion');
   const filasParticipante = () => todos('fila-mencion').filter((f) => f.querySelector('[data-testid="contact-mention-list-item"]'));
   const filaTodos = () => requerir(todos('fila-mencion').find((f) => f.querySelector('[data-testid="mention-all-list-item"]')));
-  /** Lo que nunca debe difuminarse: la lista, los botones, «todos», su icono y la información secundaria. */
+  /** Lo que nunca debe difuminarse: la lista, los botones, «todos», su icono y su descripción genérica. */
   const intocables = () => [
     ...todos('menciones'),
     ...todos('fila-mencion'),
     ...todos('mencion-contacto'),
-    ...todos('secundario-mencion'),
     ...todos('mencion-todos'),
     ...todos('nombre-mencion-todos'),
     ...todos('descripcion-mencion-todos'),
@@ -113,8 +115,9 @@ describe('sugerencias de menciones en un grupo', () => {
     expect(wa.editor.getAttribute('aria-autocomplete')).toBe('list');
   });
 
-  it('sin interruptores, los nombres, los avatares y «todos» se ven', () => {
-    for (const elemento of [...nombres(), ...avatares(), ...intocables()]) expect(difuminado(elemento), describir(elemento)).toBe(false);
+  it('sin interruptores, los nombres, la información secundaria, los avatares y «todos» se ven', () => {
+    expect(secundarios()).toHaveLength(2);
+    for (const elemento of [...nombres(), ...secundarios(), ...avatares(), ...intocables()]) expect(difuminado(elemento), describir(elemento)).toBe(false);
   });
 
   it('RF-01 difumina el contenedor del nombre de cada participante, con un único filtro', async () => {
@@ -126,7 +129,16 @@ describe('sugerencias de menciones en un grupo', () => {
     }
   });
 
-  it('RF-01 no difumina el botón, «todos», su icono, la información secundaria, el avatar ni el editor', async () => {
+  it('RF-01 difumina la información secundaria de cada participante, con un único filtro en su contenedor', async () => {
+    await aplicar('difuminarNombres');
+    for (const contenedor of contenedoresSecundario()) expect(getComputedStyle(contenedor).filter, describir(contenedor)).toBe(FILTRO_VEILIX);
+    for (const texto of secundarios()) {
+      expect(getComputedStyle(texto).filter, describir(texto)).toBe('none');
+      expect(filtrosVeilix(texto), describir(texto)).toBe(1);
+    }
+  });
+
+  it('RF-01 no difumina el botón, «todos», su icono ni su descripción, el avatar ni el editor', async () => {
     await aplicar('difuminarNombres');
     for (const elemento of [...intocables(), ...avatares(), wa.editor]) expect(difuminado(elemento), describir(elemento)).toBe(false);
   });
@@ -134,42 +146,45 @@ describe('sugerencias de menciones en un grupo', () => {
   it('con RF-01 desactivada, los nombres vuelven a verse', async () => {
     await aplicar('difuminarNombres', 'difuminarFotos');
     await aplicar('difuminarFotos');
-    for (const nombre of nombres()) expect(difuminado(nombre), describir(nombre)).toBe(false);
+    for (const elemento of [...nombres(), ...secundarios()]) expect(difuminado(elemento), describir(elemento)).toBe(false);
     for (const avatar of avatares()) expect(difuminado(avatar)).toBe(true);
   });
 
   it('RF-02 difumina solo los avatares, cada uno con un único filtro, sin depender de RF-01', async () => {
     await aplicar('difuminarFotos');
     for (const avatar of avatares()) expect(filtrosVeilix(avatar)).toBe(1);
-    for (const elemento of [...nombres(), ...intocables()]) expect(difuminado(elemento), describir(elemento)).toBe(false);
+    for (const elemento of [...nombres(), ...secundarios(), ...intocables()]) expect(difuminado(elemento), describir(elemento)).toBe(false);
     await aplicar('difuminarNombres');
     for (const avatar of avatares()) expect(difuminado(avatar)).toBe(false);
     for (const nombre of nombres()) expect(filtrosVeilix(nombre)).toBe(1);
   });
 
-  it('con los cinco activos, cada nombre y cada avatar tiene un único filtro, y «todos» se ve', async () => {
+  it('con los cinco activos, cada nombre, información secundaria y avatar tiene un único filtro, y «todos» se ve', async () => {
     await aplicar(...CINCO);
-    for (const elemento of [...nombres(), ...avatares()]) expect(filtrosVeilix(elemento), describir(elemento)).toBe(1);
+    for (const elemento of [...nombres(), ...secundarios(), ...avatares()]) expect(filtrosVeilix(elemento), describir(elemento)).toBe(1);
     for (const elemento of intocables()) expect(difuminado(elemento), describir(elemento)).toBe(false);
   });
 
-  it('el cursor sobre una sugerencia revela solo su nombre, y al apartarlo se vuelve a difuminar', async () => {
+  it('el cursor sobre una sugerencia revela solo su nombre y su información secundaria, y al apartarlo se vuelven a difuminar', async () => {
     await aplicar(...CINCO);
-    const [primera, segunda] = [requerir(filasParticipante()[0]), requerir(filasParticipante()[1])];
+    const [primera, tercera] = [requerir(filasParticipante()[0]), requerir(filasParticipante()[2])];
     const nombreDe = (fila: Element) => requerir(fila.querySelector('[data-prueba="nombre-mencion"]'));
+    const secundarioDe = (fila: Element) => requerir(fila.querySelector('[data-prueba="texto-secundario-mencion"]'));
     await userEvent.hover(primera);
     await expect.poll(() => difuminado(nombreDe(primera))).toBe(false);
-    expect(difuminado(nombreDe(segunda))).toBe(true);
+    expect(difuminado(secundarioDe(primera))).toBe(false);
+    expect(difuminado(nombreDe(tercera))).toBe(true);
+    expect(difuminado(secundarioDe(tercera))).toBe(true);
     await userEvent.hover(zonaNeutra());
-    await expect.poll(() => nombres().every(difuminado)).toBe(true);
+    await expect.poll(() => [...nombres(), ...secundarios()].every(difuminado)).toBe(true);
   });
 
   it('el atajo revela todos los nombres y los vuelve a difuminar al soltarlo', async () => {
     await aplicar(...CINCO);
     await userEvent.keyboard('{Control>}{Shift>}[Space>]');
-    await expect.poll(() => [...nombres(), ...avatares()].some(difuminado)).toBe(false);
+    await expect.poll(() => [...nombres(), ...secundarios(), ...avatares()].some(difuminado)).toBe(false);
     await userEvent.keyboard('[/Space]{/Shift}{/Control}');
-    await expect.poll(() => [...nombres(), ...avatares()].every(difuminado)).toBe(true);
+    await expect.poll(() => [...nombres(), ...secundarios(), ...avatares()].every(difuminado)).toBe(true);
   });
 
   it('las flechas recorren la lista sin mover el foco del editor ni revelar los nombres', async () => {
