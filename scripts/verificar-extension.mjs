@@ -76,7 +76,7 @@ const PAGINA_SIMULADA = `<!doctype html>
       el('button', { type: 'button', 'data-prueba': 'boton-mencion' },
         el('div', { 'data-testid': 'contact-mention-list-item' },
           el('div', { 'data-testid': 'mention-primary', 'data-prueba': 'nombre-mencion' }, el('span', { dir: 'auto' }, 'Marta Secreta')),
-          el('div', { 'data-testid': 'mention-secondary' })))));
+          el('div', { 'data-testid': 'mention-secondary', 'data-prueba': 'secundario-mencion' }, el('span', { dir: 'auto' }, 'Perfil Secreto'))))));
     // «Info. del contacto» con la estructura observada: nombre, usuario, teléfono (valor en el div hermano de la sección) y su etiqueta.
     app.append(el('div', { 'data-testid': 'drawer-right' },
       el('div', { 'data-testid': 'chat-info-drawer' },
@@ -374,6 +374,11 @@ try {
       (await filtro('[data-prueba="todos-mencion"]')) === 'none' &&
       (await whatsapp.$$eval('[data-prueba="boton-mencion"]', (botones) => botones.map((b) => getComputedStyle(b).filter).join())) === 'none,none',
     'difuminado en caliente: nombre de la sugerencia de mención (un solo filtro), sin «todos» ni el botón',
+  );
+  comprobar(
+    (await whatsapp.evaluate(() => getComputedStyle(document.querySelector('[data-prueba="secundario-mencion"]')).filter)) === 'blur(6px)' &&
+      (await whatsapp.evaluate(() => getComputedStyle(document.querySelector('[data-prueba="secundario-mencion"] span')).filter)) === 'none',
+    'difuminado en caliente: información secundaria de la sugerencia de mención (un solo filtro)',
   );
   comprobar((await filtro('[data-testid="drawer-right"] [data-testid="selectable-text"]')) === 'blur', 'difuminado en caliente: texto de «Info. del mensaje»');
   comprobar(
