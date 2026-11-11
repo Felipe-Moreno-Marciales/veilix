@@ -8,8 +8,8 @@ Solo la última versión estable recibe correcciones de seguridad.
 
 | Versión | Soporte |
 | --- | --- |
-| `0.1.5` (última estable) | ✅ |
-| Anteriores (`0.1.4` y previas) | ❌: actualiza a la última |
+| `0.1.6` (última estable) | ✅ |
+| Anteriores (`0.1.5` y previas) | ❌: actualiza a la última |
 
 ## Cómo informar de una vulnerabilidad
 
