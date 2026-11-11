@@ -1184,6 +1184,10 @@ export class WhatsAppSimulado {
    *   `[data-testid="contact-mention-list-item"]`, con el avatar (`img`), el
    *   nombre en `[data-testid="mention-primary"]` › `span[dir="auto"]` y
    *   `[data-testid="mention-secondary"]` sin texto;
+   * - con 0.1.5, en otro grupo, una segunda línea visible bajo el nombre con el
+   *   nombre de perfil o emojis (captura del propietario). Que esté en
+   *   `mention-secondary` es una DEDUCCIÓN por su posición; aquí se reproduce
+   *   así, en un `span[dir="auto"]` (SUPUESTO), con la opción `secundario`;
    * - la opción «todos» es `[data-testid="mention-all-list-item"]`, con «todos»
    *   y una descripción genérica;
    * - el editor usa `aria-autocomplete`, `aria-owns` y `aria-activedescendant`.
@@ -1196,8 +1200,10 @@ export class WhatsAppSimulado {
    * cambian `aria-activedescendant` y `aria-selected`; Intro o un clic insertan
    * la mención y cierran la lista.
    */
-  abrirMenciones(participantes: readonly string[]): HTMLElement {
+  abrirMenciones(participantes: readonly (string | { readonly nombre: string; readonly secundario: string })[]): HTMLElement {
     const d = this.documento;
+    const nombres = participantes.map((p) => (typeof p === 'string' ? p : p.nombre));
+    const secundarios = participantes.map((p) => (typeof p === 'string' ? null : p.secundario));
     this.cerrarMenciones();
     const editor = this.editor;
     const control = new AbortController();
@@ -1213,12 +1219,13 @@ export class WhatsAppSimulado {
       el(d, 'div', {}, icono(d, 'wds-ic-mention')),
       el(d, 'div', { 'data-testid': 'mention-primary', 'data-prueba': 'nombre-mencion-todos' }, el(d, 'span', { dir: 'auto' }, 'todos')),
       el(d, 'div', { 'data-testid': 'mention-secondary', 'data-prueba': 'descripcion-mencion-todos' }, el(d, 'span', { dir: 'auto' }, 'Notificar a todos los participantes'))));
-    const filas = [todos, ...participantes.map((nombre, i) =>
+    const filas = [todos, ...nombres.map((nombre, i) =>
       fila(i + 1, el(d, 'div', { 'data-testid': 'contact-mention-list-item', 'data-prueba': 'mencion-contacto' },
         el(d, 'div', {}, el(d, 'img', { src: URL_FOTO_PERFIL, alt: '', width: '32', height: '32', 'data-prueba': 'avatar-mencion' })),
         el(d, 'div', {},
           el(d, 'div', { 'data-testid': 'mention-primary', 'data-prueba': 'contenedor-nombre-mencion' }, el(d, 'span', { dir: 'auto', 'data-prueba': 'nombre-mencion' }, nombre)),
-          el(d, 'div', { 'data-testid': 'mention-secondary', 'data-prueba': 'secundario-mencion' })))))];
+          el(d, 'div', { 'data-testid': 'mention-secondary', 'data-prueba': 'secundario-mencion' },
+            ...(secundarios[i] ? [el(d, 'span', { dir: 'auto', 'data-prueba': 'texto-secundario-mencion' }, secundarios[i] ?? '')] : []))))))];
     const lista = el(d, 'div', { role: 'listbox', id: 'prueba-menciones', 'data-prueba': 'menciones', style: 'width: 300px; display: flex; flex-direction: column' }, ...filas);
     let actual = 1;
     const seleccionar = (indice: number) => {
@@ -1229,7 +1236,7 @@ export class WhatsAppSimulado {
       editor.setAttribute('aria-activedescendant', requerir(filas[actual], 'fila').id);
     };
     const insertar = (indice: number) => {
-      const nombre = indice === 0 ? 'todos' : requerir(participantes[indice - 1], 'participante');
+      const nombre = indice === 0 ? 'todos' : requerir(nombres[indice - 1], 'participante');
       this.mencionesInsertadas.push(nombre);
       requerir(editor.querySelector('p'), 'párrafo').replaceChildren(el(d, 'span', { 'data-prueba': 'mencion-insertada' }, `@${nombre}`), ' ');
       this.cerrarMenciones();
