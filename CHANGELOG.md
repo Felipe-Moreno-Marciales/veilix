@@ -10,6 +10,75 @@ Cada entrega de prueba con cambios en el código recibe una versión nueva. Volv
 
 ## [Sin publicar]
 
+## [0.1.6] — 2026-11-11
+
+**Versión estable** preparada el 11 de noviembre de 2026 a partir de `0.1.6-beta.0`, con la autorización del propietario, y elegida como versión que se publica. Sustituye a `0.1.5` como última estable.
+
+Manifiesto: `0.1.6` en Chrome, Edge, Firefox y Safari (sin `version_name`). Panel: «Veilix 0.1.6». Paquetes: `veilix-0.1.6-{chrome,edge,firefox,safari}.zip` y `veilix-0.1.6-sources.zip`.
+
+### Incluye
+
+Lo entregado en `0.1.6-beta.0`; el detalle está en [Compilaciones internas de 0.1.6](#compilaciones-internas-de-016).
+
+- **Información secundaria de las sugerencias de menciones (RF-01):** la segunda línea bajo el nombre de cada participante (`mention-secondary`), con nombres de perfil o emojis, se difumina con un único filtro y se revela con su fila. La descripción de «todos» sigue visible.
+- **Sin cambios en:** RF-02, RF-03, RF-04, RF-05, los permisos (solo `storage`) y el resto de RF-01.
+
+### Cambiado (versionado)
+
+- Se pasa de `0.1.6-beta.0` a `0.1.6` con `npm run version:estable`, sin cambios de comportamiento.
+- La compilación interna `0.1.6.2000` queda numéricamente por encima de `0.1.6`. Es la consecuencia aceptada en la renumeración de `0.1.0`: las betas nunca se suben a las tiendas.
+- Cualquier corrección posterior empieza en `0.1.7-beta.0` (`npm run version:beta`).
+
+### Validación
+
+- **Real en Google Chrome**, comunicada por el propietario el 11 de noviembre de 2026 con `0.1.6-beta.0`: «todo quedó perfecto», y los nombres de las sugerencias, incluida la segunda línea, quedan ocultos.
+  - Confirma en la práctica que el texto visible estaba en `mention-secondary`, lo que antes solo se había deducido por su posición.
+  - Fue una confirmación general, sin detalle por caso.
+- **Real en Brave:** la de `0.1.5`. No consta una prueba de `0.1.6` en Brave.
+- **Automatizada:** todas las verificaciones de `AGENTS.md` son correctas (ver [`docs/desarrollo.md`](docs/desarrollo.md), «Versión 0.1.6»).
+
+### Distribución
+
+- **Release `v0.1.6`** en este repositorio, siguiendo [`docs/publicacion.md`](docs/publicacion.md): solo los paquetes de Chrome y Edge, y `SHA256SUMS.txt`.
+- **Huella SHA-256 de los paquetes de Chrome y Edge**, que son idénticos: `b234e173f975c8dd002a89a06b75493c25ac908dd60a3fecc71a2ad323ec7282`.
+- **No se publican:** los paquetes de Firefox y Safari, que son técnicos, ni el de fuentes.
+
+### Limitaciones conocidas
+
+- **Corregida:** la de `0.1.4` sobre `mention-secondary`, que no se protegía.
+- **Resto:** las de [0.1.4] siguen vigentes.
+
+## Compilaciones internas de 0.1.6
+
+Compilación interna de prueba `0.1.6-beta.0`, conservada tal como se registró. No se publicó. Su contenido está consolidado en [0.1.6]. Va con un nivel de encabezado menos porque su manifiesto (`0.1.6.2000`) es mayor que el de la estable `0.1.6`: la lista de versiones `## [...]` solo recoge las estables, en orden creciente de manifiesto.
+
+### [0.1.6-beta.0] — 2026-11-11
+
+Compilación interna de prueba sobre la estable `0.1.5`. Manifiesto: `0.1.6.2000` en Chromium y Firefox (`version_name` `0.1.6-beta.0` en Chromium), y `0.1.6` en Safari. Corrección de privacidad de las sugerencias de menciones, pedida por el propietario. No inicia formalmente la Fase 3, y los paquetes de `0.1.5` no cambian.
+
+#### Corregido
+
+- **Información secundaria de las sugerencias de menciones (RF-01):** al escribir `@` en un grupo con `0.1.5`, el nombre principal de cada participante se difuminaba, pero quedaba visible una segunda línea con nombres personales y emojis, probablemente el nombre de perfil de WhatsApp.
+  - **Evidencia:** una captura del propietario en Chrome con cuatro sugerencias con esa segunda línea visible.
+  - **Causa:** en `0.1.4` se decidió no difuminar `[data-testid="mention-secondary"]`, porque en el grupo del diagnóstico estaba vacío. Quedó registrado como limitación conocida de `0.1.4` y `0.1.5`.
+  - **Corrección** (`SECUNDARIO_MENCION_CONTACTO`): se difumina el contenedor `mention-secondary` de cada participante (`contact-mention-list-item`), con un único filtro y en la misma regla que el nombre, así que se revela con su fila y con el atajo.
+    - La descripción genérica de «todos» no se difumina.
+    - Si una zona estuviera dentro de la otra, solo se difumina la más externa.
+  - **Sin confirmar en el DOM:** que el texto visible esté en `mention-secondary` se deduce por su posición. El elemento existe en cada fila confirmada y es el único con ese papel. Pendiente de validación real.
+  - **Implementación:** solo CSS, en RF-01. Sin cambios en RF-02 ni en los permisos.
+
+#### Añadido (pruebas)
+
+- `tests/navegador/menciones.test.ts` (18 pruebas por motor, una más que antes): información secundaria con un nombre de perfil, con emojis o vacía.
+  - **Filtros:** un único filtro en el contenedor de cada una, sin difuminar la descripción de «todos».
+  - **Revelado:** con el cursor, solo en su fila, y con el atajo.
+  - **Independencia:** con RF-01 desactivado se ve, y es independiente de RF-02.
+
+  Sin la regla nueva fallan 14 pruebas de `menciones.test.ts` e `interruptores.test.ts` (en Chromium).
+- `tests/difuminado/selectores-menciones.test.ts` (6 pruebas): el selector nuevo elige solo la información secundaria de los participantes y, si las zonas estuvieran anidadas, solo la más externa.
+- `tests/navegador/interruptores.test.ts` y `npm run test:extension` comprueban la información secundaria.
+- `tests/apoyo/whatsapp-simulado.ts`: `abrirMenciones` acepta `{ nombre, secundario }`.
+
 ## [0.1.5] — 2026-11-10
 
 **Versión estable y primera publicación de Veilix como código abierto** (10 de noviembre de 2026). Tiene **el mismo código que `0.1.4`**: solo cambian la versión, la licencia y la documentación. Se publica con un número nuevo, por decisión del propietario, para que su etiqueta y los archivos «Source code» de su Release ya incluyan la licencia GPL-3.0. La etiqueta `v0.1.4` se creó antes del cambio de licencia.
@@ -1638,6 +1707,8 @@ Manifiesto: `0.2.0.2002` en Chromium y Firefox, y `0.2.0` en Safari.
 - ESLint, Vitest e integración continua.
 
 [Sin publicar]: #sin-publicar
+[0.1.6]: #016--2026-11-11
+[0.1.6-beta.0]: #016-beta0--2026-11-11
 [0.1.5]: #015--2026-11-10
 [0.1.4]: #014--2026-11-10
 [0.1.4-beta.1]: #014-beta1--2026-11-09

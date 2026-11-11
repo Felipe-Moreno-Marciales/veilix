@@ -6,7 +6,7 @@
 
 <p align="center"><strong>Privacidad para WhatsApp Web.</strong><br>Funciona de forma local y no envía datos a servidores externos.</p>
 
-<p align="center">Versión estable <strong>0.1.5</strong> · Código abierto (GPL-3.0)</p>
+<p align="center">Versión estable <strong>0.1.6</strong> · Código abierto (GPL-3.0)</p>
 
 ---
 
@@ -36,15 +36,15 @@ El panel muestra también cuatro funciones en preparación, marcadas como «Pend
 
 ## 📥 Descargar Veilix
 
-**Última versión estable: `0.1.5`**
+**Última versión estable: `0.1.6`**
 
-> Descargas oficiales en la [Release `v0.1.5`](https://github.com/Felipe-Moreno-Marciales/veilix/releases/tag/v0.1.5), con el archivo `SHA256SUMS.txt` para comprobar que los paquetes no se han alterado.
+> Descargas oficiales en la [Release `v0.1.6`](https://github.com/Felipe-Moreno-Marciales/veilix/releases/tag/v0.1.6), con el archivo `SHA256SUMS.txt` para comprobar que los paquetes no se han alterado.
 
 | Navegador | Descarga | Estado |
 | --- | --- | --- |
-| 🌐 Google Chrome | [`veilix-0.1.5-chrome.zip`](https://github.com/Felipe-Moreno-Marciales/veilix/releases/download/v0.1.5/veilix-0.1.5-chrome.zip) | ✅ Disponible |
-| 🌐 Brave, Opera y Vivaldi | [`veilix-0.1.5-chrome.zip`](https://github.com/Felipe-Moreno-Marciales/veilix/releases/download/v0.1.5/veilix-0.1.5-chrome.zip) | ✅ Disponible (paquete de Chrome) |
-| 🌊 Microsoft Edge | [`veilix-0.1.5-edge.zip`](https://github.com/Felipe-Moreno-Marciales/veilix/releases/download/v0.1.5/veilix-0.1.5-edge.zip) | ✅ Disponible |
+| 🌐 Google Chrome | [`veilix-0.1.6-chrome.zip`](https://github.com/Felipe-Moreno-Marciales/veilix/releases/download/v0.1.6/veilix-0.1.6-chrome.zip) | ✅ Disponible |
+| 🌐 Brave, Opera y Vivaldi | [`veilix-0.1.6-chrome.zip`](https://github.com/Felipe-Moreno-Marciales/veilix/releases/download/v0.1.6/veilix-0.1.6-chrome.zip) | ✅ Disponible (paquete de Chrome) |
+| 🌊 Microsoft Edge | [`veilix-0.1.6-edge.zip`](https://github.com/Felipe-Moreno-Marciales/veilix/releases/download/v0.1.6/veilix-0.1.6-edge.zip) | ✅ Disponible |
 | 🦊 Mozilla Firefox | — | ⏸️ Pendiente de la firma de Mozilla |
 | 🧭 Apple Safari (macOS) | — | ⛔ No disponible por ahora |
 
@@ -56,7 +56,7 @@ El panel muestra también cuatro funciones en preparación, marcadas como «Pend
 
 ### Google Chrome (y Brave, Opera y Vivaldi)
 
-1. Descarga `veilix-0.1.5-chrome.zip` y descomprímelo en una carpeta que vayas a conservar.
+1. Descarga `veilix-0.1.6-chrome.zip` y descomprímelo en una carpeta que vayas a conservar.
 2. Abre `chrome://extensions` (o `brave://extensions`, `opera://extensions` o `vivaldi://extensions`).
 3. Activa el **«Modo de desarrollador»**.
 4. Pulsa **«Cargar descomprimida»** y elige la carpeta que contiene `manifest.json`.
@@ -64,7 +64,7 @@ El panel muestra también cuatro funciones en preparación, marcadas como «Pend
 
 ### Microsoft Edge
 
-1. Descarga `veilix-0.1.5-edge.zip` y descomprímelo en una carpeta que vayas a conservar.
+1. Descarga `veilix-0.1.6-edge.zip` y descomprímelo en una carpeta que vayas a conservar.
 2. Abre `edge://extensions` y activa el **«Modo de desarrollador»**.
 3. Pulsa **«Cargar desempaquetada»** y elige la carpeta que contiene `manifest.json`.
 
@@ -89,7 +89,7 @@ Es una instalación manual. El navegador puede avisar de que la extensión está
 - **Partes de WhatsApp Web aún no cubiertas:** algunas, como las fotos y los vídeos de «Info. del mensaje» o las notas guardadas de un contacto, pueden quedar visibles.
 - **Cambios de WhatsApp:** si WhatsApp cambia su diseño, alguna protección puede dejar de funcionar hasta que se actualice Veilix.
 
-La lista completa está en el [historial de versiones](CHANGELOG.md#015--2026-11-10).
+La lista completa está en el [historial de versiones](CHANGELOG.md#016--2026-11-11).
 
 ## Documentación
 
