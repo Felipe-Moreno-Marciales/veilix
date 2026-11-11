@@ -626,15 +626,28 @@ export const DATOS_PANEL_LLAMADA = `:is([data-testid="voip-call-participant-info
  * contiene un `span[dir="auto"]`) y `[data-testid="mention-secondary"]`, sin
  * texto en el diagnóstico. La opción «todos» es
  * `[data-testid="mention-all-list-item"]` y no se difumina: el nombre se acota
- * a `contact-mention-list-item`. Se difumina solo el contenedor del nombre, con
- * un único filtro; nunca el botón, el avatar ni `mention-secondary`, que no se
- * protege sin evidencia de contenido personal.
+ * a `contact-mention-list-item`. Se difuminan el contenedor del nombre y, desde
+ * 0.1.6-beta.0, el de la información secundaria, cada uno con un único filtro;
+ * nunca el botón ni el avatar.
+ *
+ * Información secundaria (`mention-secondary`, desde 0.1.6-beta.0): vacía en
+ * el diagnóstico, pero el propietario mostró en Chrome, con 0.1.5, una segunda
+ * línea visible bajo el nombre difuminado de varias sugerencias, con nombres
+ * personales y emojis (probablemente el nombre de perfil de WhatsApp). Que ese
+ * texto esté en `mention-secondary` es una DEDUCCIÓN por su posición, sin
+ * confirmar en el DOM: el elemento existe en cada fila confirmada y es el
+ * único con ese papel. La descripción genérica de «todos» queda fuera, porque
+ * el selector se acota a `contact-mention-list-item`.
  */
 const ELEMENTO_MENCION_CONTACTO = '[data-testid="contact-mention-list-item"]';
+const PRIMARIO_MENCION = '[data-testid="mention-primary"]';
+const SECUNDARIO_MENCION = '[data-testid="mention-secondary"]';
 /** Botón de la sugerencia de un participante (no la de «todos»). */
 export const FILA_MENCION_CONTACTO = `button:has(> ${ELEMENTO_MENCION_CONTACTO})`;
-/** Contenedor del nombre del participante en su sugerencia. */
-export const NOMBRE_MENCION_CONTACTO = `${ELEMENTO_MENCION_CONTACTO} [data-testid="mention-primary"]`;
+/** Contenedor del nombre del participante en su sugerencia (nunca dentro de la información secundaria). */
+export const NOMBRE_MENCION_CONTACTO = `${ELEMENTO_MENCION_CONTACTO} ${PRIMARIO_MENCION}:not(${SECUNDARIO_MENCION} *)`;
+/** Contenedor de la información secundaria de la sugerencia (nunca dentro del nombre, para no aplicar dos filtros). */
+export const SECUNDARIO_MENCION_CONTACTO = `${ELEMENTO_MENCION_CONTACTO} ${SECUNDARIO_MENCION}:not(${PRIMARIO_MENCION} *)`;
 
 /**
  * Tarjeta de una llamada en la conversación (CONFIRMADO, Chrome, diagnóstico
