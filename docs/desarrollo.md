@@ -19,7 +19,7 @@ Versión actual: **0.1.5**, estable del 10 de noviembre de 2026 y **primera publ
   - `0.1.2` (`v0.1.2`, commit `8672a99`).
 
   El antecedente `0.1.1` no consta como aprobado ni publicado ([Versión 0.1.1](#versión-011-estable-anterior-antecedente)).
-- **Siguiente versión:** cualquier corrección posterior empezará en `0.1.6-beta.0` (`npm run version:beta`).
+- **En desarrollo:** `0.1.6-beta.0` (11 de noviembre de 2026), compilación interna sobre `0.1.5`. Difumina con RF-01 también la información secundaria de las [sugerencias de menciones](#sugerencias-de-menciones-en-grupos-rf-01-corrección-en-014-beta0), que el propietario vio visible en Chrome con `0.1.5`. Está pendiente de validación real y no cambia los paquetes de `0.1.5`.
 - **Licencia:** desde el 10 de noviembre de 2026, Veilix es código abierto con licencia GPL-3.0 o posterior (`GPL-3.0-or-later`, [`LICENSE`](../LICENSE)). Antes era propietario (`UNLICENSED`). La nueva licencia se aplica también a las versiones anteriores. Ese mismo día el propietario hizo público el repositorio. Las guías para colaborar y para informar de vulnerabilidades están en [`CONTRIBUIR.md`](../CONTRIBUIR.md) y [`SEGURIDAD.md`](../SEGURIDAD.md).
 - **Historial:** el completo está en [CHANGELOG.md](../CHANGELOG.md).
 
@@ -1345,6 +1345,10 @@ El esquema solo indica qué hay dentro de la tarjeta. El orden y el anidamiento 
 ### Sugerencias de menciones en grupos (RF-01, corrección en 0.1.4-beta.0)
 
 **Incidencia (Chrome, `0.1.3`):** al escribir `@` en un grupo, la lista de participantes que se pueden mencionar deja los nombres visibles con RF-01 activada. Los avatares sí se difuminan con RF-02.
+
+**Información secundaria (corrección en `0.1.6-beta.0`):** con `0.1.5`, el propietario mostró en Chrome una captura con cuatro sugerencias. El nombre principal se veía difuminado, pero debajo quedaba visible una segunda línea con nombres personales y emojis, probablemente el nombre de perfil de WhatsApp.
+- **Cambio de criterio:** en el grupo del diagnóstico `mention-secondary` estaba vacío, y por eso no se difuminaba. Con esta evidencia, `0.1.6-beta.0` lo difumina (`SECUNDARIO_MENCION_CONTACTO`), con un único filtro y revelado con la fila, sin la descripción de «todos».
+- **Sin confirmar en el DOM:** que el texto esté en `mention-secondary` se deduce por su posición. Pendiente de validación real. Si no se difuminara, la inspección del texto con DevTools («Inspeccionar») o `scripts/diagnostico-menciones.js` dirá dónde está.
 
 **Validación real:** el 10 de noviembre de 2026, el propietario confirmó en Google Chrome que «todo funciona sin problemas» con `0.1.4-beta.1`, que incluye esta corrección (confirmación general, sin detalle de cada prueba manual de abajo). Está incluida en la estable `0.1.4`.
 
