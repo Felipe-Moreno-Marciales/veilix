@@ -45,11 +45,11 @@ El panel muestra también cuatro funciones en preparación, marcadas como «Pend
 | 🌐 Google Chrome | [`veilix-0.1.6-chrome.zip`](https://github.com/Felipe-Moreno-Marciales/veilix/releases/download/v0.1.6/veilix-0.1.6-chrome.zip) | ✅ Disponible |
 | 🌐 Brave, Opera y Vivaldi | [`veilix-0.1.6-chrome.zip`](https://github.com/Felipe-Moreno-Marciales/veilix/releases/download/v0.1.6/veilix-0.1.6-chrome.zip) | ✅ Disponible (paquete de Chrome) |
 | 🌊 Microsoft Edge | [`veilix-0.1.6-edge.zip`](https://github.com/Felipe-Moreno-Marciales/veilix/releases/download/v0.1.6/veilix-0.1.6-edge.zip) | ✅ Disponible |
-| 🦊 Mozilla Firefox | — | ⏸️ Pendiente de la firma de Mozilla |
+| 🦊 Mozilla Firefox | [`veilix-0.1.6-firefox.zip`](https://github.com/Felipe-Moreno-Marciales/veilix/releases/download/v0.1.6/veilix-0.1.6-firefox.zip) | ✅ Disponible (instalación temporal hasta que Mozilla lo firme) |
 | 🧭 Apple Safari (macOS) | — | ⛔ No disponible por ahora |
 
 **Requisitos:**
-- Chrome o Edge 116 o posterior.
+- Chrome o Edge 116 o posterior, o Firefox 140 o posterior.
 - WhatsApp Web abierto en una pestaña de `https://web.whatsapp.com`.
 
 ## Instalación
@@ -70,10 +70,21 @@ El panel muestra también cuatro funciones en preparación, marcadas como «Pend
 
 Es una instalación manual. El navegador puede avisar de que la extensión está en modo de desarrollador, y algunas políticas de empresa la impiden. Para actualizar, sustituye el contenido de la carpeta y pulsa «Actualizar» en la página de extensiones.
 
-### Firefox y Safari
+### Mozilla Firefox
 
-- **Firefox:** todavía no hay una versión instalable. Firefox solo instala de forma permanente extensiones firmadas por Mozilla, y Veilix aún no lo está.
-- **Safari:** todavía no hay instalador ni publicación en la App Store.
+Veilix todavía no está firmado por Mozilla, y Firefox solo instala de forma permanente extensiones firmadas. Por eso, en Firefox normal se carga como complemento temporal y **desaparece al cerrar Firefox**:
+
+1. Descarga `veilix-0.1.6-firefox.zip`. No hace falta descomprimirlo.
+2. Abre `about:debugging#/runtime/this-firefox` y pulsa **«Cargar complemento temporal…»**.
+3. Elige el archivo `veilix-0.1.6-firefox.zip`.
+
+En **Firefox Developer Edition** o **Nightly** se puede instalar de forma permanente: en `about:config`, pon `xpinstall.signatures.required` en `false`, y después arrastra el archivo a `about:addons`.
+
+Si Veilix no actúa en WhatsApp Web, abre `about:addons` → Veilix → **«Permisos»** y permite el acceso a `web.whatsapp.com`. Necesitas Firefox 140 o posterior.
+
+### Safari
+
+Todavía no hay instalador ni publicación en la App Store.
 
 ## Privacidad
 

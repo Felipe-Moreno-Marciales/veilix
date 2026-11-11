@@ -8,10 +8,10 @@ Extensión de privacidad para WhatsApp Web, desarrollada de forma independiente.
 
 ## Estado
 
-Versión actual: **0.1.6**, estable del 11 de noviembre de 2026 preparada a partir de `0.1.6-beta.0`, y **versión que se publica** (solo Chrome y Edge). Ver [Versión 0.1.6](#versión-016-estable). No inicia la Fase 3.
+Versión actual: **0.1.6**, estable del 11 de noviembre de 2026 preparada a partir de `0.1.6-beta.0`, y **versión que se publica** (todos los navegadores salvo Safari: Chrome, también para Brave, Opera y Vivaldi, Edge y Firefox). Ver [Versión 0.1.6](#versión-016-estable). No inicia la Fase 3.
 - **Qué añade:** con RF-01, la información secundaria de las [sugerencias de menciones](#sugerencias-de-menciones-en-grupos-rf-01-corrección-en-014-beta0): la segunda línea bajo el nombre, con nombres de perfil o emojis. No cambia el comportamiento respecto a beta.0.
 - **Validación:** el 11 de noviembre de 2026, el propietario confirmó en Google Chrome, con `0.1.6-beta.0`, que «todo quedó perfecto» y que los nombres de las sugerencias quedan ocultos (confirmación general, sin detalle por caso). No consta una prueba de `0.1.6` en Brave.
-- **Publicación:** Release `v0.1.6` en este repositorio, siguiendo [Publicación de Veilix](publicacion.md).
+- **Publicación:** Release `v0.1.6` en este repositorio, siguiendo [Publicación de Veilix](publicacion.md). Firefox se publica por primera vez, sin la firma de Mozilla: en Firefox normal, la instalación es temporal.
 - **Estable anterior, publicada:** `0.1.5` (Release `v0.1.5`, commit `92d827a`). Fue la primera publicación como código abierto, con el mismo código que `0.1.4`. Ver [Versión 0.1.5](#versión-015-estable-primera-publicación-como-código-abierto).
 - **Estables anteriores, etiquetadas y sin publicar:**
   - `0.1.4` (`v0.1.4`, commit `19f418a`), elegida para el lanzamiento antes del cambio de licencia;

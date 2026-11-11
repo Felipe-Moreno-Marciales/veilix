@@ -1,6 +1,6 @@
 # Publicación de Veilix
 
-> Procedimiento para el propietario: publicar las descargas de Veilix en GitHub Releases. La versión que se publica es la estable `0.1.6` (11 de noviembre de 2026), solo para Chrome y Edge. Sustituye a `0.1.5`, la primera publicación (Release `v0.1.5`, 10 de noviembre de 2026), que se conserva publicada como versión anterior. `0.1.5` tenía el mismo código que `0.1.4` y se publicó con otro número para que su etiqueta ya incluyera la licencia GPL-3.0, porque `v0.1.4` se creó antes del cambio de licencia. Los paquetes de `0.1.2`, `0.1.3` y `0.1.4` se conservan como históricos y no se publican. La sección de descargas para usuarios está en el [README](../README.md#-descargar-veilix).
+> Procedimiento para el propietario: publicar las descargas de Veilix en GitHub Releases. La versión que se publica es la estable `0.1.6` (11 de noviembre de 2026), para todos los navegadores salvo Safari: Chrome (también Brave, Opera y Vivaldi), Edge y Firefox. Sustituye a `0.1.5`, la primera publicación (Release `v0.1.5`, 10 de noviembre de 2026), que se conserva publicada como versión anterior. `0.1.5` tenía el mismo código que `0.1.4` y se publicó con otro número para que su etiqueta ya incluyera la licencia GPL-3.0, porque `v0.1.4` se creó antes del cambio de licencia. Los paquetes de `0.1.2`, `0.1.3` y `0.1.4` se conservan como históricos y no se publican. La sección de descargas para usuarios está en el [README](../README.md#-descargar-veilix).
 
 ## Código abierto y repositorio de publicación
 
@@ -10,10 +10,12 @@ Por eso la Release se publica en **el propio repositorio de Veilix**, cuando el 
 
 | Se adjunta a la Release `v0.1.6` | No se adjunta |
 | --- | --- |
-| `veilix-0.1.6-chrome.zip` y `veilix-0.1.6-edge.zip` | `veilix-0.1.6-firefox.zip` y `veilix-0.1.6-safari.zip`: son paquetes técnicos, no instalables por usuarios finales |
-| `SHA256SUMS.txt`, con las huellas de **solo** esos dos paquetes | `veilix-0.1.6-sources.zip`: es para la revisión de Mozilla; el código ya está en el repositorio |
+| `veilix-0.1.6-chrome.zip`, `veilix-0.1.6-edge.zip` y `veilix-0.1.6-firefox.zip` | `veilix-0.1.6-safari.zip`: son solo los archivos de la extensión, sin la app de macOS que Safari necesita |
+| `SHA256SUMS.txt`, con las huellas de **solo** esos tres paquetes | `veilix-0.1.6-sources.zip`: es para la revisión de Mozilla; el código ya está en el repositorio |
 
-**Publicaciones posteriores:** el `.xpi` de Firefox, cuando Mozilla lo firme, y la app de Safari, cuando exista y esté firmada.
+**Firefox, desde `0.1.6`:** se publica sin firmar, por decisión del propietario del 11 de noviembre de 2026. En Firefox normal se instala como complemento temporal (`about:debugging`), que desaparece al cerrar el navegador. En Developer Edition o Nightly puede instalarse de forma permanente desactivando `xpinstall.signatures.required`. Las notas de la Release y el README lo explican.
+
+**Publicaciones posteriores:** el `.xpi` de Firefox firmado por Mozilla, que permitirá la instalación permanente, y la app de Safari, cuando exista y esté firmada.
 
 ### Antes de hacer público el repositorio
 
@@ -72,12 +74,19 @@ Antes de publicar, confirma que el paquete exacto que se va a distribuir conserv
    trap 'estado=$?; if [ "$estado" -ne 0 ]; then rm -f SHA256SUMS.txt; fi' EXIT
    rm -f SHA256SUMS.txt
 
-   # Huella SHA-256 de los paquetes de Chrome y Edge de 0.1.6 (idénticos), del informe de estabilización.
-   HUELLA_ESPERADA=b234e173f975c8dd002a89a06b75493c25ac908dd60a3fecc71a2ad323ec7282
+   # Huella SHA-256 de cada paquete de 0.1.6, del informe de estabilización (los de Chrome y Edge son idénticos).
+   # Con case y no con un array asociativo, para que funcione también con el bash 3.2 de macOS.
+   huella_esperada() {
+     case "$1" in
+       veilix-0.1.6-chrome.zip | veilix-0.1.6-edge.zip) echo b234e173f975c8dd002a89a06b75493c25ac908dd60a3fecc71a2ad323ec7282 ;;
+       veilix-0.1.6-firefox.zip) echo 6e0d85fe625f09111b4f668c032f1ca93ce9098645209f59ec5eed2696fc0379 ;;
+       *) echo ninguna ;;
+     esac
+   }
 
-   # Lista explícita de paquetes autorizados (sin comodines: veilix-0.1.6-*.zip incluiría el de fuentes).
-   AUTORIZADOS=(veilix-0.1.6-chrome.zip veilix-0.1.6-edge.zip)
-   if [ "${AUTORIZADOS[*]}" != "veilix-0.1.6-chrome.zip veilix-0.1.6-edge.zip" ]; then
+   # Lista explícita de paquetes autorizados (sin comodines: veilix-0.1.6-*.zip incluiría el de fuentes y el de Safari).
+   AUTORIZADOS=(veilix-0.1.6-chrome.zip veilix-0.1.6-edge.zip veilix-0.1.6-firefox.zip)
+   if [ "${AUTORIZADOS[*]}" != "veilix-0.1.6-chrome.zip veilix-0.1.6-edge.zip veilix-0.1.6-firefox.zip" ]; then
      detener "la lista de paquetes no es la autorizada: ${AUTORIZADOS[*]}"
    fi
 
@@ -91,31 +100,31 @@ Antes de publicar, confirma que el paquete exacto que se va a distribuir conserv
        detener "$paquete contiene archivos internos"
      fi
      if ! huella=$(huellas "$paquete"); then detener "no se pudo calcular la huella de $paquete"; fi
-     if [ "${huella%% *}" != "$HUELLA_ESPERADA" ]; then detener "la huella de $paquete no es la del informe de estabilización"; fi
+     if [ "${huella%% *}" != "$(huella_esperada "$paquete")" ]; then detener "la huella de $paquete no es la del informe de estabilización"; fi
    done
 
    # Huellas de solo los paquetes autorizados.
    huellas "${AUTORIZADOS[@]}" > SHA256SUMS.txt
-   if [ "$(wc -l < SHA256SUMS.txt | tr -d ' ')" -ne 2 ]; then detener "SHA256SUMS.txt no tiene exactamente dos líneas"; fi
+   if [ "$(wc -l < SHA256SUMS.txt | tr -d ' ')" -ne 3 ]; then detener "SHA256SUMS.txt no tiene exactamente tres líneas"; fi
    cat SHA256SUMS.txt
    echo "LISTO: se pueden publicar ${AUTORIZADOS[*]} y SHA256SUMS.txt"
    GUION
    ```
 
    Sigue solo si termina con «LISTO». Si aparece «DETENER», no publiques: corrige la causa que indica y vuelve a ejecutarlo.
-3. **Crea la Release `v0.1.6`** en el repositorio de Veilix, sobre la etiqueta `v0.1.6` (creada en `main` después de integrar la versión), con estos tres archivos de `.output/` y nada más: `veilix-0.1.6-chrome.zip`, `veilix-0.1.6-edge.zip` y `SHA256SUMS.txt`. Puedes hacerlo desde la web de GitHub o con:
+3. **Crea la Release `v0.1.6`** en el repositorio de Veilix, sobre la etiqueta `v0.1.6` (creada en `main` después de integrar la versión), con estos cuatro archivos de `.output/` y nada más: `veilix-0.1.6-chrome.zip`, `veilix-0.1.6-edge.zip`, `veilix-0.1.6-firefox.zip` y `SHA256SUMS.txt`. Puedes hacerlo desde la web de GitHub o con:
 
    ```bash
-   gh release create v0.1.6 .output/veilix-0.1.6-chrome.zip .output/veilix-0.1.6-edge.zip .output/SHA256SUMS.txt \
+   gh release create v0.1.6 .output/veilix-0.1.6-chrome.zip .output/veilix-0.1.6-edge.zip .output/veilix-0.1.6-firefox.zip .output/SHA256SUMS.txt \
      --repo Felipe-Moreno-Marciales/veilix --verify-tag --title "Veilix 0.1.6" --notes-file <notas-de-la-versión>.md
    ```
-4. **Comprueba lo publicado.** Los archivos adjuntos deben ser exactamente `veilix-0.1.6-chrome.zip`, `veilix-0.1.6-edge.zip` y `SHA256SUMS.txt`, además de los «Source code» automáticos de GitHub.
+4. **Comprueba lo publicado.** Los archivos adjuntos deben ser exactamente `veilix-0.1.6-chrome.zip`, `veilix-0.1.6-edge.zip`, `veilix-0.1.6-firefox.zip` y `SHA256SUMS.txt`, además de los «Source code» automáticos de GitHub.
 
    ```bash
    gh release view v0.1.6 --repo Felipe-Moreno-Marciales/veilix --json assets --jq '.assets[].name'
    ```
 5. **Actualiza la sección de descargas del [README](../README.md#-descargar-veilix):**
-   - En las filas de Chrome, de Brave, Opera y Vivaldi, y de Edge, va el enlace directo. Su estructura es `https://github.com/Felipe-Moreno-Marciales/veilix/releases/download/v0.1.6/veilix-0.1.6-chrome.zip`, y lo mismo con `-edge.zip`.
+   - En las filas de Chrome, de Brave, Opera y Vivaldi, de Edge y de Firefox, va el enlace directo. Su estructura es `https://github.com/Felipe-Moreno-Marciales/veilix/releases/download/v0.1.6/veilix-0.1.6-chrome.zip`, y lo mismo con `-edge.zip` y `-firefox.zip`.
    - El aviso de la sección enlaza a la página de la Release.
    - Los enlaces se añaden antes de crear la Release, porque su dirección se conoce de antemano. Comprueba que funcionan después de publicarla.
    - Firefox y Safari no cambian.
