@@ -38,8 +38,9 @@
  *   autor. Nunca su control ni otros controles de forma parecida. Solo CSS.
  * - Sugerencias de menciones (`@`) de un grupo (estructura confirmada, desde
  *   0.1.4-beta.0): el contenedor del nombre (`mention-primary`) de cada
- *   participante, con un único filtro, revelado con su fila. Nunca el botón,
- *   el avatar (RF-02), `mention-secondary` ni la opción «todos». Solo CSS.
+ *   participante y, desde 0.1.6-beta.0, el de su información secundaria
+ *   (`mention-secondary`), cada uno con un único filtro, revelados con su
+ *   fila. Nunca el botón, el avatar (RF-02) ni la opción «todos». Solo CSS.
  *
  * Revelado temporal: cursor sobre la fila, el mensaje, el encabezado o el dato
  * del panel, foco de teclado en ellos, o Ctrl + Mayús + Espacio.
@@ -63,6 +64,7 @@ import {
   FILA_MENCION_CONTACTO,
   NOMBRE_LLAMADA,
   NOMBRE_MENCION_CONTACTO,
+  SECUNDARIO_MENCION_CONTACTO,
   PANEL_CONVERSACION,
   TEXTO_ENCABEZADO,
   TEXTO_NOMBRE_LLAMADA,
@@ -110,7 +112,8 @@ export const moduloDifuminarNombres = crearModuloDifuminado({
     { contenedor: NOMBRE_LLAMADA, objetivo: TEXTO_NOMBRE_LLAMADA, revelarConFoco: true },
     { contenedor: `${NOMBRE_LLAMADA}:not(:has(span[dir="auto"]))`, objetivo: null, revelarConFoco: true },
     // Sugerencias de menciones (desde 0.1.4-beta.0): el contenedor del nombre de cada participante, revelado con su fila.
-    { contenedor: FILA_MENCION_CONTACTO, objetivo: NOMBRE_MENCION_CONTACTO, revelarConFoco: true },
+    // Y, desde 0.1.6-beta.0, su información secundaria (por ejemplo, el nombre de perfil), con su propio filtro.
+    { contenedor: FILA_MENCION_CONTACTO, objetivo: `${NOMBRE_MENCION_CONTACTO}, ${SECUNDARIO_MENCION_CONTACTO}`, revelarConFoco: true },
   ],
   marcador: combinarMarcadores(
     crearMarcadorListaChats('nombre', ATRIBUTO_NOMBRE),
