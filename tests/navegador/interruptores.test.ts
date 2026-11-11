@@ -36,6 +36,7 @@ const PROPIOS: Readonly<Record<Interruptor, readonly string[]>> = {
     '[data-prueba="nombre-info-contacto"], [data-prueba="usuario-info-contacto"], [data-prueba="telefono-info-contacto"], [data-prueba="descripcion-info-contacto"]',
     '[data-prueba="nombre-llamada"]',
     '[data-prueba="nombre-mencion"]',
+    '[data-prueba="texto-secundario-mencion"]',
     '[data-prueba="etiqueta-miembro"]',
   ],
   difuminarFotos: [
@@ -120,7 +121,7 @@ describe('independencia de los cinco interruptores', () => {
     wa.abrirNuevoChatObservado(['Ana', 'Luis', 'Eva', 'Sara']);
     wa.abrirInfoContacto({ nombre: 'Marta Secreta', usuario: '@marta', telefono: '+57 300 1234567', descripcion: 'Privado', emojis: 1 });
     wa.abrirPanelLlamada({ nombre: 'Marta Secreta', duracion: '02:15' });
-    wa.abrirMenciones(['Ana', '~ Bruno', 'Eva']);
+    wa.abrirMenciones([{ nombre: 'Ana', secundario: 'Perfil de Ana' }, '~ Bruno', 'Eva']);
     wa.agregarMensajeObservado({ tipo: 'texto', direccion: 'entrante', texto: 'Con etiqueta', remitente: 'Bruno', autor: 'boton', etiquetaMiembro: 'El crack' });
     wa.agregarMensajeObservado({ tipo: 'llamada', direccion: 'entrante', llamada: { titulo: 'Llamada de voz', detalle: 'Sin respuesta' } });
     wa.agregarMensajeObservado({ tipo: 'videoMiniatura', direccion: 'entrante', miniaturaVideo: { orientacion: 'horizontal' } });
