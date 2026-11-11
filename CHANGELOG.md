@@ -39,9 +39,11 @@ Lo entregado en `0.1.6-beta.0`; el detalle está en [Compilaciones internas de 0
 
 ### Distribución
 
-- **Release `v0.1.6`** en este repositorio, siguiendo [`docs/publicacion.md`](docs/publicacion.md): solo los paquetes de Chrome y Edge, y `SHA256SUMS.txt`.
+- **Release `v0.1.6`** en este repositorio, siguiendo [`docs/publicacion.md`](docs/publicacion.md): los paquetes de Chrome (también para Brave, Opera y Vivaldi), Edge y Firefox, y `SHA256SUMS.txt`. Está disponible para todos los navegadores salvo Safari.
 - **Huella SHA-256 de los paquetes de Chrome y Edge**, que son idénticos: `b234e173f975c8dd002a89a06b75493c25ac908dd60a3fecc71a2ad323ec7282`.
-- **No se publican:** los paquetes de Firefox y Safari, que son técnicos, ni el de fuentes.
+- **Huella SHA-256 del paquete de Firefox:** `6e0d85fe625f09111b4f668c032f1ca93ce9098645209f59ec5eed2696fc0379`.
+- **Firefox se publica por primera vez,** por decisión del propietario, sin la firma de Mozilla. En Firefox normal se instala como complemento temporal, que desaparece al cerrar el navegador; en Developer Edition o Nightly, de forma permanente, desactivando la comprobación de firma. Firefox no se ha probado con WhatsApp Web real.
+- **No se publican:** el paquete de Safari, que no tiene la app de macOS, ni el de fuentes.
 
 ### Limitaciones conocidas
 
