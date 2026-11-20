@@ -12,7 +12,7 @@ Cada entrega de prueba con cambios en el código recibe una versión nueva. Volv
 
 ## [0.1.7] — 2026-11-20
 
-**Versión estable** preparada el 20 de noviembre de 2026 a partir de `0.1.7-beta.0`, con la autorización del propietario. Sustituye a `0.1.6` como última estable. Todavía no está etiquetada ni publicada.
+**Versión estable** preparada el 20 de noviembre de 2026 a partir de `0.1.7-beta.0`, con la autorización del propietario. Sustituye a `0.1.6` como última estable. Está etiquetada como `v0.1.7` en `main` (commit `0a464f6`) y publicada el 20 de noviembre de 2026 (Release `v0.1.7`).
 
 Manifiesto: `0.1.7` en Chrome, Edge, Firefox y Safari (sin `version_name`). Panel: «Veilix 0.1.7». Paquetes: `veilix-0.1.7-{chrome,edge,firefox,safari}.zip` y `veilix-0.1.7-sources.zip`.
 
@@ -41,7 +41,7 @@ Lo entregado en `0.1.7-beta.0`; el detalle está en [Compilaciones internas de 0
 
 ### Distribución
 
-- **Release `v0.1.7` prevista** en este repositorio, siguiendo [`docs/publicacion.md`](docs/publicacion.md): los paquetes de Chrome (también para Brave, Opera y Vivaldi), Edge y Firefox, y `SHA256SUMS.txt`.
+- **Release `v0.1.7`** en este repositorio, publicada el 20 de noviembre de 2026 siguiendo [`docs/publicacion.md`](docs/publicacion.md): los paquetes de Chrome (también para Brave, Opera y Vivaldi), Edge y Firefox, y `SHA256SUMS.txt`. Está disponible para todos los navegadores salvo Safari. `v0.1.6` se conserva publicada como versión anterior.
 - **Huellas SHA-256:**
   - Chrome y Edge, que son idénticos: `57a32b9c5daf13dcea2adf1a6fecbb6e5655e61aeda69526b4b7a4831aa6d8ff`;
   - Firefox: `bc0991cd86fc7c4ddf2e13c6675afe19fc721c1673bdeed4b97d00ad323dfff7`.

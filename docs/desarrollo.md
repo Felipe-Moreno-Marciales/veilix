@@ -8,10 +8,10 @@ Extensión de privacidad para WhatsApp Web, desarrollada de forma independiente.
 
 ## Estado
 
-Versión actual: **0.1.7**, estable del 20 de noviembre de 2026 preparada a partir de `0.1.7-beta.0`, y **versión que se publicará** (todos los navegadores salvo Safari: Chrome, también para Brave, Opera y Vivaldi, Edge y Firefox). Todavía no está etiquetada ni publicada. Ver [Versión 0.1.7](#versión-017-estable). No inicia la Fase 3.
+Versión actual: **0.1.7**, estable del 20 de noviembre de 2026 preparada a partir de `0.1.7-beta.0`, y **versión publicada** (todos los navegadores salvo Safari: Chrome, también para Brave, Opera y Vivaldi, Edge y Firefox). Está etiquetada como `v0.1.7` en `main` (commit `0a464f6`). Ver [Versión 0.1.7](#versión-017-estable). No inicia la Fase 3.
 - **Qué añade:** con RF-04, el [indicador «Editado»](#indicador-editado-de-los-mensajes-rf-04-corrección-en-017-beta0) de los mensajes. No cambia el comportamiento respecto a beta.0.
 - **Validación:** el 20 de noviembre de 2026, el propietario confirmó que las pruebas funcionales reales en Google Chrome de `0.1.7-beta.0` fueron satisfactorias (confirmación general, sin detalle por caso). La prueba de humo real del ZIP estable está pendiente.
-- **Publicación prevista:** Release `v0.1.7` en este repositorio, siguiendo [Publicación de Veilix](publicacion.md).
+- **Publicación:** Release `v0.1.7` en este repositorio, del 20 de noviembre de 2026 y marcada como la más reciente, siguiendo [Publicación de Veilix](publicacion.md). Contiene los paquetes de Chrome, Edge y Firefox y `SHA256SUMS.txt`; los archivos descargados de GitHub coinciden con las huellas del informe de estabilización.
 - **Estables anteriores, publicadas:** `0.1.6` (Release `v0.1.6`, commit `bc1acd4`) y `0.1.5` (Release `v0.1.5`, commit `92d827a`), la primera publicación como código abierto.
 - **Estables anteriores, etiquetadas y sin publicar:**
   - `0.1.4` (`v0.1.4`, commit `19f418a`), elegida para el lanzamiento antes del cambio de licencia;
@@ -49,6 +49,7 @@ Preparada el 20 de noviembre de 2026 a partir de `0.1.7-beta.0` con `npm run ver
 | Real en Brave, Edge, Opera, Vivaldi, Firefox y Safari | ⏳ Sin prueba de `0.1.7` (Brave se probó con `0.1.5`) |
 
 - **Mismo código que la beta:** los 13 archivos de los paquetes son los de `0.1.7-beta.0`, salvo el número de versión.
+- **Publicación:** Release `v0.1.7` (20 de noviembre de 2026), sobre la etiqueta `v0.1.7` en `main` (commit `0a464f6`), con `veilix-0.1.7-chrome.zip`, `veilix-0.1.7-edge.zip`, `veilix-0.1.7-firefox.zip` y `SHA256SUMS.txt`. Tras publicarla, `sha256sum -c` sobre los archivos descargados de GitHub fue correcto. Safari y el paquete de fuentes no se publican.
 - **Huellas SHA-256:** Chrome y Edge, idénticos: `57a32b9c5daf13dcea2adf1a6fecbb6e5655e61aeda69526b4b7a4831aa6d8ff`. Firefox: `bc0991cd86fc7c4ddf2e13c6675afe19fc721c1673bdeed4b97d00ad323dfff7`. El guion de [Publicación de Veilix](publicacion.md) las comprueba.
 - **Limitaciones:** el indicador «Editado» en mensajes enviados y en otros tipos de mensaje no tiene evidencia; Firefox sin firma tiene instalación temporal; el resto, las de [0.1.4](#limitaciones-conocidas-de-014).
 
