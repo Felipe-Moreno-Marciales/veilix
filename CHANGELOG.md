@@ -10,6 +10,52 @@ Cada entrega de prueba con cambios en el código recibe una versión nueva. Volv
 
 ## [Sin publicar]
 
+## [0.1.7-beta.0] — 2026-11-20
+
+Compilación interna de prueba sobre la estable `0.1.6`. Manifiesto: `0.1.7.2000` en Chromium y Firefox (`version_name` `0.1.7-beta.0` en Chromium), y `0.1.7` en Safari. Corrección de privacidad del indicador «Editado», pedida por el propietario. No inicia formalmente la Fase 3, y los paquetes de `0.1.6` no cambian.
+
+### Corregido
+
+- **Indicador «Editado» de los mensajes (RF-04):** con `0.1.6`, el contenido de un mensaje editado se difuminaba, pero el indicador «Editado» quedaba visible.
+  - **Estructura confirmada** por el propietario con DevTools en Chrome: dentro de `msg-container` › `msg-meta` › `div`, un `span` con dos hijos `span`. El primero es el indicador, sin filtro, y el segundo contiene la hora (`data-veilix-hora-mensaje`).
+  - **Causa:** RF-04 marca como hora el elemento cuyo texto completo es una hora. El indicador es un elemento aparte, y ninguna regla lo alcanzaba.
+  - **Corrección** (`EDITADO_MENSAJE`), solo con CSS: dentro de `msg-meta`, el `span` hijo de un `span` que es el primero de sus hermanos, tiene texto pero ningún elemento dentro y va seguido de otro `span`.
+    - No usa el texto, el idioma, las clases ni los estilos en línea, y excluye iconos (`data-icon`) y controles.
+    - Un único filtro, en la misma regla que la hora, así que se revela con el mensaje (cursor o foco dentro) y con el atajo.
+  - **Sin depender de la marca de la hora:** la marca la pone un observador después de insertar los estilos. El selector no la usa, así que el indicador está difuminado desde el instante en que aparece el mensaje.
+  - **Colisiones:** dentro de `msg-meta` solo hay metadatos que RF-04 ya difumina. Si la hora fuera la primera de dos `span`, el selector la elegiría a ella, que es el mismo elemento que la marca de la hora, con un único filtro.
+  - **Sin evidencia:** la estructura en mensajes enviados y en otros tipos de mensaje (fotos, documentos). Pendiente de validación real.
+  - **Implementación:** solo CSS, en RF-04. Sin observadores, marcas ni permisos nuevos.
+
+### Cambiado
+
+- **Descripción de RF-04 en el panel:** menciona el indicador «Editado».
+
+### Añadido (diagnóstico)
+
+- `scripts/diagnostico-mensaje-editado.js`: diagnóstico anonimizado del indicador.
+  - **Cómo busca:** localiza candidatos por estructura (textos de la zona de la hora que no son horas) y por texto de edición.
+  - **Qué muestra:** de cada uno, su cadena hasta `msg-container`, su relación con la hora y el cuerpo, y el selector de Veilix que lo difumina, con una marca temporal en pantalla.
+  - No se incluye en los paquetes.
+
+### Añadido (pruebas)
+
+- `tests/navegador/editado.test.ts`, en Chromium, Firefox y WebKit (14 pruebas por motor):
+  - **Mensajes:** editados recibidos y enviados, y mensajes normales.
+  - **Filtros:** un único filtro en el indicador; la hora y el cuerpo mantienen el suyo, y no se difuminan `msg-meta`, el envoltorio ni los botones del mensaje.
+  - **Aparición:** el indicador está protegido en el mismo instante en que aparece el mensaje, antes de que se marque la hora.
+  - **Independencia:** de RF-01, y desactivación sin recargar.
+  - **Revelado:** con el cursor (solo su mensaje), el atajo y el foco del teclado.
+  - **Cambios dinámicos y limpieza:** cambio de conversación, reacciones sin cambios y restauración completa.
+
+  Sin la regla nueva fallan 7 de las 14.
+- `tests/difuminado/selectores-editado.test.ts` (7 pruebas):
+  - **Qué elige:** el indicador en mensajes recibidos y enviados, con cualquier texto.
+  - **Qué no elige:** iconos, elementos vacíos, elementos con otros dentro, controles, hijos únicos y la misma forma fuera de `msg-meta`.
+  - **Sin coincidencias** en los mensajes ya simulados.
+- `tests/navegador/interruptores.test.ts` y `npm run test:extension` comprueban el indicador.
+- `tests/apoyo/whatsapp-simulado.ts`: opción `editado` en `MensajeObservado`.
+
 ## [0.1.6] — 2026-11-11
 
 **Versión estable** preparada el 11 de noviembre de 2026 a partir de `0.1.6-beta.0`, con la autorización del propietario, y elegida como versión que se publica. Sustituye a `0.1.5` como última estable.
@@ -1709,6 +1755,7 @@ Manifiesto: `0.2.0.2002` en Chromium y Firefox, y `0.2.0` en Safari.
 - ESLint, Vitest e integración continua.
 
 [Sin publicar]: #sin-publicar
+[0.1.7-beta.0]: #017-beta0--2026-11-20
 [0.1.6]: #016--2026-11-11
 [0.1.6-beta.0]: #016-beta0--2026-11-11
 [0.1.5]: #015--2026-11-10
