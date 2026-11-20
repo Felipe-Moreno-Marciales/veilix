@@ -63,6 +63,7 @@ const PROPIOS: Readonly<Record<Interruptor, readonly string[]>> = {
     '#main [data-prueba="duracion-cita"]',
     '#main [data-prueba="encabezado-cita"]',
     '[data-prueba="estado-llamada"], [data-prueba="duracion-llamada"], #main [data-prueba="titulo-llamada"], #main [data-prueba="detalle-llamada"]',
+    '#main [data-prueba="editado"]',
   ],
   difuminarCampoEntrada: ['#main footer [contenteditable="true"]'],
 };
@@ -123,6 +124,7 @@ describe('independencia de los cinco interruptores', () => {
     wa.abrirPanelLlamada({ nombre: 'Marta Secreta', duracion: '02:15' });
     wa.abrirMenciones([{ nombre: 'Ana', secundario: 'Perfil de Ana' }, '~ Bruno', 'Eva']);
     wa.agregarMensajeObservado({ tipo: 'texto', direccion: 'entrante', texto: 'Con etiqueta', remitente: 'Bruno', autor: 'boton', etiquetaMiembro: 'El crack' });
+    wa.agregarMensajeObservado({ tipo: 'texto', direccion: 'saliente', texto: 'Mensaje editado', editado: true });
     wa.agregarMensajeObservado({ tipo: 'llamada', direccion: 'entrante', llamada: { titulo: 'Llamada de voz', detalle: 'Sin respuesta' } });
     wa.agregarMensajeObservado({ tipo: 'videoMiniatura', direccion: 'entrante', miniaturaVideo: { orientacion: 'horizontal' } });
     wa.agregarMensajeObservado({ tipo: 'documento', direccion: 'entrante', documento: { nombre: 'captura-secreta.png', formato: 'PNG', tamano: '245 kB' } });
