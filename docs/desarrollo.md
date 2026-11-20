@@ -8,18 +8,18 @@ Extensión de privacidad para WhatsApp Web, desarrollada de forma independiente.
 
 ## Estado
 
-Versión actual: **0.1.6**, estable del 11 de noviembre de 2026 preparada a partir de `0.1.6-beta.0`, y **versión que se publica** (todos los navegadores salvo Safari: Chrome, también para Brave, Opera y Vivaldi, Edge y Firefox). Ver [Versión 0.1.6](#versión-016-estable). No inicia la Fase 3.
-- **Qué añade:** con RF-01, la información secundaria de las [sugerencias de menciones](#sugerencias-de-menciones-en-grupos-rf-01-corrección-en-014-beta0): la segunda línea bajo el nombre, con nombres de perfil o emojis. No cambia el comportamiento respecto a beta.0.
-- **Validación:** el 11 de noviembre de 2026, el propietario confirmó en Google Chrome, con `0.1.6-beta.0`, que «todo quedó perfecto» y que los nombres de las sugerencias quedan ocultos (confirmación general, sin detalle por caso). No consta una prueba de `0.1.6` en Brave.
-- **Publicación:** Release `v0.1.6` en este repositorio, siguiendo [Publicación de Veilix](publicacion.md). Firefox se publica por primera vez, sin la firma de Mozilla: en Firefox normal, la instalación es temporal.
-- **Estable anterior, publicada:** `0.1.5` (Release `v0.1.5`, commit `92d827a`). Fue la primera publicación como código abierto, con el mismo código que `0.1.4`. Ver [Versión 0.1.5](#versión-015-estable-primera-publicación-como-código-abierto).
+Versión actual: **0.1.7**, estable del 20 de noviembre de 2026 preparada a partir de `0.1.7-beta.0`, y **versión que se publicará** (todos los navegadores salvo Safari: Chrome, también para Brave, Opera y Vivaldi, Edge y Firefox). Todavía no está etiquetada ni publicada. Ver [Versión 0.1.7](#versión-017-estable). No inicia la Fase 3.
+- **Qué añade:** con RF-04, el [indicador «Editado»](#indicador-editado-de-los-mensajes-rf-04-corrección-en-017-beta0) de los mensajes. No cambia el comportamiento respecto a beta.0.
+- **Validación:** el 20 de noviembre de 2026, el propietario confirmó que las pruebas funcionales reales en Google Chrome de `0.1.7-beta.0` fueron satisfactorias (confirmación general, sin detalle por caso). La prueba de humo real del ZIP estable está pendiente.
+- **Publicación prevista:** Release `v0.1.7` en este repositorio, siguiendo [Publicación de Veilix](publicacion.md).
+- **Estables anteriores, publicadas:** `0.1.6` (Release `v0.1.6`, commit `bc1acd4`) y `0.1.5` (Release `v0.1.5`, commit `92d827a`), la primera publicación como código abierto.
 - **Estables anteriores, etiquetadas y sin publicar:**
   - `0.1.4` (`v0.1.4`, commit `19f418a`), elegida para el lanzamiento antes del cambio de licencia;
   - `0.1.3` (`v0.1.3`, commit `ce22e1d`);
   - `0.1.2` (`v0.1.2`, commit `8672a99`).
 
   El antecedente `0.1.1` no consta como aprobado ni publicado ([Versión 0.1.1](#versión-011-estable-anterior-antecedente)).
-- **En desarrollo:** `0.1.7-beta.0` (20 de noviembre de 2026), compilación interna sobre `0.1.6`. Difumina con RF-04 el [indicador «Editado»](#indicador-editado-de-los-mensajes-rf-04-corrección-en-017-beta0) de los mensajes. Está pendiente de validación real y no cambia los paquetes de `0.1.6`.
+- **Siguiente versión:** cualquier corrección posterior empezará en `0.1.8-beta.0` (`npm run version:beta`).
 - **Licencia:** desde el 10 de noviembre de 2026, Veilix es código abierto con licencia GPL-3.0 o posterior (`GPL-3.0-or-later`, [`LICENSE`](../LICENSE)). Antes era propietario (`UNLICENSED`). La nueva licencia se aplica también a las versiones anteriores. Ese mismo día el propietario hizo público el repositorio. Las guías para colaborar y para informar de vulnerabilidades están en [`CONTRIBUIR.md`](../CONTRIBUIR.md) y [`SEGURIDAD.md`](../SEGURIDAD.md).
 - **Historial:** el completo está en [CHANGELOG.md](../CHANGELOG.md).
 
@@ -29,6 +29,28 @@ Las secciones de cada corrección conservan el nombre de la beta en que se intro
 - **Fase 2: motor de difuminado.** **cerrada oficialmente el 28 de octubre de 2026**, con la aprobación expresa del propietario. Sus entregables técnicos están consolidados en la estable `0.1.2`. Historial: implementada y **validada funcionalmente en Google Chrome** por el propietario con `0.2.0-beta.8` (sistema operativo sin indicar). La versión final es `0.1.0` (renumeración aprobada), con el mismo comportamiento que `0.2.0-beta.8`. Después, en pruebas reales se detectaron nombres de remitentes de grupo y elementos de «Nuevo chat» sin proteger; `0.1.1-beta.0` los corrige, y `0.1.1` reúne esas correcciones como estable. Con `0.1.1-beta.3`, el propietario validó en Chrome la información secundaria de «Nuevo chat» y los remitentes en grupos, sin regresiones. Los entregables técnicos (RF-01 a RF-05, con el revelado temporal, el panel y las preferencias) se integraron y ampliaron en `0.1.2`. Ver [Cierre de la Fase 2](#cierre-de-la-fase-2).
 - **Ampliación multiplataforma.** Una sola base de código genera los paquetes de Chromium (Chrome, Brave, Opera y Vivaldi), Edge, Firefox y Safari. El motor de difuminado se prueba de forma automatizada en Chromium, Firefox y WebKit. **Fuera de Google Chrome no se ha hecho ninguna prueba real, y Safari no se ha ejecutado nunca** (requiere macOS).
 - **Fase 3:** no iniciada.
+
+## Versión 0.1.7 (estable)
+
+Preparada el 20 de noviembre de 2026 a partir de `0.1.7-beta.0` con `npm run version:estable`, sin cambios de comportamiento. Manifiesto `0.1.7` en Chrome, Edge, Firefox y Safari, sin `version_name`. El panel muestra «Veilix 0.1.7».
+
+| Interruptor | Novedades respecto a `0.1.6` |
+| --- | --- |
+| RF-04 · contenido de los mensajes | [Indicador «Editado»](#indicador-editado-de-los-mensajes-rf-04-corrección-en-017-beta0), solo con CSS, con un único filtro y revelado con el mensaje |
+| RF-01, RF-02, RF-03 y RF-05 | Sin cambios |
+
+| Tipo de evidencia | Resultado |
+| --- | --- |
+| Compilación (Chrome, Edge, Firefox y Safari) | ✅ |
+| Pruebas simuladas (Chromium, Firefox y WebKit) | ✅ 1038 de 1038 (346 por motor) |
+| Extensión cargada (simulado), con el ZIP definitivo de Chrome descomprimido en una carpeta limpia | ✅ 49 de 49: «Veilix 0.1.7», el indicador «Editado» difuminado y sin peticiones externas |
+| Real en Google Chrome (propietario, `0.1.7-beta.0`) | ✅ Pruebas funcionales satisfactorias (sin detalle por caso) |
+| Real con el ZIP estable | ⏳ Prueba de humo pendiente ([Publicación de Veilix](publicacion.md#prueba-de-humo-del-paquete-final)) |
+| Real en Brave, Edge, Opera, Vivaldi, Firefox y Safari | ⏳ Sin prueba de `0.1.7` (Brave se probó con `0.1.5`) |
+
+- **Mismo código que la beta:** los 13 archivos de los paquetes son los de `0.1.7-beta.0`, salvo el número de versión.
+- **Huellas SHA-256:** Chrome y Edge, idénticos: `57a32b9c5daf13dcea2adf1a6fecbb6e5655e61aeda69526b4b7a4831aa6d8ff`. Firefox: `bc0991cd86fc7c4ddf2e13c6675afe19fc721c1673bdeed4b97d00ad323dfff7`. El guion de [Publicación de Veilix](publicacion.md) las comprueba.
+- **Limitaciones:** el indicador «Editado» en mensajes enviados y en otros tipos de mensaje no tiene evidencia; Firefox sin firma tiene instalación temporal; el resto, las de [0.1.4](#limitaciones-conocidas-de-014).
 
 ## Versión 0.1.6 (estable)
 
@@ -1596,7 +1618,7 @@ Encontró las etiquetas como texto OTRO, hermano del autor y en la misma línea,
 
 **Incidencia:** en un mensaje editado, WhatsApp Web muestra el indicador «Editado». RF-04 difumina el contenido del mensaje, pero ese indicador queda visible.
 
-**Estado:** corregido en `0.1.7-beta.0` (`EDITADO_MENSAJE`, solo CSS, en RF-04), pendiente de validación real.
+**Estado:** corregido en `0.1.7-beta.0` (`EDITADO_MENSAJE`, solo CSS, en RF-04). El 20 de noviembre de 2026, el propietario confirmó que las pruebas funcionales reales en Chrome fueron satisfactorias (sin detalle por caso). Está incluido en la estable `0.1.7`.
 
 **Estructura confirmada** (Chrome, inspección con DevTools sobre `0.1.6`):
 
@@ -1716,7 +1738,7 @@ WhatsApp Web solo muestra la interfaz de chats con una sesión iniciada, y desde
 
 ## Matriz de compatibilidad
 
-Estado de la versión `0.1.6`. Las columnas distinguen tres tipos de evidencia:
+Estado de la versión `0.1.7`. Las columnas distinguen tres tipos de evidencia:
 
 - **Compilación:** se genera un paquete válido para ese navegador.
 - **Pruebas simuladas:** pruebas automatizadas sobre un DOM que imita WhatsApp Web, ejecutadas en Linux (Codespaces y GitHub Actions).
@@ -1734,7 +1756,7 @@ Estado de la versión `0.1.6`. Las columnas distinguen tres tipos de evidencia:
 
 Leyenda: ✅ comprobado · ◐ evidencia indirecta (mismo motor de renderizado, otro navegador) · ❌ no realizado · ⏳ pendiente de prueba real · — no aplica.
 
-- **Motor de difuminado (simulado):** las 332 pruebas de `tests/navegador` en cada motor:
+- **Motor de difuminado (simulado):** las 346 pruebas de `tests/navegador` en cada motor:
 
   | Archivo | Pruebas |
   | --- | --- |
@@ -1759,6 +1781,7 @@ Leyenda: ✅ comprobado · ◐ evidencia indirecta (mismo motor de renderizado, 
   | «Info. del contacto» (RF-01 y RF-02) | 16 |
   | Llamadas (RF-01, RF-02 y RF-04) | 18 |
   | Sugerencias de menciones (RF-01) | 18 |
+  | Indicador «Editado» (RF-04) | 14 |
   | Etiquetas de miembro (RF-01) | 15 |
  Comprueban el CSS calculado, el revelado con cursor, Tab y atajo, la escritura, los clics y los cambios dinámicos.
 - **Extensión cargada (simulado):** `npm run test:extension`. Carga el paquete compilado, lo usa desde su panel real, bloquea la red y sirve una página simulada en `web.whatsapp.com`. Playwright solo puede cargar extensiones en Chromium.
