@@ -10,11 +10,58 @@ Cada entrega de prueba con cambios en el código recibe una versión nueva. Volv
 
 ## [Sin publicar]
 
-## [0.1.7-beta.0] — 2026-11-20
+## [0.1.7] — 2026-11-20
+
+**Versión estable** preparada el 20 de noviembre de 2026 a partir de `0.1.7-beta.0`, con la autorización del propietario. Sustituye a `0.1.6` como última estable. Todavía no está etiquetada ni publicada.
+
+Manifiesto: `0.1.7` en Chrome, Edge, Firefox y Safari (sin `version_name`). Panel: «Veilix 0.1.7». Paquetes: `veilix-0.1.7-{chrome,edge,firefox,safari}.zip` y `veilix-0.1.7-sources.zip`.
+
+### Incluye
+
+Lo entregado en `0.1.7-beta.0`; el detalle está en [Compilaciones internas de 0.1.7](#compilaciones-internas-de-017).
+
+- **Indicador «Editado» de los mensajes (RF-04):** se difumina con un único filtro, solo con CSS y sin depender de la marca de la hora, y se revela con el mensaje y con el atajo.
+- **Descripción de RF-04 en el panel:** menciona el indicador «Editado».
+- **Diagnóstico** (no se incluye en los paquetes): `scripts/diagnostico-mensaje-editado.js`.
+- **Sin cambios en:** RF-01, RF-02, RF-03, RF-05, los permisos (solo `storage`) y el resto de RF-04.
+
+### Cambiado (versionado)
+
+- Se pasa de `0.1.7-beta.0` a `0.1.7` con `npm run version:estable`, sin cambios de comportamiento.
+- Los 13 archivos de los paquetes son los de la beta validada, salvo el número de versión (y los nombres de los fragmentos JavaScript, que dependen de su contenido).
+- La compilación interna `0.1.7.2000` queda numéricamente por encima de `0.1.7`. Es la consecuencia aceptada en la renumeración de `0.1.0`: las betas nunca se suben a las tiendas.
+- Cualquier corrección posterior empieza en `0.1.8-beta.0` (`npm run version:beta`).
+
+### Validación
+
+- **Real en Google Chrome,** comunicada por el propietario el 20 de noviembre de 2026 con `0.1.7-beta.0`: las pruebas funcionales fueron satisfactorias. Fue una confirmación general, sin detalle por caso.
+- **Paquete estable:** la prueba de humo real del ZIP definitivo en Chrome está pendiente (ver [`docs/publicacion.md`](docs/publicacion.md)). La verificación automatizada del ZIP descomprimido en una carpeta limpia fue correcta: 49 de 49, con «Veilix 0.1.7», el indicador «Editado» difuminado y sin peticiones externas.
+- **Automatizada:** todas las verificaciones de `AGENTS.md` son correctas (ver [`docs/desarrollo.md`](docs/desarrollo.md), «Versión 0.1.7»).
+- **Sin prueba real de `0.1.7`:** Brave, Edge, Opera, Vivaldi, Firefox y Safari. Brave se probó con `0.1.5`.
+
+### Distribución
+
+- **Release `v0.1.7` prevista** en este repositorio, siguiendo [`docs/publicacion.md`](docs/publicacion.md): los paquetes de Chrome (también para Brave, Opera y Vivaldi), Edge y Firefox, y `SHA256SUMS.txt`.
+- **Huellas SHA-256:**
+  - Chrome y Edge, que son idénticos: `57a32b9c5daf13dcea2adf1a6fecbb6e5655e61aeda69526b4b7a4831aa6d8ff`;
+  - Firefox: `bc0991cd86fc7c4ddf2e13c6675afe19fc721c1673bdeed4b97d00ad323dfff7`.
+- **No se publican:** el paquete de Safari, que no tiene la app de macOS, ni el de fuentes.
+
+### Limitaciones conocidas
+
+- **Indicador «Editado»:** su estructura en mensajes enviados y en otros tipos de mensaje (fotos, documentos) no tiene evidencia.
+- **Firefox:** sin la firma de Mozilla, en Firefox normal la instalación es temporal.
+- **Resto:** las de [0.1.6] siguen vigentes.
+
+## Compilaciones internas de 0.1.7
+
+Compilación interna de prueba `0.1.7-beta.0`, conservada tal como se registró. No se publicó. Su contenido está consolidado en [0.1.7]. Va con un nivel de encabezado menos porque su manifiesto (`0.1.7.2000`) es mayor que el de la estable `0.1.7`: la lista de versiones `## [...]` solo recoge las estables, en orden creciente de manifiesto.
+
+### [0.1.7-beta.0] — 2026-11-20
 
 Compilación interna de prueba sobre la estable `0.1.6`. Manifiesto: `0.1.7.2000` en Chromium y Firefox (`version_name` `0.1.7-beta.0` en Chromium), y `0.1.7` en Safari. Corrección de privacidad del indicador «Editado», pedida por el propietario. No inicia formalmente la Fase 3, y los paquetes de `0.1.6` no cambian.
 
-### Corregido
+#### Corregido
 
 - **Indicador «Editado» de los mensajes (RF-04):** con `0.1.6`, el contenido de un mensaje editado se difuminaba, pero el indicador «Editado» quedaba visible.
   - **Estructura confirmada** por el propietario con DevTools en Chrome: dentro de `msg-container` › `msg-meta` › `div`, un `span` con dos hijos `span`. El primero es el indicador, sin filtro, y el segundo contiene la hora (`data-veilix-hora-mensaje`).
@@ -27,18 +74,18 @@ Compilación interna de prueba sobre la estable `0.1.6`. Manifiesto: `0.1.7.2000
   - **Sin evidencia:** la estructura en mensajes enviados y en otros tipos de mensaje (fotos, documentos). Pendiente de validación real.
   - **Implementación:** solo CSS, en RF-04. Sin observadores, marcas ni permisos nuevos.
 
-### Cambiado
+#### Cambiado
 
 - **Descripción de RF-04 en el panel:** menciona el indicador «Editado».
 
-### Añadido (diagnóstico)
+#### Añadido (diagnóstico)
 
 - `scripts/diagnostico-mensaje-editado.js`: diagnóstico anonimizado del indicador.
   - **Cómo busca:** localiza candidatos por estructura (textos de la zona de la hora que no son horas) y por texto de edición.
   - **Qué muestra:** de cada uno, su cadena hasta `msg-container`, su relación con la hora y el cuerpo, y el selector de Veilix que lo difumina, con una marca temporal en pantalla.
   - No se incluye en los paquetes.
 
-### Añadido (pruebas)
+#### Añadido (pruebas)
 
 - `tests/navegador/editado.test.ts`, en Chromium, Firefox y WebKit (14 pruebas por motor):
   - **Mensajes:** editados recibidos y enviados, y mensajes normales.
@@ -1755,6 +1802,7 @@ Manifiesto: `0.2.0.2002` en Chromium y Firefox, y `0.2.0` en Safari.
 - ESLint, Vitest e integración continua.
 
 [Sin publicar]: #sin-publicar
+[0.1.7]: #017--2026-11-20
 [0.1.7-beta.0]: #017-beta0--2026-11-20
 [0.1.6]: #016--2026-11-11
 [0.1.6-beta.0]: #016-beta0--2026-11-11

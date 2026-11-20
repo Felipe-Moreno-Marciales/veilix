@@ -6,7 +6,7 @@
 
 <p align="center"><strong>Privacidad para WhatsApp Web.</strong><br>Funciona de forma local y no envía datos a servidores externos.</p>
 
-<p align="center">Versión estable <strong>0.1.6</strong> · Código abierto (GPL-3.0)</p>
+<p align="center">Versión estable <strong>0.1.7</strong> · Código abierto (GPL-3.0)</p>
 
 ---
 
@@ -27,7 +27,7 @@ Cada protección tiene su propio interruptor en el panel de Veilix, y puedes com
 | **Nombres de contactos** | Los nombres de contactos y grupos en la lista de chats, el encabezado, los mensajes de grupo (con las etiquetas de miembro), las sugerencias al mencionar con @, «Nuevo chat» y las llamadas, y el nombre, el usuario, el teléfono y la descripción de «Info. del contacto» |
 | **Fotografías de contactos** | Las fotos de perfil y los avatares de contactos y grupos, también durante las llamadas |
 | **Mensajes recientes** | La vista previa del último mensaje de cada chat en la lista |
-| **Mensajes de conversaciones** | El texto, las fotos, los vídeos, los documentos, la hora y las reacciones de los mensajes, las citas, el texto y los stickers de «Info. del mensaje», y el estado y la duración de las llamadas |
+| **Mensajes de conversaciones** | El texto, las fotos, los vídeos, los documentos, la hora, el indicador «Editado» y las reacciones de los mensajes, las citas, el texto y los stickers de «Info. del mensaje», y el estado y la duración de las llamadas |
 | **Campo de entrada** | Lo que escribes, sin impedirte escribir, corregir ni enviar |
 
 **Para ver algo un momento**, pasa el cursor por encima o mantén pulsado **Ctrl + Mayús + Espacio**. Al apartar el cursor o soltar las teclas, todo vuelve a difuminarse.
@@ -36,16 +36,16 @@ El panel muestra también cuatro funciones en preparación, marcadas como «Pend
 
 ## 📥 Descargar Veilix
 
-**Última versión estable: `0.1.6`**
+**Última versión estable: `0.1.7`**
 
-> Descargas oficiales en la [Release `v0.1.6`](https://github.com/Felipe-Moreno-Marciales/veilix/releases/tag/v0.1.6), con el archivo `SHA256SUMS.txt` para comprobar que los paquetes no se han alterado.
+> Descargas oficiales en la [Release `v0.1.7`](https://github.com/Felipe-Moreno-Marciales/veilix/releases/tag/v0.1.7), con el archivo `SHA256SUMS.txt` para comprobar que los paquetes no se han alterado.
 
 | Navegador | Descarga | Estado |
 | --- | --- | --- |
-| 🌐 Google Chrome | [`veilix-0.1.6-chrome.zip`](https://github.com/Felipe-Moreno-Marciales/veilix/releases/download/v0.1.6/veilix-0.1.6-chrome.zip) | ✅ Disponible |
-| 🌐 Brave, Opera y Vivaldi | [`veilix-0.1.6-chrome.zip`](https://github.com/Felipe-Moreno-Marciales/veilix/releases/download/v0.1.6/veilix-0.1.6-chrome.zip) | ✅ Disponible (paquete de Chrome) |
-| 🌊 Microsoft Edge | [`veilix-0.1.6-edge.zip`](https://github.com/Felipe-Moreno-Marciales/veilix/releases/download/v0.1.6/veilix-0.1.6-edge.zip) | ✅ Disponible |
-| 🦊 Mozilla Firefox | [`veilix-0.1.6-firefox.zip`](https://github.com/Felipe-Moreno-Marciales/veilix/releases/download/v0.1.6/veilix-0.1.6-firefox.zip) | ✅ Disponible (instalación temporal hasta que Mozilla lo firme) |
+| 🌐 Google Chrome | [`veilix-0.1.7-chrome.zip`](https://github.com/Felipe-Moreno-Marciales/veilix/releases/download/v0.1.7/veilix-0.1.7-chrome.zip) | ✅ Disponible |
+| 🌐 Brave, Opera y Vivaldi | [`veilix-0.1.7-chrome.zip`](https://github.com/Felipe-Moreno-Marciales/veilix/releases/download/v0.1.7/veilix-0.1.7-chrome.zip) | ✅ Disponible (paquete de Chrome) |
+| 🌊 Microsoft Edge | [`veilix-0.1.7-edge.zip`](https://github.com/Felipe-Moreno-Marciales/veilix/releases/download/v0.1.7/veilix-0.1.7-edge.zip) | ✅ Disponible |
+| 🦊 Mozilla Firefox | [`veilix-0.1.7-firefox.zip`](https://github.com/Felipe-Moreno-Marciales/veilix/releases/download/v0.1.7/veilix-0.1.7-firefox.zip) | ✅ Disponible (instalación temporal hasta que Mozilla lo firme) |
 | 🧭 Apple Safari (macOS) | — | ⛔ No disponible por ahora |
 
 **Requisitos:**
@@ -56,7 +56,7 @@ El panel muestra también cuatro funciones en preparación, marcadas como «Pend
 
 ### Google Chrome (y Brave, Opera y Vivaldi)
 
-1. Descarga `veilix-0.1.6-chrome.zip` y descomprímelo en una carpeta que vayas a conservar.
+1. Descarga `veilix-0.1.7-chrome.zip` y descomprímelo en una carpeta que vayas a conservar.
 2. Abre `chrome://extensions` (o `brave://extensions`, `opera://extensions` o `vivaldi://extensions`).
 3. Activa el **«Modo de desarrollador»**.
 4. Pulsa **«Cargar descomprimida»** y elige la carpeta que contiene `manifest.json`.
@@ -64,7 +64,7 @@ El panel muestra también cuatro funciones en preparación, marcadas como «Pend
 
 ### Microsoft Edge
 
-1. Descarga `veilix-0.1.6-edge.zip` y descomprímelo en una carpeta que vayas a conservar.
+1. Descarga `veilix-0.1.7-edge.zip` y descomprímelo en una carpeta que vayas a conservar.
 2. Abre `edge://extensions` y activa el **«Modo de desarrollador»**.
 3. Pulsa **«Cargar desempaquetada»** y elige la carpeta que contiene `manifest.json`.
 
@@ -74,9 +74,9 @@ Es una instalación manual. El navegador puede avisar de que la extensión está
 
 Veilix todavía no está firmado por Mozilla, y Firefox solo instala de forma permanente extensiones firmadas. Por eso, en Firefox normal se carga como complemento temporal y **desaparece al cerrar Firefox**:
 
-1. Descarga `veilix-0.1.6-firefox.zip`. No hace falta descomprimirlo.
+1. Descarga `veilix-0.1.7-firefox.zip`. No hace falta descomprimirlo.
 2. Abre `about:debugging#/runtime/this-firefox` y pulsa **«Cargar complemento temporal…»**.
-3. Elige el archivo `veilix-0.1.6-firefox.zip`.
+3. Elige el archivo `veilix-0.1.7-firefox.zip`.
 
 En **Firefox Developer Edition** o **Nightly** se puede instalar de forma permanente: en `about:config`, pon `xpinstall.signatures.required` en `false`, y después arrastra el archivo a `about:addons`.
 
@@ -100,7 +100,7 @@ Todavía no hay instalador ni publicación en la App Store.
 - **Partes de WhatsApp Web aún no cubiertas:** algunas, como las fotos y los vídeos de «Info. del mensaje» o las notas guardadas de un contacto, pueden quedar visibles.
 - **Cambios de WhatsApp:** si WhatsApp cambia su diseño, alguna protección puede dejar de funcionar hasta que se actualice Veilix.
 
-La lista completa está en el [historial de versiones](CHANGELOG.md#016--2026-11-11).
+La lista completa está en el [historial de versiones](CHANGELOG.md#017--2026-11-20).
 
 ## Documentación
 
