@@ -27,6 +27,9 @@
  *   duración), sin el icono ni `msg-meta`; y en el panel flotante de una
  *   llamada, el estado y la duración (`DATOS_PANEL_LLAMADA`), nunca la barra de
  *   controles. El nombre del panel es de RF-01 y el avatar, de RF-02.
+ * - Con CSS (desde 0.1.7-beta.0, estructura confirmada): el indicador
+ *   «Editado» de `msg-meta` (`EDITADO_MENSAJE`), sin depender de la marca de la
+ *   hora, con un único filtro y revelado con el mensaje.
  * - Con un marcador (`marcador-mensajes.ts`): la hora y las reacciones, que no
  *   pueden seleccionarse solo con CSS.
  * - Con el mismo marcador: el indicador de estado de los mensajes enviados
@@ -56,6 +59,7 @@ import {
   CITA_RESPUESTA,
   CONTENIDO_MENSAJE,
   DATOS_PANEL_LLAMADA,
+  EDITADO_MENSAJE,
   FILA_MENSAJE,
   MENSAJE,
   MENSAJE_INFO,
@@ -82,6 +86,8 @@ export const moduloDifuminarMensajesConversacion = crearModuloDifuminado({
         `:is(${CONTENIDO_MENSAJE}):not([${ATRIBUTO_DURACION_CITA}] *)`,
         // Tarjetas de llamada (desde 0.1.3-beta.0): título, estado y duración, sin el icono ni msg-meta.
         TEXTO_REGISTRO_LLAMADA,
+        // Indicador «Editado» (desde 0.1.7-beta.0): solo CSS, sin depender de la marca de la hora.
+        EDITADO_MENSAJE,
         `[${ATRIBUTO_DURACION_CITA}]`,
         `[${ATRIBUTO_ENCABEZADO_ESTADO}]`,
         `[${ATRIBUTO_HORA_MENSAJE}]`,
