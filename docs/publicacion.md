@@ -1,6 +1,6 @@
 # Publicación de Veilix
 
-> Procedimiento para el propietario: publicar las descargas de Veilix en GitHub Releases. La versión que se publica es la estable `0.1.6` (11 de noviembre de 2026), para todos los navegadores salvo Safari: Chrome (también Brave, Opera y Vivaldi), Edge y Firefox. Sustituye a `0.1.5`, la primera publicación (Release `v0.1.5`, 10 de noviembre de 2026), que se conserva publicada como versión anterior. `0.1.5` tenía el mismo código que `0.1.4` y se publicó con otro número para que su etiqueta ya incluyera la licencia GPL-3.0, porque `v0.1.4` se creó antes del cambio de licencia. Los paquetes de `0.1.2`, `0.1.3` y `0.1.4` se conservan como históricos y no se publican. La sección de descargas para usuarios está en el [README](../README.md#-descargar-veilix).
+> Procedimiento para el propietario: publicar las descargas de Veilix en GitHub Releases. La versión que se publica es la estable `0.1.7` (20 de noviembre de 2026), para todos los navegadores salvo Safari: Chrome (también Brave, Opera y Vivaldi), Edge y Firefox. Sustituye a `0.1.6` (Release `v0.1.6`), que se conserva publicada como versión anterior, igual que `0.1.5`, la primera publicación. Los paquetes de `0.1.2`, `0.1.3` y `0.1.4` se conservan como históricos y no se publican. La sección de descargas para usuarios está en el [README](../README.md#-descargar-veilix).
 
 ## Código abierto y repositorio de publicación
 
@@ -8,12 +8,12 @@ El 10 de noviembre de 2026, el propietario decidió publicar Veilix como **códi
 
 Por eso la Release se publica en **el propio repositorio de Veilix**, cuando el propietario lo haga público. Ya no hace falta el repositorio de distribución aislado que preveía la versión anterior de este documento.
 
-| Se adjunta a la Release `v0.1.6` | No se adjunta |
+| Se adjunta a la Release `v0.1.7` | No se adjunta |
 | --- | --- |
-| `veilix-0.1.6-chrome.zip`, `veilix-0.1.6-edge.zip` y `veilix-0.1.6-firefox.zip` | `veilix-0.1.6-safari.zip`: son solo los archivos de la extensión, sin la app de macOS que Safari necesita |
-| `SHA256SUMS.txt`, con las huellas de **solo** esos tres paquetes | `veilix-0.1.6-sources.zip`: es para la revisión de Mozilla; el código ya está en el repositorio |
+| `veilix-0.1.7-chrome.zip`, `veilix-0.1.7-edge.zip` y `veilix-0.1.7-firefox.zip` | `veilix-0.1.7-safari.zip`: son solo los archivos de la extensión, sin la app de macOS que Safari necesita |
+| `SHA256SUMS.txt`, con las huellas de **solo** esos tres paquetes | `veilix-0.1.7-sources.zip`: es para la revisión de Mozilla; el código ya está en el repositorio |
 
-**Firefox, desde `0.1.6`:** se publica sin firmar, por decisión del propietario del 11 de noviembre de 2026. En Firefox normal se instala como complemento temporal (`about:debugging`), que desaparece al cerrar el navegador. En Developer Edition o Nightly puede instalarse de forma permanente desactivando `xpinstall.signatures.required`. Las notas de la Release y el README lo explican.
+**Firefox, desde `0.1.7`:** se publica sin firmar, por decisión del propietario del 11 de noviembre de 2026. En Firefox normal se instala como complemento temporal (`about:debugging`), que desaparece al cerrar el navegador. En Developer Edition o Nightly puede instalarse de forma permanente desactivando `xpinstall.signatures.required`. Las notas de la Release y el README lo explican.
 
 **Publicaciones posteriores:** el `.xpi` de Firefox firmado por Mozilla, que permitirá la instalación permanente, y la app de Safari, cuando exista y esté firmada.
 
@@ -30,11 +30,11 @@ Hacer público el repositorio expone **todo su historial**: el código, la docum
 
 ## Prueba de humo del paquete final
 
-Antes de publicar, confirma que el paquete exacto que se va a distribuir conserva el comportamiento aprobado de `0.1.6-beta.0`:
+Antes de publicar, confirma que el paquete exacto que se va a distribuir conserva el comportamiento aprobado de `0.1.7-beta.0`:
 
-1. Descomprime `.output/veilix-0.1.6-chrome.zip` en una carpeta nueva. No uses `.output/chrome-mv3`, que puede contener otra compilación.
+1. Descomprime `.output/veilix-0.1.7-chrome.zip` en una carpeta nueva. No uses `.output/chrome-mv3`, que puede contener otra compilación.
 2. En Chrome, en `chrome://extensions`, desactiva o quita cualquier otra copia de Veilix. Pulsa «Cargar descomprimida» y elige esa carpeta.
-3. Comprueba que el panel de Veilix muestra **«Veilix 0.1.6»**, sin «beta», con el candado y el crédito.
+3. Comprueba que el panel de Veilix muestra **«Veilix 0.1.7»**, sin «beta», con el candado y el crédito.
 4. Abre WhatsApp Web con los cinco interruptores activos y comprueba que se difuminan:
    - los nombres y las fotos de la lista y de la conversación;
    - las vistas previas, los mensajes y el campo de escritura;
@@ -42,8 +42,9 @@ Antes de publicar, confirma que el paquete exacto que se va a distribuir conserv
 5. **Llamadas:** en una llamada de voz, el nombre, el estado y la duración del panel deben verse difuminados, y el avatar también. Silenciar, la cámara y colgar deben funcionar. En la conversación, las tarjetas de llamada deben tener el título y el estado difuminados, con el icono nítido.
 6. **Menciones:** en un grupo, escribe `@`. Los nombres de los participantes y la línea de debajo (nombre de perfil o emojis) deben verse difuminados, «todos» nítido y los avatares difuminados. Elige una sugerencia con el ratón o con Intro: la mención se inserta bien.
 7. **Etiquetas de miembro:** en un grupo con etiquetas, el apodo junto al autor debe verse difuminado, y revelarse con el cursor sobre el mensaje. «Leer más», las reacciones y los demás controles deben seguir nítidos y funcionando.
-8. **Revelado:** pasa el cursor por encima y usa Ctrl + Mayús + Espacio. Después desactiva cada interruptor por separado, sin recargar: solo se revela lo suyo.
-9. **Si quieres, repite** los pasos 1 a 3 con `veilix-0.1.6-edge.zip` en `edge://extensions`.
+8. **Indicador «Editado»:** en un mensaje editado, recibido y enviado, «Editado» debe verse difuminado como la hora, y revelarse con el cursor sobre el mensaje.
+9. **Revelado:** pasa el cursor por encima y usa Ctrl + Mayús + Espacio. Después desactiva cada interruptor por separado, sin recargar: solo se revela lo suyo.
+10. **Si quieres, repite** los pasos 1 a 3 con `veilix-0.1.7-edge.zip` en `edge://extensions`.
 
 ## Pasos, cuando lo autorices
 
@@ -55,8 +56,8 @@ Antes de publicar, confirma que el paquete exacto que se va a distribuir conserv
    ```
 2. **Prepara los paquetes desde la raíz del proyecto Veilix.** El guion se ejecuta en un `bash` aparte, así que cualquier fallo lo detiene sin cerrar tu terminal. Antes de generar `SHA256SUMS.txt` comprueba:
    - que la lista de paquetes es exactamente la autorizada;
-   - que cada paquete existe, se puede leer y es la versión `0.1.6`;
-   - que su huella SHA-256 es exactamente la del informe de estabilización de `0.1.6`;
+   - que cada paquete existe, se puede leer y es la versión `0.1.7`;
+   - que su huella SHA-256 es exactamente la del informe de estabilización de `0.1.7`;
    - que no contiene archivos internos.
 
    Si algo falla, no deja ningún `SHA256SUMS.txt`.
@@ -74,19 +75,19 @@ Antes de publicar, confirma que el paquete exacto que se va a distribuir conserv
    trap 'estado=$?; if [ "$estado" -ne 0 ]; then rm -f SHA256SUMS.txt; fi' EXIT
    rm -f SHA256SUMS.txt
 
-   # Huella SHA-256 de cada paquete de 0.1.6, del informe de estabilización (los de Chrome y Edge son idénticos).
+   # Huella SHA-256 de cada paquete de 0.1.7, del informe de estabilización (los de Chrome y Edge son idénticos).
    # Con case y no con un array asociativo, para que funcione también con el bash 3.2 de macOS.
    huella_esperada() {
      case "$1" in
-       veilix-0.1.6-chrome.zip | veilix-0.1.6-edge.zip) echo b234e173f975c8dd002a89a06b75493c25ac908dd60a3fecc71a2ad323ec7282 ;;
-       veilix-0.1.6-firefox.zip) echo 6e0d85fe625f09111b4f668c032f1ca93ce9098645209f59ec5eed2696fc0379 ;;
+       veilix-0.1.7-chrome.zip | veilix-0.1.7-edge.zip) echo 57a32b9c5daf13dcea2adf1a6fecbb6e5655e61aeda69526b4b7a4831aa6d8ff ;;
+       veilix-0.1.7-firefox.zip) echo bc0991cd86fc7c4ddf2e13c6675afe19fc721c1673bdeed4b97d00ad323dfff7 ;;
        *) echo ninguna ;;
      esac
    }
 
-   # Lista explícita de paquetes autorizados (sin comodines: veilix-0.1.6-*.zip incluiría el de fuentes y el de Safari).
-   AUTORIZADOS=(veilix-0.1.6-chrome.zip veilix-0.1.6-edge.zip veilix-0.1.6-firefox.zip)
-   if [ "${AUTORIZADOS[*]}" != "veilix-0.1.6-chrome.zip veilix-0.1.6-edge.zip veilix-0.1.6-firefox.zip" ]; then
+   # Lista explícita de paquetes autorizados (sin comodines: veilix-0.1.7-*.zip incluiría el de fuentes y el de Safari).
+   AUTORIZADOS=(veilix-0.1.7-chrome.zip veilix-0.1.7-edge.zip veilix-0.1.7-firefox.zip)
+   if [ "${AUTORIZADOS[*]}" != "veilix-0.1.7-chrome.zip veilix-0.1.7-edge.zip veilix-0.1.7-firefox.zip" ]; then
      detener "la lista de paquetes no es la autorizada: ${AUTORIZADOS[*]}"
    fi
 
@@ -95,7 +96,7 @@ Antes de publicar, confirma que el paquete exacto que se va a distribuir conserv
      if ! listado=$(unzip -Z1 "$paquete"); then detener "no se pudo leer el listado de $paquete"; fi
      if ! grep -qx 'manifest.json' <<<"$listado"; then detener "$paquete no tiene manifest.json en la raíz"; fi
      if ! manifiesto=$(unzip -p "$paquete" manifest.json); then detener "no se pudo leer el manifiesto de $paquete"; fi
-     if ! grep -q '"version": *"0\.1\.6"' <<<"$manifiesto"; then detener "$paquete no es la versión 0.1.6"; fi
+     if ! grep -q '"version": *"0\.1\.7"' <<<"$manifiesto"; then detener "$paquete no es la versión 0.1.7"; fi
      if grep -Eq '(^|/)(src|scripts|tests|node_modules)/|diagnostico|sources|\.map$|(^|/)\.env|\.tsx?$' <<<"$listado"; then
        detener "$paquete contiene archivos internos"
      fi
@@ -112,19 +113,19 @@ Antes de publicar, confirma que el paquete exacto que se va a distribuir conserv
    ```
 
    Sigue solo si termina con «LISTO». Si aparece «DETENER», no publiques: corrige la causa que indica y vuelve a ejecutarlo.
-3. **Crea la Release `v0.1.6`** en el repositorio de Veilix, sobre la etiqueta `v0.1.6` (creada en `main` después de integrar la versión), con estos cuatro archivos de `.output/` y nada más: `veilix-0.1.6-chrome.zip`, `veilix-0.1.6-edge.zip`, `veilix-0.1.6-firefox.zip` y `SHA256SUMS.txt`. Puedes hacerlo desde la web de GitHub o con:
+3. **Crea la Release `v0.1.7`** en el repositorio de Veilix, sobre la etiqueta `v0.1.7` (creada en `main` después de integrar la versión), con estos cuatro archivos de `.output/` y nada más: `veilix-0.1.7-chrome.zip`, `veilix-0.1.7-edge.zip`, `veilix-0.1.7-firefox.zip` y `SHA256SUMS.txt`. Puedes hacerlo desde la web de GitHub o con:
 
    ```bash
-   gh release create v0.1.6 .output/veilix-0.1.6-chrome.zip .output/veilix-0.1.6-edge.zip .output/veilix-0.1.6-firefox.zip .output/SHA256SUMS.txt \
-     --repo Felipe-Moreno-Marciales/veilix --verify-tag --title "Veilix 0.1.6" --notes-file <notas-de-la-versión>.md
+   gh release create v0.1.7 .output/veilix-0.1.7-chrome.zip .output/veilix-0.1.7-edge.zip .output/veilix-0.1.7-firefox.zip .output/SHA256SUMS.txt \
+     --repo Felipe-Moreno-Marciales/veilix --verify-tag --title "Veilix 0.1.7" --notes-file <notas-de-la-versión>.md
    ```
-4. **Comprueba lo publicado.** Los archivos adjuntos deben ser exactamente `veilix-0.1.6-chrome.zip`, `veilix-0.1.6-edge.zip`, `veilix-0.1.6-firefox.zip` y `SHA256SUMS.txt`, además de los «Source code» automáticos de GitHub.
+4. **Comprueba lo publicado.** Los archivos adjuntos deben ser exactamente `veilix-0.1.7-chrome.zip`, `veilix-0.1.7-edge.zip`, `veilix-0.1.7-firefox.zip` y `SHA256SUMS.txt`, además de los «Source code» automáticos de GitHub.
 
    ```bash
-   gh release view v0.1.6 --repo Felipe-Moreno-Marciales/veilix --json assets --jq '.assets[].name'
+   gh release view v0.1.7 --repo Felipe-Moreno-Marciales/veilix --json assets --jq '.assets[].name'
    ```
 5. **Actualiza la sección de descargas del [README](../README.md#-descargar-veilix):**
-   - En las filas de Chrome, de Brave, Opera y Vivaldi, de Edge y de Firefox, va el enlace directo. Su estructura es `https://github.com/Felipe-Moreno-Marciales/veilix/releases/download/v0.1.6/veilix-0.1.6-chrome.zip`, y lo mismo con `-edge.zip` y `-firefox.zip`.
+   - En las filas de Chrome, de Brave, Opera y Vivaldi, de Edge y de Firefox, va el enlace directo. Su estructura es `https://github.com/Felipe-Moreno-Marciales/veilix/releases/download/v0.1.7/veilix-0.1.7-chrome.zip`, y lo mismo con `-edge.zip` y `-firefox.zip`.
    - El aviso de la sección enlaza a la página de la Release.
    - Los enlaces se añaden antes de crear la Release, porque su dirección se conoce de antemano. Comprueba que funcionan después de publicarla.
    - Firefox y Safari no cambian.
