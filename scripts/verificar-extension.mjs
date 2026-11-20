@@ -306,6 +306,21 @@ try {
         crear('div', {}, crear('div', { 'data-pre-plain-text': '[10:41, 15/10/2026] Bruno: ' }, crear('span', { class: 'selectable-text' }, 'Texto largo')), control('Leer más', 'leer-mas'))))),
     );
   });
+  // Mensaje editado con la estructura observada: msg-meta › div › span › [indicador «Editado», span con la hora].
+  await whatsapp.evaluate(() => {
+    const crear = (etiqueta, atributos = {}, ...hijos) => {
+      const e = document.createElement(etiqueta);
+      for (const [nombre, valor] of Object.entries(atributos)) e.setAttribute(nombre, valor);
+      e.append(...hijos);
+      return e;
+    };
+    document.querySelector('#main [data-testid="conversation-panel-messages"]').append(
+      crear('div', { role: 'row' }, crear('div', { 'data-id': 'false_editado' }, crear('div', { 'data-testid': 'msg-container' },
+        crear('div', { 'data-pre-plain-text': '[10:42, 15/10/2026] Bruno: ' }, crear('span', { class: 'selectable-text' }, 'Texto corregido')),
+        crear('div', { 'data-testid': 'msg-meta' }, crear('div', {}, crear('span', {},
+          crear('span', { 'data-prueba': 'editado' }, 'Editado'), crear('span', {}, crear('span', { 'data-prueba': 'hora-editado' }, '10:42')))))))),
+    );
+  });
   await whatsapp.waitForFunction(() => getComputedStyle(document.querySelector('[data-prueba="etiqueta-miembro"]')).filter === 'blur(6px)');
   comprobar(
     (await whatsapp.evaluate(() => {
@@ -315,6 +330,15 @@ try {
       return filtros;
     })) === 1 && (await filtro('[data-prueba="leer-mas"]')) === 'none',
     'difuminado en caliente: etiqueta de miembro de un mensaje nuevo (un solo filtro), sin el «Leer más» de forma parecida',
+  );
+  comprobar(
+    (await whatsapp.evaluate(() => {
+      const editado = document.querySelector('[data-prueba="editado"]');
+      let filtros = 0;
+      for (let a = editado; a; a = a.parentElement) if (getComputedStyle(a).filter !== 'none') filtros++;
+      return getComputedStyle(editado).filter === 'blur(6px)' && filtros === 1;
+    })) && (await filtro('[data-prueba="hora-editado"]')) === 'blur',
+    'difuminado en caliente: indicador «Editado» de un mensaje nuevo (un solo filtro), y su hora',
   );
   comprobar((await filtro('#main footer [data-testid="quoted-message"] [data-testid="selectable-text"]')) === 'blur', 'difuminado en caliente: texto citado del recuadro «Responder»');
   comprobar((await filtro('#main footer [aria-label="Cancelar respuesta"] svg')) === 'none', 'la X del recuadro «Responder» no se difumina');

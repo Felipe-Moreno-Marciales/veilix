@@ -82,7 +82,7 @@ export const CATALOGO_FUNCIONALIDADES: readonly DefinicionFuncionalidad[] = [
   {
     id: 'difuminarMensajesConversacion',
     titulo: 'Difuminar mensajes de conversaciones',
-    descripcion: 'Difumina el texto, la multimedia, la hora y las reacciones de los mensajes, el texto citado al responder y el texto y los stickers de «Info. del mensaje».',
+    descripcion: 'Difumina el texto, la multimedia, la hora, el indicador «Editado» y las reacciones de los mensajes, el texto citado al responder y el texto y los stickers de «Info. del mensaje».',
     categoria: 'difuminado',
     estado: 'disponible',
     nota: REVELADO_GENERAL,

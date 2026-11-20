@@ -19,7 +19,7 @@ Versión actual: **0.1.6**, estable del 11 de noviembre de 2026 preparada a part
   - `0.1.2` (`v0.1.2`, commit `8672a99`).
 
   El antecedente `0.1.1` no consta como aprobado ni publicado ([Versión 0.1.1](#versión-011-estable-anterior-antecedente)).
-- **Siguiente versión:** cualquier corrección posterior empezará en `0.1.7-beta.0` (`npm run version:beta`).
+- **En desarrollo:** `0.1.7-beta.0` (20 de noviembre de 2026), compilación interna sobre `0.1.6`. Difumina con RF-04 el [indicador «Editado»](#indicador-editado-de-los-mensajes-rf-04-corrección-en-017-beta0) de los mensajes. Está pendiente de validación real y no cambia los paquetes de `0.1.6`.
 - **Licencia:** desde el 10 de noviembre de 2026, Veilix es código abierto con licencia GPL-3.0 o posterior (`GPL-3.0-or-later`, [`LICENSE`](../LICENSE)). Antes era propietario (`UNLICENSED`). La nueva licencia se aplica también a las versiones anteriores. Ese mismo día el propietario hizo público el repositorio. Las guías para colaborar y para informar de vulnerabilidades están en [`CONTRIBUIR.md`](../CONTRIBUIR.md) y [`SEGURIDAD.md`](../SEGURIDAD.md).
 - **Historial:** el completo está en [CHANGELOG.md](../CHANGELOG.md).
 
@@ -1591,6 +1591,60 @@ Encontró las etiquetas como texto OTRO, hermano del autor y en la misma línea,
 - **Implementación:** con RF-01, un único filtro sobre la etiqueta, sin depender del texto ni del idioma y sin filtros superpuestos con el nombre.
 - **Revelado:** decidir si la etiqueta se revela con el mensaje, como el autor, o con el propio elemento.
 - **Variantes:** cada una necesita su evidencia (mensajes enviados, citas, «Info. del grupo» y participantes).
+
+### Indicador «Editado» de los mensajes (RF-04, corrección en 0.1.7-beta.0)
+
+**Incidencia:** en un mensaje editado, WhatsApp Web muestra el indicador «Editado». RF-04 difumina el contenido del mensaje, pero ese indicador queda visible.
+
+**Estado:** corregido en `0.1.7-beta.0` (`EDITADO_MENSAJE`, solo CSS, en RF-04), pendiente de validación real.
+
+**Estructura confirmada** (Chrome, inspección con DevTools sobre `0.1.6`):
+
+```text
+msg-container › … › msg-meta › div › span
+  ├── span   (indicador «Editado», sin filtro)
+  └── span   (contiene la hora, data-veilix-hora-mensaje)
+```
+
+**Corrección:**
+- **Selector:** dentro de `msg-meta`, el `span` hijo de un `span` que es el primero de sus hermanos, tiene texto pero ningún elemento dentro y va seguido de otro `span`. Excluye iconos (`data-icon`) y controles.
+- **Criterios descartados:** no usa el texto, el idioma, las clases ni los estilos en línea.
+- **Sin depender de la marca de la hora:** esa marca la pone un observador después de insertar los estilos. Como el selector es solo CSS, el indicador está difuminado desde que aparece el mensaje; una prueba lo comprueba en el mismo instante.
+- **Filtro y revelado:** un único filtro, en la misma regla que la hora, revelado con el mensaje y con el atajo.
+- **Colisiones:** dentro de `msg-meta` solo hay metadatos que RF-04 ya difumina. Si la hora fuera la primera de dos `span`, el selector la elegiría a ella, con un único filtro.
+- **Sin evidencia:** la estructura en mensajes enviados y en otros tipos de mensaje (fotos, documentos).
+
+**Pruebas manuales en Chrome de `0.1.7-beta.0`** (solo el propietario puede marcarlas como superadas):
+1. Con RF-04 activada, el indicador «Editado» de un mensaje editado recibido y de uno enviado se ve difuminado, como la hora.
+2. Con el cursor sobre el mensaje, se revelan el indicador y la hora, y al salir se difuminan. Con Ctrl + Mayús + Espacio se revelan todos.
+3. Con RF-04 desactivada, el indicador se ve.
+4. Edita un mensaje con la conversación abierta: el indicador aparece ya difuminado.
+5. Los mensajes normales, las reacciones, las citas y los botones del mensaje no cambian.
+
+**Historial del diagnóstico:**
+
+**Hipótesis (sin confirmar):** RF-04 marca la hora (`data-veilix-hora-mensaje`) como el elemento más pequeño cuyo texto completo es una hora. Si «Editado» es un elemento aparte, dentro o fuera de `msg-meta`, ninguna regla lo alcanza.
+
+**Diagnóstico** ([`scripts/diagnostico-mensaje-editado.js`](../scripts/diagnostico-mensaje-editado.js)):
+- **Cómo localiza los candidatos,** por dos vías independientes, para no depender solo del texto:
+  - **Por estructura:** cualquier texto de la zona de la hora (`msg-meta` y sus hermanos) que no sea una hora.
+  - **Por texto:** «Editado», «Edited» o «Editada» fuera del cuerpo y del editor.
+
+  También busca iconos de edición.
+- **Qué muestra de cada candidato:**
+  - su cadena de antecesores hasta `msg-container`, con sus hermanos;
+  - su relación con la hora, con `msg-meta` y con el cuerpo;
+  - el selector exacto de las hojas de Veilix que lo difumina, las marcas y los filtros dobles.
+- **Comparación:** el esqueleto anonimizado de la zona de la hora de cada mensaje, para comparar los editados con los normales.
+- **Marca en pantalla:** cada candidato (E1, E2…) queda rodeado con un borde discontinuo durante 60 segundos, mediante el atributo temporal `data-veilix-diagnostico-editado`.
+- **Privacidad:** no muestra mensajes, nombres, horas, `id`, `title`, `aria-label` ni `data-pre-plain-text`. Solo muestra tal cual los textos genéricos de una lista cerrada («Editado», «Reenviado»…).
+- **Probado** con la extensión compilada `0.1.6` y RF-04 activado, sobre un DOM inventado con dos variantes: «Editado» dentro de `msg-meta` junto a la hora, y fuera de él como hermano. Encontró las dos por ambas vías, sin marcar el mensaje normal ni el texto del editor, y no filtró ningún dato.
+
+**Pasos:**
+1. Con RF-04 activada, abre una conversación con un mensaje editado a la vista y otro sin editar. Mejor si hay uno editado recibido y otro enviado.
+2. Deja el cursor sobre la lista de chats. Abre la consola (F12), pega el diagnóstico y pulsa Intro.
+3. Comprueba qué candidato rodea el borde discontinuo del indicador «Editado».
+4. Comparte el resumen, las tablas, el JSON y el esqueleto.
 
 ### Diagnóstico anonimizado de vídeos visibles
 

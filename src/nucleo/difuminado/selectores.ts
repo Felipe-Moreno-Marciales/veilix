@@ -304,6 +304,37 @@ export const TITULOS_ICONO_ESTADO: readonly string[] = ['wds-ic-read'];
  */
 export const META_MENSAJE = '[data-testid="msg-meta"]';
 
+/**
+ * Indicador «Editado» de un mensaje (CONFIRMADO, Chrome, inspección real con
+ * DevTools sobre 0.1.6): dentro de `msg-container` › `msg-meta` › `div`, un
+ * `span` con dos hijos `span`. El primero es el indicador, y el segundo
+ * contiene la hora (`data-veilix-hora-mensaje`). El indicador no tenía ningún
+ * filtro.
+ *
+ * Solo CSS y sin depender de la marca de la hora, que pone un marcador
+ * después de insertar los estilos: así no queda expuesto mientras se marca.
+ * Elige, dentro de `msg-meta`, el `span` hijo de un `span` que:
+ * - es el primero de sus hermanos;
+ * - tiene texto pero ningún elemento dentro (`:not(:empty):not(:has(*))`);
+ * - va seguido de otro `span`.
+ * No usa el texto «Editado», el idioma, las clases ni los estilos en línea.
+ * Excluye iconos (`data-icon`) y controles.
+ *
+ * Colisiones posibles, sin evidencia: dentro de `msg-meta` solo hay metadatos
+ * que RF-04 ya difumina (hora, estado). Si la hora fuera la primera de dos
+ * `span`, el selector la elegiría a ella: es el mismo elemento que la marca
+ * de la hora, con un único filtro. SIN CONFIRMAR: la estructura en mensajes
+ * enviados y en otros tipos de mensaje.
+ */
+export const EDITADO_MENSAJE = [
+  '[data-testid="msg-container"] [data-testid="msg-meta"] span > span',
+  ':first-child',
+  ':not(:empty)',
+  ':not(:has(*))',
+  ':not([data-icon], [role="button"])',
+  ':has(+ span)',
+].join('');
+
 /** Textos con nombre en el encabezado (nombre y subtítulo), excluidos los iconos. */
 export const TEXTO_ENCABEZADO = ':is(span[dir="auto"], span[title]):not([data-icon], [data-icon] *)';
 

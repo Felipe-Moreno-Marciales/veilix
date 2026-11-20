@@ -294,6 +294,13 @@ export interface MensajeObservado {
   readonly reaccion?: 'imagen' | 'texto' | 'fuera';
   /** Hora mostrada; por defecto `10:40`. */
   readonly hora?: string;
+  /**
+   * Indicador «Editado». OBSERVADO en WhatsApp Web real (Chrome, inspección con
+   * DevTools sobre 0.1.6): `msg-meta` › `div` › `span` con dos hijos `span`, el
+   * indicador y el que contiene la hora. SUPUESTOS: que la hora sea un `span`
+   * dentro del segundo, y el lugar del indicador de estado en los enviados.
+   */
+  readonly editado?: boolean;
 }
 
 export interface Mensaje {
@@ -843,7 +850,11 @@ export class WhatsAppSimulado {
     partes.push(
       // En una tarjeta de llamada, msg-meta está dentro de la propia tarjeta.
       ...(tipo === 'llamada' ? [] : [el(d, 'div', { 'data-testid': 'msg-meta' },
-        el(d, 'span', { 'data-prueba': 'hora' }, hora),
+        ...(mensaje.editado
+          ? [el(d, 'div', {}, el(d, 'span', {},
+            el(d, 'span', { 'data-prueba': 'editado' }, 'Editado'),
+            el(d, 'span', {}, el(d, 'span', { 'data-prueba': 'hora' }, hora))))]
+          : [el(d, 'span', { 'data-prueba': 'hora' }, hora)]),
         ...(saliente ? [iconoLeido(d)] : []))]),
       this.#botonContado(`Reaccionar ${numero}`, 'react'),
       this.#botonContado(`Responder ${numero}`, 'reply'),
